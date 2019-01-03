@@ -4,7 +4,7 @@ This is the PHP server application that powers the Enhanced Steam API.  You can 
 
 Please be aware that this code has been running on api.enhancedsteam.com for several years, and it was never my intention to release this publicly.  As such, please understand that the source files contain code spaghetti, bad practices, outdated methods, weird loops etc but should be 100% functional.  Pull requests will only be accepted for code cleanup and refactoring, or from official sources which control external data endpoints.
 
-###Features
+### Features
 -------
 
 - A fully functional replica of api.enhancedsteam.com including all API endpoints
