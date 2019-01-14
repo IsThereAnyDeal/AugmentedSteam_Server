@@ -1,5 +1,8 @@
 <?php
-	require_once("../config.php");
+require_once __DIR__."/../../code/autoloader.php";
+
+\Core\Database::connect();
+
 	
 	// Delete existing database entries
 	$sql = "TRUNCATE TABLE `early_access`";

@@ -1,5 +1,8 @@
 <?php
-	require_once("../config.php");
+require_once __DIR__."/../../code/autoloader.php";
+
+\Core\Database::connect();
+
 	
 	// Get data from private market data API server
 	$data = file_get_contents(Config::SteamToolsApiEndpoint);
