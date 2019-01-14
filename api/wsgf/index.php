@@ -5,7 +5,7 @@
 	
 	if (is_numeric($appid)) {
 	
-		$url = $wsgf_server.$appid;
+		$url = Config::WSGFEndpoint.$appid;
 		
 		$filestring = file_get_contents($url);
 		$filestring = str_replace("<4kGrade>", "<FourKGrade>", $filestring);

@@ -2,7 +2,7 @@
 	require_once("../config.php");
 	
 	// Get data from private market data API server
-	$data = file_get_contents($steamtoolsapi_server);	
+	$data = file_get_contents(Config::SteamToolsApiEndpoint);
 	$data_array = json_decode($data, true);
 	
 	if (!empty($data_array)) {

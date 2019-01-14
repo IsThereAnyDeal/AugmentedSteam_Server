@@ -19,12 +19,8 @@ class Autoloader {
     }
 
     public function loadClass($fqn) {
-        $name = ltrim($fqn, "\\");
-        $path = __DIR__."/../".str_replace("\\", "/", $fqn).".php";
-
-        if (!$this->requireFile($path)) {
-            throw new \Exception("Class '$name' not found");
-        }
+        $path = __DIR__."/../".str_replace("\\", "/", ltrim($fqn, "/")).".php";
+        $this->requireFile($path);
     }
 
     private function requireFile($file) {

@@ -94,7 +94,7 @@
 	}
 	
 	function GetNewSpyValue($the_appid, $connection) {
-		$url = $steamspy_server."&appid=".$the_appid;
+		$url = Config::SteamSpyEndpoint."&appid=".$the_appid;
 		$file_headers = @get_headers($url);
 		switch ($file_headers[0]) {
 			case 'HTTP/1.0 500 Internal Server Error':
@@ -149,7 +149,7 @@
 	}
 	
 	function GetNewOCValue($the_appid, $connection) {
-		$url = $opencritic_server.$the_appid."&key=".$opencritic_key;
+		$url = Config::OpenCriticEndpoint.$the_appid."&key=".Config::OpenCriticKey;
 		$file_headers = @get_headers($url);
 		switch ($file_headers[0]) {
 			case 'HTTP/1.0 500 Internal Server Error':
@@ -321,7 +321,7 @@
 		$return = $return . "," . $spy_json;
 		
 		// Get WSGF data
-		$url = $wsgf_server.$appid;
+		$url = Config::WSGFEndpoint.$appid;
 		
 		$filestring = file_get_contents($url);
 		$filestring = str_replace("<4kGrade>", "<FourKGrade>", $filestring);

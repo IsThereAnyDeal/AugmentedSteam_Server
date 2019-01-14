@@ -35,7 +35,7 @@
 		$url = $url."&optional=voucher";
 	}
 	
-	$url = $url."&key=".$ITAD_key;
+	$url = $url."&key=".Config::IsThereAnyDealKey;
 	
 	$filestring = file_get_contents($url);
 	

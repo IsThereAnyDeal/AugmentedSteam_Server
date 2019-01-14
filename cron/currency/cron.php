@@ -3,7 +3,7 @@
 	
 	$cur = array("USD", "GBP", "EUR", "RUB", "BRL", "JPY", "NOK", "IDR", "MYR", "PHP", "SGD", "THB", "KRW", "TRY", "MXN", "CAD", "AUD", "NZD", "INR", "HKD", "CNY", "ZAR", "CHF", "ILS", "PLN", "VND", "UAH", "TWD", "SAR", "AED", "CLP", "PEN", "COP", "UYU", "ARS", "CRC", "KZT", "KWD", "QAR");
 	
-	$raw = file_get_contents("https://openexchangerates.org/api/latest.json?app_id=".$openexchangeapi);
+	$raw = file_get_contents("https://openexchangerates.org/api/latest.json?app_id=".Config::OpenExchangeApiKey);
 	$raw_array = json_decode($raw, true);
 	
 	foreach ($cur as $basevalue) {		

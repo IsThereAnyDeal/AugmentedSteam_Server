@@ -12,7 +12,7 @@
     mb_internal_encoding('UTF-8');
 	
 	function GetNewValue($the_appid, $connection) {
-		$url = $keylol_server."appId=".$the_appid;
+		$url = Config::KeyLOLEndpoint."appId=".$the_appid;
 		$file_headers = @get_headers($url);
 		switch ($file_headers[0]) {
 			case 'HTTP/1.0 500 Internal Server Error':

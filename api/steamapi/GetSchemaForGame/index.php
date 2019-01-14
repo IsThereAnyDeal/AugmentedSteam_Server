@@ -7,7 +7,7 @@
 	$language = "";
 	if(isset($_GET['language'])) { $language = mysql_real_escape_string($_GET['language']); }
 	
-	$url = "http://api.steampowered.com/ISteamUserStats/GetSchemaForGame/v0002/?key=".$steamAPIkey."&steamid=".$steamid."&appid=".$appid;
+	$url = "http://api.steampowered.com/ISteamUserStats/GetSchemaForGame/v0002/?key=".Config::SteamApiKey."&steamid=".$steamid."&appid=".$appid;
 	if ($language) { $url = $url."&l=".$language; }
 	$url = $url."&format=json";
 	$file_headers = @get_headers($url);

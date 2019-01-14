@@ -5,7 +5,7 @@
 		
 	// gets and returns a new value, storing it in the database
 	function GetNewValue($the_appid, $connection) {
-		$url = $steamspy_server."&appid=".$the_appid;
+		$url = Config::SteamSpyEndpoint."&appid=".$the_appid;
 		$file_headers = @get_headers($url);
 		switch ($file_headers[0]) {
 			case 'HTTP/1.0 500 Internal Server Error':

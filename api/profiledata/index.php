@@ -5,7 +5,7 @@
 	$current_time = time();
 	
 	function GetNewRepValue($the_steam64, $connection) {
-		$sr_url = $steamrep_server.$the_steam64;
+		$sr_url = Config::SteamRepEndpoint.$the_steam64;
 		$file_headers = @get_headers($url);
 		switch ($file_headers[0]) {
 			case 'HTTP/1.0 500 Internal Server Error':

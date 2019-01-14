@@ -7,7 +7,7 @@
 	if(isset($_GET['language'])) { $language = $_GET['language']; }
 	
 	if (is_numeric($steamid)) {
-		$url = "http://api.steampowered.com/ISteamUserStats/GetPlayerAchievements/v0001/?key=".$steamAPIkey."&steamid=".$steamid."&appid=".$appid;
+		$url = "http://api.steampowered.com/ISteamUserStats/GetPlayerAchievements/v0001/?key=".Config::SteamApiKey."&steamid=".$steamid."&appid=".$appid;
 		if ($language) { $url = $url."&l=".$language; }
 		$url = $url."&format=json";
 		$file_headers = @get_headers($url);

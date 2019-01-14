@@ -9,7 +9,7 @@
 	$opts = array(
 	  'http'=>array(
 		'method'=>"GET",
-		'header'=>"Client-ID: " . $twitchapi				  
+		'header'=>"Client-ID: " . Config::TwitchApiKey
 	  )
 	);
 
