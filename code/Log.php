@@ -5,7 +5,7 @@ class Log {
     private static function addFileHandler(\Monolog\Logger $logger, $channel) {
         $bubble = true;
         $path = __DIR__ . "/../" .trim(Config::LogsPath, "/")."/".$channel.".log";
-        \Debug::_($path);
+
         $handler = new \Monolog\Handler\RotatingFileHandler($path, Config::LogsMaxFiles, \Monolog\Logger::DEBUG, $bubble);
         $handler->setFilenameFormat("{date}.{filename}", "Y-m-d");
         $logger->pushHandler($handler);
