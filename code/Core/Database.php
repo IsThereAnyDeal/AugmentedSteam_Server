@@ -7,15 +7,18 @@ use Dibi\Exception;
 
 class Database {
 
-    private static $loaded = false;
+    private static $database = null;
 
+    /**
+     * @return \Dibi\Connection|null
+     */
     public static function connect() {
-        if (self::$loaded) {
-            return;
+        if (!is_null(self::$database)) {
+            return self::$database;
         }
 
         try {
-            dibi::connect([
+            self::$database = dibi::connect([
                 'driver'   => Config::DatabaseDriver,
                 'host'     => Config::DatabaseHost,
                 'username' => Config::DatabaseUser,
@@ -28,7 +31,7 @@ class Database {
             die($e->getMessage());
         }
 
-        self::$loaded = true;
+        return self::$database;
     }
 
 }
