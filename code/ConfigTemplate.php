@@ -7,11 +7,18 @@
 /*
 class Config {
 
+    const ShowErrors = false;
+
 	const DatabaseDriver = "[Database Driver]";
     const DatabaseHost = "[Database Host]";
     const DatabaseUser = "[Database User]";
     const DatabasePassword = "[Database Password]";
     const DatabaseName = "[Database Name]";
+
+    // logging
+    const LogsEnabled = false;
+    const LogsPath = "logs/"; // relative to project root
+    const LogsMaxFiles = 14;
 
     // API Keys
     const SteamApiKey = "[Steam API Key]";
