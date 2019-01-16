@@ -34,7 +34,7 @@ class Response {
     }
 
     public function fail($errorCode="invalid_request", $errorMessage="Invalid request", $httpCode=400) {
-        \Log::channel("api")->notice($_SERVER['REQUEST_URI'], [$errorCode => $errorMessage]);
+        \Log::channel("api", true)->notice($_SERVER['REQUEST_URI'], [$errorCode => $errorMessage]);
 
         switch($httpCode) {
             case 400: header("HTTP/1.1 400 Bad Request"); break;
@@ -47,7 +47,6 @@ class Response {
     private function send(string $result, array $data) {
         $pretty = isset($_GET['pretty']);
 
-        header("Access-Control-Allow-Origin: *");
         header("Content-type: application/json");
 
         $data = array_merge(["result" => $result], $data);

@@ -345,12 +345,12 @@ CREATE TABLE IF NOT EXISTS `steamrep` (
 
 CREATE TABLE IF NOT EXISTS `steamspy` (
   `appid` int(11) NOT NULL,
-  `owners` int(11) NOT NULL,
-  `owners_variance` int(11) NOT NULL,
-  `players_forever` int(11) NOT NULL,
-  `players_forever_variance` int(11) NOT NULL,
-  `players_2weeks` int(11) NOT NULL,
-  `players_2weeks_variance` int(11) NOT NULL,
+  `owners` varchar(30) NOT NULL,
+  `owners_variance` int(11),
+  `players_forever` int(11),
+  `players_forever_variance` int(11),
+  `players_2weeks` int(11),
+  `players_2weeks_variance` int(11),
   `average_forever` int(11) NOT NULL,
   `average_2weeks` int(11) NOT NULL,
   `access_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP

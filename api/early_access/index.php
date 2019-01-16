@@ -3,7 +3,7 @@ require_once __DIR__."/../../code/autoloader.php";
 
 \Core\Database::connect();
 
-$response = new \Api\Response();
+(new \Api\Endpoint());
 
 $select = \dibi::query("SELECT [appid] FROM [early_access]");
 
@@ -12,6 +12,6 @@ foreach($select as $a) {
     $appids[$a['appid']] = $a['appid'];
 }
 
-$response
+(new \Api\Response())
     ->data($appids)
     ->respond();

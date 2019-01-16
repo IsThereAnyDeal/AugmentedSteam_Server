@@ -3,6 +3,7 @@
     "dibi/dibi": "^4.0",
     "monolog/monolog": "^1.24",
     "guzzlehttp/guzzle": "^6.3",
-    "ext-json": "*"
+    "ext-json": "*",
+    "ext-simplexml": "*"
   }
 }
