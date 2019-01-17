@@ -3,54 +3,84 @@ require_once __DIR__."/../../code/autoloader.php";
 
 \Core\Database::connect();
 
+$endpoint = (new \Api\Endpoint())
+    ->params(
+        [],
+        [
+            "subs" => [],
+            "stores" => [],
+            "cc" => null,
+            "coupon" => null,
+            "appid" => null,
+            "bundle" => [],
+        ]
+    );
+
 $response = new \Api\Response();
-$response->setHeaders();
 
+$ids = [];
+$appid = $endpoint->getParamAsInt("appid");
+if (!empty($appid)) {
+    $ids[] = "app/".$appid;
+}
 
-// Get parameters to build string
-$subs = []; $stores = ""; $cc = ""; $voucher = ""; $appid = ""; $bundle = "";
-if (isset($_GET['subs'])) {	$subs = explode(",",mysql_real_escape_string($_GET['subs'])); }
-if (isset($_GET['stores'])) { $stores = mysql_real_escape_string($_GET['stores']); }
-if (isset($_GET['cc'])) { $cc = mysql_real_escape_string($_GET['cc']); }
-if (isset($_GET['coupon'])) { $voucher = mysql_real_escape_string($_GET['coupon']); }
-if (isset($_GET['appid'])) { $appid = mysql_real_escape_string($_GET['appid']); }
-if (isset($_GET['bundle'])) { $bundle = mysql_real_escape_string($_GET['bundleid']); }
+$subids = $endpoint->getParamAsArray("subs");
+foreach($subids as $subid) {
+    if (empty($subid)) { continue; }
+    $ids[] = "sub/$subid";
+}
 
-$search_string = "";
+$bundleids = $endpoint->getParamAsArray("bundle");
+foreach($bundleids as $bundleid) {
+    if (empty($bundleid)) { continue; }
+    $ids[] = "bundle/$bundleid";
+}
 
-if ($bundle <> "") {
-    $search_string = "bundle/" . $bundle;
-} else {
-    foreach ($subs as &$searchvalue) {
-        if ($searchvalue) {
-            $search_string = $search_string."sub/".$searchvalue.",";
-        }
+if (count($ids) == 0) {
+    $response->fail();
+}
+
+$params = [
+    "key" => Config::IsThereAnyDealKey,
+    "shop" => "steam",
+    "ids" => implode(",", $ids),
+];
+
+$country = $endpoint->getParam("cc");
+if (!empty($country)) {
+    $params['country'] = $country;
+}
+
+$stores = $endpoint->getParamAsArray("stores");
+if (!empty($stores)) {
+    $params['allowed'] = implode(",", $stores);
+}
+
+if (!empty($endpoint->getParam("coupon"))) {
+    $params['optional'] = "voucher";
+}
+
+$data = [];
+try {
+    $url = "https://api.isthereanydeal.com/v01/game/overview/?".http_build_query($params);
+    $result = \Core\Load::load($url);
+    $json = json_decode($result, true);
+
+    if (!isset($json['data'])) {
+        $response->fail();
     }
-}
-if ($search_string == "" && $appid) {
-    $search_string = "app/" . $appid;
-}
 
-$url = "https://api.isthereanydeal.com/v01/game/overview/?shop=steam&ids=".$search_string."&country=".$cc;
+    foreach($json['data'] as $key => $a) {
+        $k = explode("/", $key);
+        $data[$k[1]] = $a;
+    }
+    $data['.meta'] = $json['.meta'];
 
-if ($stores <> "") {
-    $url = $url."&allowed=".$stores;
-}
-
-if ($voucher == true) {
-    $url = $url."&optional=voucher";
+} catch(\Exception $e) {
+    $response->fail();
 }
 
-$url = $url."&key=".Config::IsThereAnyDealKey;
-
-$filestring = file_get_contents($url);
-
-// Convert formatting
-$filestring = str_replace("},\"sub\/", "},\"", $filestring);
-$filestring = str_replace("$", "", $filestring);
-
-// Convert JSON results into variables
-$array = json_decode($filestring, true);
-
-echo json_encode($array);
+$response
+    ->data($data)
+    ->respond();
 
