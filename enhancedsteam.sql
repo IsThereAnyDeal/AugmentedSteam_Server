@@ -11,16 +11,6 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Table structure for table `acrtag`
---
-
-CREATE TABLE IF NOT EXISTS `acrtag` (
-  `subid` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `currency`
 --
 
@@ -414,12 +404,6 @@ CREATE TABLE IF NOT EXISTS `supporter_users_pending` (
 --
 -- Indexes for dumped tables
 --
-
---
--- Indexes for table `acrtag`
---
-ALTER TABLE `acrtag`
- ADD PRIMARY KEY (`subid`);
 
 --
 -- Indexes for table `currency`
