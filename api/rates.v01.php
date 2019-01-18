@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__."/../../code/autoloader.php";
+require_once __DIR__ . "/../../code/autoloader.php";
 
 \Core\Database::connect();
 
