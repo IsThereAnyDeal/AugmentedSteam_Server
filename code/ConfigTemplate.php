@@ -22,7 +22,7 @@ class Config {
 
     // API Keys
     const SteamApiKey = "[Steam API Key]";
-    const OpenExchangeApiKey = "[Open Exchange Rates API Key]";
+    const CurrencyConverterApiKey = "[Currency Converter API Key]";
     const OpenCriticKey = "[OpenCritic API Key]";
     const IsThereAnyDealKey = "[IsThereAnyDeal.com API Key]";
     const TwitchApiKey = "[Twitch API Key]";
