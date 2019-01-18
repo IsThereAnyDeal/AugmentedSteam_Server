@@ -2,3 +2,4 @@
 lib/composer.phar
 lib/vendor/
 code/Config.php
+.nginx
