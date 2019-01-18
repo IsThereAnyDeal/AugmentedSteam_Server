@@ -3,23 +3,17 @@ require_once __DIR__."/../../code/autoloader.php";
 
 \Core\Database::connect();
 
-$response = new \Api\Response();
-$response->setHeaders();
+$endpoint = (new \Api\Endpoint())
+    ->params(["channel"]);
 
-	
-// Select record for passed twitch channel
-$channel = mysql_real_escape_string($_GET['channel'], $con);
+$guzzle = new \GuzzleHttp\Client();
+try {
+    $twitch = new \Twitch\Api\Endpoint\GetStreams($guzzle);
+    $twitch->setUserLogin($endpoint->getParam("channel"));
+} catch (\Exception $e) {
+    (new \Api\Response())->fail();
+}
 
-$url = "https://api.twitch.tv/kraken/streams?channel=".$channel;
-
-$opts = array(
-  'http'=>array(
-    'method'=>"GET",
-    'header'=>"Client-ID: " . Config::TwitchApiKey
-  )
-);
-
-$context = stream_context_create($opts);
-
-$html = file_get_contents($url, false, $context);
-echo $html;
+(new \Api\Response())
+    ->data($twitch->getItemEnumerator()->current())
+    ->respond();
