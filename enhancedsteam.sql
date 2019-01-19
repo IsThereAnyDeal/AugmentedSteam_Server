@@ -122,37 +122,19 @@ CREATE TABLE IF NOT EXISTS `game_survey` (
 --
 
 CREATE TABLE IF NOT EXISTS `market_data` (
-`id` bigint(20) NOT NULL,
+  `title` varchar(255) NOT NULL,
   `game` varchar(255) NOT NULL,
   `name` varchar(255) NOT NULL,
   `img` varchar(1024) NOT NULL,
   `appid` int(11) NOT NULL,
   `url` varchar(1024) NOT NULL,
   `price` float NOT NULL,
-  `price_brl` float NOT NULL,
-  `price_rub` float NOT NULL,
-  `price_gbp` float NOT NULL,
-  `price_eur` float NOT NULL,
-  `price_jpy` float NOT NULL,
-  `price_nok` float NOT NULL,
-  `price_idr` float NOT NULL,
-  `price_myr` float NOT NULL,
-  `price_php` float NOT NULL,
-  `price_sgd` float NOT NULL,
-  `price_thb` float NOT NULL,
-  `price_vnd` float NOT NULL,
-  `price_krw` float NOT NULL,
-  `price_try` float NOT NULL,
-  `price_uah` float NOT NULL,
-  `price_mxn` float NOT NULL,
-  `price_cad` float NOT NULL,
-  `price_aud` float NOT NULL,
-  `price_nzd` float NOT NULL,
   `quantity` int(11) NOT NULL,
   `type` varchar(255) NOT NULL,
   `modified` varchar(255) NOT NULL,
-  `rarity` varchar(255) NOT NULL
-) ENGINE=MyISAM AUTO_INCREMENT=200112 DEFAULT CHARSET=utf8;
+  `rarity` varchar(255) NOT NULL,
+  INDEX(`type`, `title`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -417,12 +399,6 @@ ALTER TABLE `game_survey`
  ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `market_data`
---
-ALTER TABLE `market_data`
- ADD PRIMARY KEY (`id`);
-
---
 -- Indexes for table `metacritic`
 --
 ALTER TABLE `metacritic`
@@ -540,11 +516,6 @@ MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=1;
 -- AUTO_INCREMENT for table `game_survey`
 --
 ALTER TABLE `game_survey`
-MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=1;
---
--- AUTO_INCREMENT for table `market_data`
---
-ALTER TABLE `market_data`
 MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=1;
 --
 -- AUTO_INCREMENT for table `metacritic`
