@@ -1,18 +1,4 @@
--- Host: localhost
--- Generation Time: Jan 02, 2019 at 03:15 PM
-
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET time_zone = "+00:00";
-
---
--- Database: `enhancedsteam`
---
-
--- --------------------------------------------------------
-
---
--- Table structure for table `currency`
---
 
 CREATE TABLE IF NOT EXISTS `currency` (
   `from` char(3) NOT NULL,
@@ -20,91 +6,56 @@ CREATE TABLE IF NOT EXISTS `currency` (
   `rate` float NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   UNIQUE(`to`, `from`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `dlc_category`
---
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `dlc_category` (
-`id` int(11) NOT NULL,
+  `id` int(11) NOT NULL auto_increment,
   `category_name` varchar(45) NOT NULL,
   `category_icon` varchar(300) NOT NULL,
-  `category_text` varchar(300) NOT NULL
-) ENGINE=MyISAM AUTO_INCREMENT=14 DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `early_access`
---
+  `category_text` varchar(300) NOT NULL,
+  PRIMARY KEY(`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `early_access` (
-  `appid` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `exfgls`
---
+  `appid` int(11) NOT NULL,
+  PRIMARY KEY(`appid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `exfgls` (
-  `appid` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `features`
---
+  `appid` int(11) NOT NULL,
+  PRIMARY KEY(`appid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `features` (
-`id` bigint(20) NOT NULL,
+  `id` bigint(20) NOT NULL auto_increment,
   `category` varchar(3) NOT NULL,
   `name` varchar(500) NOT NULL,
   `active` tinyint(1) NOT NULL,
   `screenshot_before` varchar(255) NOT NULL,
   `screenshot_after` varchar(255) NOT NULL,
-  `description` longtext NOT NULL
-) ENGINE=MyISAM AUTO_INCREMENT=40 DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `gamedata`
---
+  `description` longtext NOT NULL,
+  PRIMARY KEY(`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `gamedata` (
-`id` int(11) NOT NULL,
+  `id` int(11) NOT NULL auto_increment,
   `appid` int(11) NOT NULL,
-  `dlc_category` int(11) NOT NULL DEFAULT '0'
-) ENGINE=MyISAM AUTO_INCREMENT=1849 DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `game_links`
---
+  `dlc_category` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY(`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `game_links` (
-`id` int(11) NOT NULL,
+  `id` int(11) NOT NULL auto_increment,
   `appid` int(11) NOT NULL,
   `hltb_id` int(11) NOT NULL,
   `steam_id` bigint(20) NOT NULL,
-  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-) ENGINE=MyISAM AUTO_INCREMENT=5123 DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `game_survey`
---
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE (`appid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `game_survey` (
-`id` bigint(20) NOT NULL,
+  `id` bigint(20) NOT NULL auto_increment,
   `appid` int(11) NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `steamid` bigint(11) NOT NULL,
@@ -113,14 +64,9 @@ CREATE TABLE IF NOT EXISTS `game_survey` (
   `fr` varchar(2) NOT NULL,
   `gs` varchar(3) NOT NULL,
   `pw` varchar(3) NOT NULL,
-  `gc` varchar(6) NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=27730 DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `market_data`
---
+  `gc` varchar(6) NOT NULL,
+  PRIMARY KEY(`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `market_data` (
   `title` varchar(255) NOT NULL,
@@ -137,147 +83,91 @@ CREATE TABLE IF NOT EXISTS `market_data` (
   INDEX(`type`, `title`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- --------------------------------------------------------
-
---
--- Table structure for table `metacritic`
---
-
 CREATE TABLE IF NOT EXISTS `metacritic` (
-`id` bigint(11) NOT NULL,
+  `id` bigint(11) NOT NULL auto_increment,
   `mcurl` varchar(255) NOT NULL,
   `score` float NOT NULL,
-  `access_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB AUTO_INCREMENT=4077131 DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `opencritic`
---
+  `access_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY(`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `opencritic` (
   `appid` int(11) NOT NULL,
   `json` varchar(5000) NOT NULL,
-  `access_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `profile_backgrounds`
---
+  `access_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY(`appid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `profile_backgrounds` (
-`id` int(4) NOT NULL,
+  `id` int(4) NOT NULL auto_increment,
   `url` varchar(500) NOT NULL,
   `smallurl` varchar(500) NOT NULL,
   `name` varchar(100) NOT NULL,
-  `type` varchar(255) NOT NULL
-) ENGINE=MyISAM AUTO_INCREMENT=1856 DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `profile_style_users`
---
+  `type` varchar(255) NOT NULL,
+  PRIMARY KEY(`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `profile_style_users` (
-`id` int(11) NOT NULL,
+  `id` int(11) NOT NULL auto_increment,
   `steam64` bigint(32) NOT NULL,
   `profile_style` varchar(64) NOT NULL,
-  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-) ENGINE=InnoDB AUTO_INCREMENT=138442 DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `profile_style_users_pending`
---
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY(`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `profile_style_users_pending` (
-`id` int(11) NOT NULL,
+  `id` int(11) NOT NULL auto_increment,
   `steam64` bigint(32) NOT NULL,
   `profile_style` varchar(64) NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `ip` varchar(15) NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=269981 DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `profile_users`
---
+  `ip` varchar(15) NOT NULL,
+  PRIMARY KEY(`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `profile_users` (
-`id` int(4) NOT NULL,
+  `id` int(4) NOT NULL auto_increment,
   `steam64` varchar(64) NOT NULL,
   `profile_background_id` int(4) NOT NULL,
   `profile_background_img` varchar(1024) NOT NULL,
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `appid` varchar(19) NOT NULL
-) ENGINE=MyISAM AUTO_INCREMENT=105568 DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `profile_users_pending`
---
+  `appid` varchar(19) NOT NULL,
+  PRIMARY KEY(`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `profile_users_pending` (
-`id` int(11) NOT NULL,
+  `id` int(11) NOT NULL auto_increment,
   `steam64` varchar(64) NOT NULL,
   `es_background` varchar(1024) NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `ip` varchar(15) NOT NULL,
-  `appid` varchar(19) NOT NULL
-) ENGINE=MyISAM AUTO_INCREMENT=178082 DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `steamcharts`
---
+  `appid` varchar(19) NOT NULL,
+  PRIMARY KEY(`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `steamcharts` (
-`id` bigint(20) NOT NULL,
+  `id` bigint(20) NOT NULL auto_increment,
   `appid` int(11) NOT NULL,
   `one_hour` varchar(11) NOT NULL,
   `one_day` varchar(11) NOT NULL,
   `all_time` varchar(11) NOT NULL,
-  `access_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB AUTO_INCREMENT=130234968 DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `steamcn`
---
+  `access_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY(`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `steamcn` (
-`id` bigint(20) NOT NULL,
+  `id` bigint(20) NOT NULL auto_increment,
   `appid` int(11) NOT NULL,
   `json` varchar(4096) COLLATE utf8_unicode_ci NOT NULL,
-  `access_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-) ENGINE=InnoDB AUTO_INCREMENT=11848794 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `steamrep`
---
+  `access_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY(`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `steamrep` (
   `steam64` bigint(20) NOT NULL,
   `rep` varchar(255) NOT NULL,
-  `access_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `steamspy`
---
+  `access_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY(`steam64`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `steamspy` (
   `appid` int(11) NOT NULL,
@@ -289,286 +179,41 @@ CREATE TABLE IF NOT EXISTS `steamspy` (
   `players_2weeks_variance` int(11),
   `average_forever` int(11) NOT NULL,
   `average_2weeks` int(11) NOT NULL,
-  `access_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `steam_reviews`
---
+  `access_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY(`appid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `steam_reviews` (
-`id` bigint(20) NOT NULL,
+  `id` bigint(20) NOT NULL auto_increment,
   `appid` int(11) NOT NULL,
   `total` int(11) NOT NULL,
   `pos` int(11) NOT NULL,
   `stm` int(11) NOT NULL,
-  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-) ENGINE=InnoDB AUTO_INCREMENT=49069750 DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `supporter_badges`
---
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY(`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `supporter_badges` (
-`id` int(11) NOT NULL,
+  `id` int(11) NOT NULL auto_increment,
   `title` varchar(255) NOT NULL,
-  `img` varchar(255) NOT NULL
-) ENGINE=MyISAM AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `supporter_users`
---
+  `img` varchar(255) NOT NULL,
+  PRIMARY KEY(`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `supporter_users` (
-`id` int(11) NOT NULL,
+  `id` int(11) NOT NULL auto_increment,
   `steam_id` varchar(25) NOT NULL,
   `badge_id` int(11) NOT NULL,
   `link` varchar(255) NOT NULL,
-  `email` varchar(255) NOT NULL
-) ENGINE=MyISAM AUTO_INCREMENT=360 DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `supporter_users_pending`
---
+  `email` varchar(255) NOT NULL,
+  PRIMARY KEY(`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `supporter_users_pending` (
-`id` bigint(20) NOT NULL,
+  `id` bigint(20) NOT NULL auto_increment,
   `email` varchar(255) NOT NULL,
   `steam_id` varchar(25) NOT NULL,
   `steam_name` varchar(255) NOT NULL,
-  `real_name` varchar(255) NOT NULL
-) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
-
---
--- Indexes for dumped tables
---
-
---
--- Indexes for table `dlc_category`
---
-ALTER TABLE `dlc_category`
- ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `early_access`
---
-ALTER TABLE `early_access`
- ADD PRIMARY KEY (`appid`);
-
---
--- Indexes for table `exfgls`
---
-ALTER TABLE `exfgls`
- ADD PRIMARY KEY (`appid`);
-
---
--- Indexes for table `features`
---
-ALTER TABLE `features`
- ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `gamedata`
---
-ALTER TABLE `gamedata`
- ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `game_links`
---
-ALTER TABLE `game_links`
- ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `appid` (`appid`);
-
---
--- Indexes for table `game_survey`
---
-ALTER TABLE `game_survey`
- ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `metacritic`
---
-ALTER TABLE `metacritic`
- ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `opencritic`
---
-ALTER TABLE `opencritic`
- ADD PRIMARY KEY (`appid`);
-
---
--- Indexes for table `profile_backgrounds`
---
-ALTER TABLE `profile_backgrounds`
- ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `profile_style_users`
---
-ALTER TABLE `profile_style_users`
- ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `profile_style_users_pending`
---
-ALTER TABLE `profile_style_users_pending`
- ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `profile_users`
---
-ALTER TABLE `profile_users`
- ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `profile_users_pending`
---
-ALTER TABLE `profile_users_pending`
- ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `steamcharts`
---
-ALTER TABLE `steamcharts`
- ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `steamcn`
---
-ALTER TABLE `steamcn`
- ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `steamrep`
---
-ALTER TABLE `steamrep`
- ADD UNIQUE KEY `steam64` (`steam64`);
-
---
--- Indexes for table `steamspy`
---
-ALTER TABLE `steamspy`
- ADD UNIQUE KEY `appid` (`appid`);
-
---
--- Indexes for table `steam_reviews`
---
-ALTER TABLE `steam_reviews`
- ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `supporter_badges`
---
-ALTER TABLE `supporter_badges`
- ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `supporter_users`
---
-ALTER TABLE `supporter_users`
- ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `supporter_users_pending`
---
-ALTER TABLE `supporter_users_pending`
- ADD PRIMARY KEY (`id`);
-
---
--- AUTO_INCREMENT for dumped tables
---
-
---
--- AUTO_INCREMENT for table `dlc_category`
---
-ALTER TABLE `dlc_category`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=1;
---
--- AUTO_INCREMENT for table `features`
---
-ALTER TABLE `features`
-MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=1;
---
--- AUTO_INCREMENT for table `gamedata`
---
-ALTER TABLE `gamedata`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=1;
---
--- AUTO_INCREMENT for table `game_links`
---
-ALTER TABLE `game_links`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=1;
---
--- AUTO_INCREMENT for table `game_survey`
---
-ALTER TABLE `game_survey`
-MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=1;
---
--- AUTO_INCREMENT for table `metacritic`
---
-ALTER TABLE `metacritic`
-MODIFY `id` bigint(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=1;
---
--- AUTO_INCREMENT for table `profile_backgrounds`
---
-ALTER TABLE `profile_backgrounds`
-MODIFY `id` int(4) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=1;
---
--- AUTO_INCREMENT for table `profile_style_users`
---
-ALTER TABLE `profile_style_users`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=1;
---
--- AUTO_INCREMENT for table `profile_style_users_pending`
---
-ALTER TABLE `profile_style_users_pending`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=1;
---
--- AUTO_INCREMENT for table `profile_users`
---
-ALTER TABLE `profile_users`
-MODIFY `id` int(4) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=1;
---
--- AUTO_INCREMENT for table `profile_users_pending`
---
-ALTER TABLE `profile_users_pending`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=1;
---
--- AUTO_INCREMENT for table `steamcharts`
---
-ALTER TABLE `steamcharts`
-MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=1;
---
--- AUTO_INCREMENT for table `steamcn`
---
-ALTER TABLE `steamcn`
-MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=1;
---
--- AUTO_INCREMENT for table `steam_reviews`
---
-ALTER TABLE `steam_reviews`
-MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=1;
---
--- AUTO_INCREMENT for table `supporter_badges`
---
-ALTER TABLE `supporter_badges`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=1;
---
--- AUTO_INCREMENT for table `supporter_users`
---
-ALTER TABLE `supporter_users`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=1;
---
--- AUTO_INCREMENT for table `supporter_users_pending`
---
-ALTER TABLE `supporter_users_pending`
-MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=1;
+  `real_name` varchar(255) NOT NULL,
+  PRIMARY KEY(`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
