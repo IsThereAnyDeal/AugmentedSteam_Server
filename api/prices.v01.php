@@ -7,30 +7,31 @@ $endpoint = (new \Api\Endpoint())
     ->params(
         [],
         [
-            "subs" => [],
             "stores" => [],
             "cc" => null,
             "coupon" => null,
-            "appid" => null,
-            "bundle" => [],
+            "appids" => [],
+            "subids" => [],
+            "bundleids" => [],
         ]
     );
 
 $response = new \Api\Response();
 
 $ids = [];
-$appid = $endpoint->getParamAsInt("appid");
-if (!empty($appid)) {
+$appids = $endpoint->getParamAsArray("appids");
+foreach($appids as $appid) {
+    if (empty($appid)) { continue; }
     $ids[] = "app/".$appid;
 }
 
-$subids = $endpoint->getParamAsArray("subs");
+$subids = $endpoint->getParamAsArray("subids");
 foreach($subids as $subid) {
     if (empty($subid)) { continue; }
     $ids[] = "sub/$subid";
 }
 
-$bundleids = $endpoint->getParamAsArray("bundle");
+$bundleids = $endpoint->getParamAsArray("bundleids");
 foreach($bundleids as $bundleid) {
     if (empty($bundleid)) { continue; }
     $ids[] = "bundle/$bundleid";
@@ -70,10 +71,7 @@ try {
         $response->fail();
     }
 
-    foreach($json['data'] as $key => $a) {
-        $k = explode("/", $key);
-        $data[$k[1]] = $a;
-    }
+    $data['data'] = $json['data'];
     $data['.meta'] = $json['.meta'];
 
 } catch(\Exception $e) {

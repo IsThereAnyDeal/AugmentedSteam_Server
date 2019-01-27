@@ -18,7 +18,8 @@ CREATE TABLE IF NOT EXISTS `currency` (
   `from` char(3) NOT NULL,
   `to`   char(3) NOT NULL,
   `rate` float NOT NULL,
-  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  UNIQUE(`to`, `from`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -349,12 +350,6 @@ CREATE TABLE IF NOT EXISTS `supporter_users_pending` (
 --
 -- Indexes for dumped tables
 --
-
---
--- Indexes for table `currency`
---
-ALTER TABLE `currency`
- ADD PRIMARY KEY (`Base`);
 
 --
 -- Indexes for table `dlc_category`

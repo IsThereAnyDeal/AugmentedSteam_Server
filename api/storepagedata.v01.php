@@ -107,6 +107,7 @@ function GetNewSpyValue($the_appid) {
 		$filestring = \Core\Load::load($url);
 		$a = json_decode($filestring, true);
 
+		// FIXME update db
 		\dibi::query("INSERT INTO [steamspy] %v",
             [
                 "appid" => $the_appid,
@@ -123,11 +124,6 @@ function GetNewSpyValue($the_appid) {
 
 		return [
             "owners" => $a['owners'],
-            "owners_variance" => isset($a['owners_variance']) ? $a['owners_variance'] : null,
-            "players_forever" => isset($a['players_forever']) ? $a['players_forever'] : null,
-            "players_forever_variance" => isset($a['players_forever_variance']) ? $a['players_forever_variance'] : null,
-            "players_2weeks" => isset($a['players_2weeks']) ? $a['players_2weeks'] : null,
-            "players_2weeks_variance" => isset($a['players_2weeks_variance']) ? $a['players_2weeks_variance'] : null,
             "average_forever" => $a['average_forever'],
             "average_2weeks" => $a['average_2weeks'],
         ];
@@ -340,7 +336,8 @@ $data = [];
     $fr = [
         '30' => 0,
         'fi' => 0,
-        'va' => 0
+        'va' => 0,
+        'ns' => 0,
     ];
 	$gs_y = $gs_n = 0;
 	$nvidia = $amd = $intel = $other = 0;
@@ -483,7 +480,7 @@ $data = [];
             $main_extras = strip($main_extras);
             $comp = strip($comp);
 
-            $data['htlb']['success'] = true;
+            $data['hltb']['success'] = true;
             $data['hltb']['main_story'] = trim($main_story);
             $data['hltb']['main_extras'] = trim($main_extras);
             $data['hltb']['comp'] = trim($comp);

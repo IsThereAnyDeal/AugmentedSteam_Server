@@ -20,7 +20,7 @@ $select = \dibi::query("SELECT [category_name], [category_icon], [category_text]
                         ORDER BY [cnt] DESC
                         LIMIT 3", $appid);
 foreach($select as $a) {
-    $data = [
+    $data[] = [
         "name" => $a['category_name'],
         "icon" => $a['category_icon'],
         "desc" => $a['category_text'],

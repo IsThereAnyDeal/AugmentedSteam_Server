@@ -5,71 +5,78 @@ use GuzzleHttp\Client;
 
 class Converter {
 
-    private const UPDATE_TIMESTAMP = 6*60;
+    private const SUPPORTED = [
+        "USD", "GBP", "EUR",
+        "RUB", "BRL", "JPY",
+        "NOK", "IDR", "MYR",
+        "PHP", "SGD", "THB",
+        "VND", "KRW", "TRY",
+        "UAH", "MXN", "CAD",
+        "AUD", "NZD", "INR",
+        "HKD", "TWD", "CNY",
+        "SAR", "ZAR", "AED",
+        "CHF", "CLP", "PEN",
+        "COP", "UYU", "ILS",
+        "PLN", "ARS", "CRC",
+        "KZT", "KWD", "QAR"
+    ];
 
-    private static $instances = [];
+    private const UPDATE_TIMESTAMP = 6*60*60;
 
-    public static function getConverter(string $from): self {
-        $from = strtoupper($from);
-        if (strlen($from) != 3) {
-            throw new \Exception("Invalid currency code");
+    private static $instance;
+
+    public static function getConverter(): self {
+        if (!isset(self::$instance)) {
+            self::$instance = new Converter();
         }
-
-        if (!isset(self::$instances[$from])) {
-            self::$instances[$from] = new Converter($from);
-        }
-        return self::$instances[$from];
+        return self::$instance;
     }
 
     private $conversions = [];
     private $guzzle = null;
 
-    private $from;
+    private function __construct() {
+        // intentionally empty
+    }
 
-    private function __construct(string $from) {
-        $this->from = $from;
+    public function getAllConversionsTo(string $to) {
+        $updated = [];
 
-        $select = \dibi::query("SELECT [to], [rate], [timestamp] FROM [currency] WHERE [from]=%s", $this->from);
+        $select = \dibi::query("SELECT [from], [rate], [timestamp] FROM [currency] WHERE [to]=%s", $to);
         foreach($select as $a) {
-            $to = $a['to'];
+            $from = $a['from'];
             $rate = $a['rate'];
             /** @var \Dibi\DateTime $time */
             $time = $a['timestamp'];
 
-            $this->conversions[$to] = $rate;
+            $this->conversions[$from][$to] = $rate;
+            $updated[$from] = $time->getTimestamp();
+        }
 
-            if ($time->getTimestamp() < time() - self::UPDATE_TIMESTAMP) {
-                $this->loadConversion($to);
+        foreach(self::SUPPORTED as $currency) {
+            if (!isset($this->conversions[$currency][$to]) || $updated[$currency] < time() - self::UPDATE_TIMESTAMP) {
+                $this->loadConversion($currency, $to);
             }
         }
+
+        $result = [];
+        foreach(self::SUPPORTED as $currency) {
+            if (!isset($this->conversions[$currency][$to])) { continue; }
+            $result[$currency][$to] = $this->conversions[$currency][$to];
+        }
+
+        return $result;
     }
 
-    public function getConversion(string $to): ?float {
-        $to = strtoupper($to);
-        if (strlen($to) != 3) {
-            throw new \Exception("Invalid currency code");
-        }
-
-        if ($this->from == $to) {
-            return 1;
-        }
-
-        if (array_key_exists($to, $this->conversions)) {
-            return $this->conversions[$to];
-        }
-
-        return $this->loadConversion($to);
-    }
-
-    private function loadConversion(string $to): ?float {
+    private function loadConversion(string $from, string $to): ?float {
         if (is_null($this->guzzle)) {
             $this->guzzle = new Client();
         }
 
-        $key = $this->from."_".$to;
+        $key = $from."_".$to;
 
-        if (!array_key_exists($to, $this->conversions)) {
-            $this->conversions[$to] = null;
+        if (!array_key_exists($from, $this->conversions)) {
+            $this->conversions[$from] = null;
         }
 
         try {
@@ -78,8 +85,8 @@ class Converter {
                 $json = json_decode($response->getBody(), true);
                 if (isset($json[$key])) {
                     $rate = $json[$key];
-                    $this->conversions[$to] = $rate;
-                    \dibi::query("INSERT INTO [currency] ([from], [to], [rate]) VALUES (%s, %s, %f)", $this->from, $to, $rate);
+                    $this->conversions[$from][$to] = $rate;
+                    \dibi::query("REPLACE INTO [currency] ([from], [to], [rate]) VALUES (%s, %s, %f)", $from, $to, $rate);
                     return $rate;
                 }
             }
