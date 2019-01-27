@@ -14,10 +14,10 @@ class SteamRep {
     }
 
     public function getRep(): array {
-        $select = \dibi::query("SELECT [access_time], [rep], FROM [steamrep] WHERE [steam64]=%i", $this->steamId)->fetch();
+        $select = \dibi::query("SELECT [access_time], [rep] FROM [steamrep] WHERE [steam64]=%i", $this->steamId)->fetch();
 
         if (!empty($select) && $select['access_time']->getTimestamp() >= time()-self::CACHE_LIMIT) {
-            return explode(",", $select['rep']);
+            return empty($select['rep']) ? [] : explode(",", $select['rep']);
         }
 
         \dibi::query("DELETE FROM [steamrep] WHERE [steam64]=%i", $this->steamId);

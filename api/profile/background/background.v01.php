@@ -11,7 +11,7 @@ $currentSelected = \dibi::query("SELECT [profile_background_img] FROM [profile_u
 $select = \dibi::query("SELECT [appid], [name], [img]
                         FROM [market_data]
                         WHERE [appid]=%i AND [type]='background'
-                        ORDER BY [name] ASC", $appid);
+                        ORDER BY [name] ASC", $endpoint->getParamAsInt("appid"));
 $data = [];
 foreach($select as $a) {
     $img = "//steamcommunity.com/economy/image/".$a['img'];
@@ -20,7 +20,7 @@ foreach($select as $a) {
     $data[] = [
         "id" => $imgSmall,
         "name" => preg_replace("#\s*(Profile Background)#", "", $a['name']),
-        "index" => $a['img'],
+        "index" => $img,
         "selected" => ($a['img'] == $currentSelected)
     ];
 }

@@ -7,7 +7,7 @@ require_once __DIR__ . "/../code/autoloader.php";
 
 $select = \dibi::query("SELECT [appid] FROM [early_access]");
 
-$apppids = [];
+$appids = [];
 foreach($select as $a) {
     $appids[$a['appid']] = $a['appid'];
 }

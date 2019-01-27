@@ -35,11 +35,11 @@ $select = \dibi::query("SELECT [link], [title], [img]
                         ORDER BY [badge_id]", $steamId);
 
 if (!empty($select)) {
-    foreach($result as $a) {
-        $result['badges'] = [
+    foreach($select as $a) {
+        $result['badges'][] = [
             "link" => $a['link'],
             "title" => $a['title'],
-            "img" => $a['title'],
+            "img" => $a['img'],
         ];
     }
 }

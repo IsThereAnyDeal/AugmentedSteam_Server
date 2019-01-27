@@ -347,6 +347,7 @@ $data = [];
 
 	// Gather data from the records
 	foreach($sql as $row) {
+	    if (empty($row['fr'])) { continue; }
 	    $fr[$row['fr']]++;
 
 		if ($row["mr"] == "less") {
