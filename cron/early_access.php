@@ -18,12 +18,14 @@ $stack->setIgnore(true);
 $pages = 1;
 $p = 1;
 do {
+    $logger->info("early access p$p");
 	try {
 		$request = $guzzle->request("GET", "https://store.steampowered.com/search/results?term=&genre=Early%20Access&page=".$p);
 	} catch (\GuzzleHttp\Exception\GuzzleException $e) {
 		$logger->info($e->getMessage());
 		// TODO second try?
-		continue;
+        $p++;
+        continue;
 	}
 	$page = (string)$request->getBody();
 
@@ -32,6 +34,7 @@ do {
 	}
 
 	if (!preg_match_all("#data-ds-appid=\"(\d+)\"#", $page, $m)) {
+	    $p++;
 		continue;
 	}
 
