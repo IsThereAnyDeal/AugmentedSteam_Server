@@ -23,7 +23,7 @@ $response = new \Api\Response();
 if ($average !== false) {
     $CONV = \Price\Converter::getConverter()
         ->getConversion("USD", $endpoint->getParam("currency"));
-    $response->data(["average" => $CONV]);
+    $response->data(["average" => $average*$CONV]);
 }
 
 $response->respond();
