@@ -39,6 +39,18 @@ class Converter {
         // intentionally empty
     }
 
+    public function getConversion(string $from, string $to) {
+        $from = strtoupper($from);
+        $to = strtoupper($to);
+
+        $select = \dibi::query("SELECT [rate], [timestamp] FROM [currency] WHERE [from]=%s AND [to]=%s", $from, $to)->fetch();
+        if ($select === false || $select['timestamp']->getTimestamp() < time()-self::UPDATE_TIMESTAMP) {
+            return $this->loadConversion($from, $to);
+        }
+
+        return $select['rate'];
+    }
+
     public function getAllConversionsTo(string $to) {
         $updated = [];
 
