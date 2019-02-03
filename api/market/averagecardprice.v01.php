@@ -17,13 +17,14 @@ $foilSQL = $endpoint->getParam("foil")
     : "AND [rarity] != 'foil'";
 
 $appid = $endpoint->getParamAsInt("appid");
-$average = \dibi::query("SELECT AVG([price]) FROM [market_data] WHERE [appid]=%i AND [type]='card' %sql", $appid, $foilSQL)->fetchSingle();
+$select = \dibi::query("SELECT avg([price]) as [average], count(*) as [count] FROM [market_data] WHERE [appid]=%i AND [type]='card' %sql", $appid, $foilSQL)->fetch();
 
 $response = new \Api\Response();
-if ($average !== false) {
-    $CONV = \Price\Converter::getConverter()
-        ->getConversion("USD", $endpoint->getParam("currency"));
-    $response->data(["average" => $average*$CONV]);
+if ($select['count'] == 0) {
+    $response->fail("no_data_found", "No data found for given appid");
 }
 
+$CONV = \Price\Converter::getConverter()
+    ->getConversion("USD", $endpoint->getParam("currency"));
+$response->data(["average" => $select['average']*$CONV]);
 $response->respond();
