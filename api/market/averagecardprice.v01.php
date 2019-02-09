@@ -11,6 +11,7 @@ $endpoint = (new \Api\Endpoint())
         "foil" => false
     ]);
 
+// TODO deprecated, remove in v1.0, use averagecardprices endpoint
 
 $foilSQL = $endpoint->getParam("foil")
     ? "AND [rarity] = 'foil'"
