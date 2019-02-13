@@ -20,7 +20,7 @@ if (empty($select)) {
 }
 
 $openid = new LightOpenID(Config::SteamLoginOpenIdHost);
-$openid->returnUrl = "https://".Config::SteamLoginOpenIdHost."/v01/profile/edit/background/?appid=$appid&img=$img";
+$openid->returnUrl = "https://".Config::SteamLoginOpenIdHost."/v01/profile/background/edit/save/?appid=$appid&img=$img";
 
 if(!$openid->mode) {
     $openid->identity = "https://steamcommunity.com/openid";
