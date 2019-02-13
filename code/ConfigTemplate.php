@@ -35,5 +35,8 @@ class Config {
     const OpenCriticEndpoint = "[OpenCritic API Server Endpoint]";
     const SteamRepEndpoint = "[SteamRep API Server Endpoint]";
     const PCGWEndpoint = "[PCGamingWiki API Server Endpoint]";
+
+    // Public facing
+    const SteamLoginOpenIdHost = "[Host]";
 }
 */

@@ -4,9 +4,7 @@ require_once __DIR__ . "/../../../code/autoloader.php";
 \Core\Database::connect();
 
 $endpoint = (new \Api\Endpoint())
-    ->params(["appid", "profile"]);
-
-$currentSelected = \dibi::query("SELECT [profile_background_img] FROM [profile_users] WHERE [steam64]=%i", $endpoint->getParam("profile"));
+    ->params(["appid"]);
 
 $select = \dibi::query("SELECT [appid], [name], [img]
                         FROM [market_data]
@@ -14,14 +12,11 @@ $select = \dibi::query("SELECT [appid], [name], [img]
                         ORDER BY [name] ASC", $endpoint->getParamAsInt("appid"));
 $data = [];
 foreach($select as $a) {
-    $img = "//steamcommunity.com/economy/image/".$a['img'];
-    $imgSmall = $img."/252fx160f";
 
+    // to have smaller response, do not use keys, just send array
     $data[] = [
-        "id" => $imgSmall,
-        "name" => preg_replace("#\s*(Profile Background)#", "", $a['name']),
-        "index" => $img,
-        "selected" => ($a['img'] == $currentSelected)
+        $a['img'],
+        preg_replace("#\s*\(Profile Background\)#", "", $a['name']),
     ];
 }
 

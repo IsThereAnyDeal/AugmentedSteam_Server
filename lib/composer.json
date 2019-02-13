@@ -4,6 +4,13 @@
     "monolog/monolog": "^1.24",
     "guzzlehttp/guzzle": "^6.3",
     "ext-json": "*",
-    "ext-simplexml": "*"
-  }
+    "ext-simplexml": "*",
+    "iignatov/lightopenid": "*"
+  },
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/iignatov/LightOpenID"
+    }
+  ]
 }

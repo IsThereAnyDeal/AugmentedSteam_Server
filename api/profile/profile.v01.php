@@ -21,7 +21,6 @@ $result = [
     "style" => null,
     "bg" => [
         "img" => null,
-        "small" => null,
         "appid" => null,
     ],
 ];
@@ -54,7 +53,6 @@ $result['style'] = (empty($select) ? null : $select);
 $select = \dibi::query("SELECT * FROM [profile_users] WHERE [steam64]=%i", $steamId)->fetch();
 if (!empty($select)) {
     $result['bg']['img'] = $select['profile_background_img'];
-    $result['bg']['small'] = $select['profile_background_img']."/252fx160f";
     $result['bg']['appid'] = $select['appid'];
 }
 

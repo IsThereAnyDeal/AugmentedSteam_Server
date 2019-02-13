@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7c8e49da1703117aaf5a846bfddabe45",
+    "content-hash": "c12550c5b0e2535abe9c20cf5c28ceae",
     "packages": [
         {
             "name": "dibi/dibi",
@@ -254,6 +254,56 @@
             "time": "2018-12-04T20:46:45+00:00"
         },
         {
+            "name": "iignatov/lightopenid",
+            "version": "1.3.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/iignatov/LightOpenID.git",
+                "reference": "2e41832b87897130e4733c7e01864e17cf491e26"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/iignatov/LightOpenID/zipball/2e41832b87897130e4733c7e01864e17cf491e26",
+                "reference": "2e41832b87897130e4733c7e01864e17cf491e26",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.2"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "openid.php",
+                    "provider/provider.php"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Mewp",
+                    "homepage": "https://code.google.com/p/lightopenid/"
+                },
+                {
+                    "name": "Ignat Ignatov",
+                    "homepage": "https://github.com/iignatov/LightOpenID"
+                }
+            ],
+            "description": "Lightweight PHP5 library for easy OpenID authentication.",
+            "homepage": "https://github.com/iignatov/LightOpenID",
+            "keywords": [
+                "authentication",
+                "openid",
+                "security"
+            ],
+            "support": {
+                "source": "https://github.com/iignatov/LightOpenID/tree/1.3.1",
+                "issues": "https://github.com/iignatov/LightOpenID/issues"
+            },
+            "time": "2016-03-04T09:10:11+00:00"
+        },
+        {
             "name": "monolog/monolog",
             "version": "1.24.0",
             "source": {
@@ -475,6 +525,9 @@
     "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
-    "platform": [],
+    "platform": {
+        "ext-json": "*",
+        "ext-simplexml": "*"
+    },
     "platform-dev": []
 }

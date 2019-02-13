@@ -80,7 +80,8 @@ CREATE TABLE IF NOT EXISTS `market_data` (
   `type` varchar(255) NOT NULL,
   `modified` varchar(255) NOT NULL,
   `rarity` varchar(255) NOT NULL,
-  INDEX(`type`, `title`)
+  INDEX(`type`, `title`),
+  INDEX(`type`, `appid`),
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `metacritic` (
@@ -96,15 +97,6 @@ CREATE TABLE IF NOT EXISTS `opencritic` (
   `json` varchar(5000) NOT NULL,
   `access_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY(`appid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE IF NOT EXISTS `profile_backgrounds` (
-  `id` int(4) NOT NULL auto_increment,
-  `url` varchar(500) NOT NULL,
-  `smallurl` varchar(500) NOT NULL,
-  `name` varchar(100) NOT NULL,
-  `type` varchar(255) NOT NULL,
-  PRIMARY KEY(`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `profile_style_users` (
@@ -127,21 +119,11 @@ CREATE TABLE IF NOT EXISTS `profile_style_users_pending` (
 CREATE TABLE IF NOT EXISTS `profile_users` (
   `id` int(4) NOT NULL auto_increment,
   `steam64` varchar(64) NOT NULL,
-  `profile_background_id` int(4) NOT NULL,
   `profile_background_img` varchar(1024) NOT NULL,
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `appid` varchar(19) NOT NULL,
-  PRIMARY KEY(`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE IF NOT EXISTS `profile_users_pending` (
-  `id` int(11) NOT NULL auto_increment,
-  `steam64` varchar(64) NOT NULL,
-  `es_background` varchar(1024) NOT NULL,
-  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `ip` varchar(15) NOT NULL,
-  `appid` varchar(19) NOT NULL,
-  PRIMARY KEY(`id`)
+  PRIMARY KEY(`id`),
+  UNIQUE(`steam64`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `steamcharts` (
