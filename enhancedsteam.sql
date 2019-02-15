@@ -102,7 +102,7 @@ CREATE TABLE IF NOT EXISTS `opencritic` (
 CREATE TABLE IF NOT EXISTS `profile_style_users` (
   `id` int(11) NOT NULL auto_increment,
   `steam64` bigint(32) NOT NULL,
-  `profile_style` varchar(11) NOT NULL,
+  `profile_style` varchar(13) NOT NULL,
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY(`id`),
   UNIQUE(`steam64`)
