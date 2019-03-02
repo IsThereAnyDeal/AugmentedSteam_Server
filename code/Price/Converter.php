@@ -51,11 +51,12 @@ class Converter {
         return $select['rate'];
     }
 
-    public function getAllConversionsTo(string $to) {
+    public function getAllConversionsTo(array $list) {
         $updated = [];
 
-        $select = \dibi::query("SELECT [from], [rate], [timestamp] FROM [currency] WHERE [to]=%s", $to);
+        $select = \dibi::query("SELECT [from], [to], [rate], [timestamp] FROM [currency] WHERE [to] IN %in", $list);
         foreach($select as $a) {
+            $to   = $a['to'];
             $from = $a['from'];
             $rate = $a['rate'];
             /** @var \Dibi\DateTime $time */
@@ -65,16 +66,20 @@ class Converter {
             $updated[$from] = $time->getTimestamp();
         }
 
-        foreach(self::SUPPORTED as $currency) {
-            if (!isset($this->conversions[$currency][$to]) || $updated[$currency] < time() - self::UPDATE_TIMESTAMP) {
-                $this->loadConversion($currency, $to);
+        foreach($list as $to) {
+            foreach(self::SUPPORTED as $currency) {
+                if (!isset($this->conversions[$currency][$to]) || $updated[$currency] < time() - self::UPDATE_TIMESTAMP) {
+                    $this->loadConversion($currency, $to);
+                }
             }
         }
 
         $result = [];
-        foreach(self::SUPPORTED as $currency) {
-            if (!isset($this->conversions[$currency][$to])) { continue; }
-            $result[$currency][$to] = $this->conversions[$currency][$to];
+        foreach($list as $to) {
+            foreach(self::SUPPORTED as $currency) {
+                if (!isset($this->conversions[$currency][$to])) { continue; }
+                $result[$currency][$to] = $this->conversions[$currency][$to];
+            }
         }
 
         return $result;

@@ -9,7 +9,7 @@ $endpoint = (new \Api\Endpoint())
 $response = new \Api\Response();
 
 $converter = \Price\Converter::getConverter();
-$data = $converter->getAllConversionsTo($endpoint->getParam("to"));
+$data = $converter->getAllConversionsTo($endpoint->getParamAsArray("to"));
 
 $response
     ->data($data)
