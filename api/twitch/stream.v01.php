@@ -13,7 +13,9 @@ try {
     $stream = $streams->getItemEnumerator()->current();
 
     if (is_null($stream)) {
-        (new \Api\Response())->fail("no_live_stream", "This user is not streaming right now");
+        (new \Api\Response())
+            ->data([])
+            ->respond();
     }
 
     $games = new \Twitch\Api\Endpoint\GetGames($guzzle);
