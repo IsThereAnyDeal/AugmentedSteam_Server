@@ -52,34 +52,16 @@ class Converter {
     }
 
     public function getAllConversionsTo(array $list) {
-        $updated = [];
+        $result = [];
 
-        $select = \dibi::query("SELECT [from], [to], [rate], [timestamp] FROM [currency] WHERE [to] IN %in", $list);
+        $select = \dibi::query("SELECT [from], [to], [rate] FROM [currency] WHERE [to] IN %in", $list);
         foreach($select as $a) {
             $to   = $a['to'];
             $from = $a['from'];
             $rate = $a['rate'];
-            /** @var \Dibi\DateTime $time */
-            $time = $a['timestamp'];
 
             $this->conversions[$from][$to] = $rate;
-            $updated[$from] = $time->getTimestamp();
-        }
-
-        foreach($list as $to) {
-            foreach(self::SUPPORTED as $currency) {
-                if (!isset($this->conversions[$currency][$to]) || $updated[$currency] < time() - self::UPDATE_TIMESTAMP) {
-                    $this->loadConversion($currency, $to);
-                }
-            }
-        }
-
-        $result = [];
-        foreach($list as $to) {
-            foreach(self::SUPPORTED as $currency) {
-                if (!isset($this->conversions[$currency][$to])) { continue; }
-                $result[$currency][$to] = $this->conversions[$currency][$to];
-            }
+            $result[$from][$to] = $rate;
         }
 
         return $result;
@@ -97,7 +79,7 @@ class Converter {
         }
 
         try {
-            $response = $this->guzzle->request("GET", "http://currencyconverterapi.com/api/v3/convert?q=$key&compact=ultra&apiKey=".\Config::CurrencyConverterApiKey);
+            $response = $this->guzzle->request("GET", "https://api.currconv.com/api/v7/convert?q=$key&compact=ultra&apiKey=".\Config::CurrencyConverterApiKey);
             if (!empty($response)) {
                 $json = json_decode($response->getBody(), true);
                 if (isset($json[$key])) {
@@ -114,4 +96,12 @@ class Converter {
         return null;
     }
 
+    public function updateAll(): void {
+        foreach(self::SUPPORTED as $from) {
+            foreach(self::SUPPORTED as $to) {
+                if ($from == $to) { continue; }
+                $this->loadConversion($from, $to);
+            }
+        }
+    }
 }
