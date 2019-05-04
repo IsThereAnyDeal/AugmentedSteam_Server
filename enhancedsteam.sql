@@ -69,9 +69,9 @@ CREATE TABLE IF NOT EXISTS `game_survey` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `market_data` (
-  `title` varchar(255) NOT NULL,
-  `game` varchar(255) NOT NULL,
-  `name` varchar(255) NOT NULL,
+  `title` varchar(255) NOT NULL CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `game` varchar(255) NOT NULL CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `name` varchar(255) NOT NULL CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `img` varchar(1024) NOT NULL,
   `appid` int(11) NOT NULL,
   `url` varchar(1024) NOT NULL,
@@ -82,7 +82,7 @@ CREATE TABLE IF NOT EXISTS `market_data` (
   `rarity` varchar(255) NOT NULL,
   INDEX(`type`, `title`),
   INDEX(`type`, `appid`),
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `metacritic` (
   `id` bigint(11) NOT NULL auto_increment,

@@ -23,15 +23,18 @@ $stack = new \Database\Stack(500, "market_data", [
 
 \dibi::begin();
 
+\dibi::query("SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci");
 \dibi::query("DELETE FROM [market_data]");
 
 foreach($json as $a) {
+    if (!is_numeric($a['appid'])) { continue; }
+
     $stack->stack([
 	    "title" => preg_replace("#\s+(Rare|Uncommon|\(Foil\))\s*$#", "", $a['game']),
 		"game" => $a['game'],
 		"name" => $a['name'],
 		"img" => $a['img'],
-		"appid" => $a['appid'],
+		"appid" => (int)$a['appid'],
 		"url" => $a['url'],
 		"price" => $a['price'],
 		"quantity" => $a['quantity'],
