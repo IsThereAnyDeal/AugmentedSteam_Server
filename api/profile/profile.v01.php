@@ -46,11 +46,11 @@ if (!empty($select)) {
 $result['steamrep'] = (new \SteamRep\SteamRep($steamId))->getRep();
 
 // profile style
-$select = \dibi::query("SELECT [profile_style] FROM [profile_style_users] WHERE [steam64]=%i", $steamId)->fetchSingle();
+$select = \dibi::query("SELECT [profile_style] FROM [profile_style_users] WHERE [steam64]=%s", $steamId)->fetchSingle();
 $result['style'] = (empty($select) ? null : $select);
 
 // profile background
-$select = \dibi::query("SELECT * FROM [profile_users] WHERE [steam64]=%i", $steamId)->fetch();
+$select = \dibi::query("SELECT * FROM [profile_users] WHERE [steam64]=%s", $steamId)->fetch();
 if (!empty($select)) {
     $result['bg']['img'] = $select['profile_background_img'];
     $result['bg']['appid'] = $select['appid'];
