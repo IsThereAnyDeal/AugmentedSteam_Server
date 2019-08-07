@@ -8,12 +8,10 @@ $logger->info("Start early access");
 
 $guzzle = new GuzzleHttp\Client();
 
-\dibi::begin();
-
-\dibi::query("DELETE FROM [early_access]");
-
-$stack = new \Database\Stack(500, "early_access", ["appid"]);
+$stack = new \Database\Stack(100, "early_access", ["appid", "timestamp"]);
 $stack->setIgnore(true);
+
+$start = time();
 
 $pages = 1;
 $p = 1;
@@ -39,7 +37,7 @@ do {
 	}
 
 	foreach($m[1] as $appid) {
-		$stack->stack(["appid" => $appid]);
+		$stack->stack(["appid" => $appid, "timestamp" => time()]);
 	}
 
 	$p++;
@@ -49,6 +47,6 @@ do {
 
 $stack->saveStack();
 
-\dibi::commit();
+\dibi::query("DELETE FROM [early_access] WHERE [timestamp] < %i", $start);
 
 $logger->info("Finish early access");
