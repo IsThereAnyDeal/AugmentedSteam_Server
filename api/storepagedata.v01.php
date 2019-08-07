@@ -237,7 +237,7 @@ $data = [];
     if (!empty($row)) {
         $access_time = strtotime($row['access_time']);
 
-        if ($current_time - $access_time >= 3600) {
+        if ($current_time - $access_time >= 900) {
             \dibi::query("DELETE FROM [steamcharts] WHERE [appid]=%i", $appid);
             $data['charts']['chart'] = GetNewChartValue($appid);
         } else {
