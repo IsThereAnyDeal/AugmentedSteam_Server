@@ -197,6 +197,7 @@ function GetNewOCValue($the_appid) {
 }
 
 // store steam reviews
+/*
 {
     $reviewsAll = $endpoint->getParam("r_all");
     $reviewsPositive = $endpoint->getParam("r_pos");
@@ -226,6 +227,7 @@ function GetNewOCValue($the_appid) {
         }
     }
 }
+*/
 
 $data = [];
 
