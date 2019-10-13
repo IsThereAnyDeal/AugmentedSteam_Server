@@ -79,21 +79,6 @@ CREATE TABLE IF NOT EXISTS `market_data` (
   INDEX(`type`, `appid`),
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE IF NOT EXISTS `metacritic` (
-  `id` bigint(11) NOT NULL auto_increment,
-  `mcurl` varchar(255) NOT NULL,
-  `score` float NOT NULL,
-  `access_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY(`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE IF NOT EXISTS `opencritic` (
-  `appid` int(11) NOT NULL,
-  `json` varchar(5000) NOT NULL,
-  `access_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY(`appid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 CREATE TABLE IF NOT EXISTS `profile_style_users` (
   `id` int(11) NOT NULL auto_increment,
   `steam64` bigint(32) NOT NULL,

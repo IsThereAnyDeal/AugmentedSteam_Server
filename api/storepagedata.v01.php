@@ -5,10 +5,6 @@ require_once __DIR__ . "/../code/autoloader.php";
 
 $endpoint = new \Api\Endpoint();
 $endpoint->params(["appid"], [
-    "r_all" => 0,
-    "r_pos" => 0,
-    "r_stm" => 0,
-    "mcurl" => "",
     "oc" => ""
 ]);
 
@@ -133,102 +129,6 @@ function GetNewSpyValue($the_appid) {
     return [];
 }
 
-function GetNewMCValue($url) {
-	try {
-		$filestring = \Core\Load::load($url);
-		preg_match("/metascore_w user(.+)\">(.+)<\/div>/", $filestring, $matches);
-		$the_value = $matches[2];
-
-		\dibi::query("INSERT INTO [metacritic] ([mcurl], [score]) VALUES (%s, %f)", $url, $the_value);
-		return $the_value;
-	} catch(\Exception $e) {
-        \Log::channel("exceptions")->info($e->getMessage());
-    }
-    return null;
-}
-
-function GetNewOCValue($the_appid) {
-	$url = Config::OpenCriticEndpoint.$the_appid."&key=".Config::OpenCriticKey;
-
-	try {
-		$filestring = \Core\Load::load($url);
-		if ($filestring) {
-			$array = json_decode($filestring, true);
-
-			// Strip stuff from JSON we don't need
-			if (isset($array["reviews"])) { unset($array["reviews"]); }
-			if (isset($array["id"])) { unset($array["id"]); }
-			if (isset($array["sku_id"])) { unset($array["sku_id"]); }
-			if (isset($array["name"])) { unset($array["name"]); }
-
-			// Strip stuff from topReviews we don't need
-			foreach ($array["topReviews"] as &$value) {
-				if ($value["ScoreFormat"]) { unset ($value["ScoreFormat"]); }
-				if ($value["OutletId"]) { unset ($value["OutletId"]); }
-				if ($value["platform"]) { unset ($value["platform"]); }
-				if ($value["language"]) { unset ($value["language"]); }
-				unset ($value["isQuoteManual"]);
-			}
-			unset($value);
-
-			$oc_jason = json_encode($array);
-			$oc_jason = str_replace("\/", "/", $oc_jason);
-			$oc_jason = str_replace("\u00a0", " ", $oc_jason);
-			$oc_jason = str_replace("\u2013", "-", $oc_jason);
-
-			$oc_jason = str_replace("openCriticScore", "score", $oc_jason);
-			$oc_jason = str_replace("openCriticUrl", "url", $oc_jason);
-			$oc_jason = str_replace("topReviews", "reviews", $oc_jason);
-			$oc_jason = str_replace("publishedDate", "date", $oc_jason);
-			$oc_jason = str_replace("externalUrl", "rURL", $oc_jason);
-			$oc_jason = str_replace("outletName", "name", $oc_jason);
-			$oc_jason = str_replace("displayScore", "dScore", $oc_jason);
-			$oc_jason = str_replace("reviewCount", "count", $oc_jason);
-
-			\dibi::query("INSERT INTO [opencritic] ([appid], [json]) VALUES (%i, %s)", $the_appid, $oc_jason);
-			return json_decode($oc_jason, true);
-		} else {
-			return [];
-		}
-	} catch(\Exception $e) {
-        \Log::channel("exceptions")->info($e->getMessage());
-    }
-    return [];
-}
-
-// store steam reviews
-/*
-{
-    $reviewsAll = $endpoint->getParam("r_all");
-    $reviewsPositive = $endpoint->getParam("r_pos");
-    $reviewsPurchasedOnSteam = $endpoint->getParam("r_stm");
-
-    if (is_numeric($reviewsAll) && is_numeric($reviewsPositive) && is_numeric($reviewsPurchasedOnSteam)) {
-        $select = \dibi::query("SELECT * FROM [steam_reviews] WHERE [appid]=%i", $appid)->fetch();
-
-        $params = [
-            "appid" => $appid,
-            "total" => $reviewsAll,
-            "pos" => $reviewsPositive,
-            "stm" => $reviewsPurchasedOnSteam,
-        ];
-
-        if ($select !== false) {
-            $access_time = strtotime($select['update_time']);
-
-            if ($current_time - $access_time >= 43200) {
-                if ($reviewsAll > $select['total'] || $reviewsPositive >= $select['pos'] || $reviewsPurchasedOnSteam >= $select['stm'] || $current_time - $access_time >= 259200) {
-                    \dibi::query("INSERT INTO [steam_reviews] %v
-                              ON DUPLICATE KEY UPDATE [total]=VALUES([total]), [pos]=VALUES([pos]), [stm]=VALUES([stm])", $params);
-                }
-            }
-        } else {
-            \dibi::query("INSERT INTO [steam_reviews] %v", $params);
-        }
-    }
-}
-*/
-
 $data = [];
 
 // Get SteamChart data
@@ -254,30 +154,6 @@ $data = [];
     } else {
         $data['charts']['chart'] = GetNewChartValue($appid);
     }
-}
-
-// Get OpenCritic data
-{
-	if (!empty($endpoint->getParam("oc"))) {
-	    $row = \dibi::query("SELECT * FROM [opencritic] WHERE [appid]=%i", $appid)->fetch();
-
-	    if (!empty($row)) {
-	        $access_time = strtotime($row['access_time']);
-            if ($current_time - $access_time >= 3600) {
-
-                \dibi::query("DELETE FROM [opencritic] WHERE [appid]=%i", $appid);
-                $ocData = GetNewOCValue($appid);
-            } else {
-                $ocData = json_decode($row['json'], true);
-            }
-
-            if (!empty($ocData)) {
-                $data['oc'] = $ocData ;
-            }
-        } else {
-	        $data['oc'] = GetNewOCValue($appid);
-        }
-	}
 }
 
 // Get SteamSpy data
@@ -496,34 +372,46 @@ $data = [];
 	}
 }
 
-// Get optional Metacritic data
-{
-    if (isset($mcurl)) {
-        if (substr($mcurl, 0, 26) == "http://www.metacritic.com/") {
-            // checks to see if the value is cached
-            $row = \dibi::query("SELECT * FROM [metacritic] WHERE [mcurl]=%s")->fetch();
 
-            // if cached, return the database value
-            if (!empty($row)) {
-                $access_time = strtotime($row['access_time']);
+try {
+    $url = "https://api.isthereanydeal.com/v01/augmentedsteam/info/?".http_build_query([
+            "key" => Config::IsThereAnyDealKey,
+            "appid" => $appid
+        ]);
+    $result = \Core\Load::load($url);
+    $json = json_decode($result, true);
 
-                if ($current_time - $access_time >= 28800) {
-                    \dibi::query("DELETE FROM [metacritic] WHERE [mcurl]=%s", $mcurl);
-                    $text = GetNewMCValue($mcurl);
-                    if ($text == "") { $text = "0"; }
-                    $data['metacritic']['userscore'] = $text;
-                } else {
-                    $data['metacritic']['userscore'] = $row['score'];
-                }
+    if (isset($json['data'])) {
+        if (isset($json['data']['metacritic']['userscore'])) {
+            $data['data']['userscore'] = $json['data']['metacritic']['userscore']/10; // TODO wrong namespace - doubled "data" key, need to fix in extension
+        }
 
-            // if not cached or expired, get new value
-            } else {
-                $text = GetNewMCValue($mcurl);
-                if ($text == "") { $text = "0"; }
-                $data['metacritic']['userscore'] = $text;
+        if (isset($json['data']['opencritic'])) {
+            $opencritic = $json['data']['opencritic'];
+
+            $reviews = [];
+            foreach($opencritic['reviews'] as $r) {
+                $reviews[] = [
+                    "date" => $r['publishedDate'],
+                    "snippet" => $r['snippet'],
+                    "dScore" => $r['displayScore'],
+                    "rUrl" => $r['externalUrl'],
+                    "author" => $r['author'],
+                    "name" => $r['outletName'],
+                ];
             }
+
+            $data['oc'] = [
+                "url" => $opencritic['url'],
+                "score" => $opencritic['score'],
+                "award" => $opencritic['award'],
+                "reviews" => $reviews,
+            ];
         }
     }
+
+} catch(\Exception $e) {
+    // ignore exception
 }
 
 $response = new \Api\Response();

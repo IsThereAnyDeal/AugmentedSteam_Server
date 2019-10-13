@@ -23,7 +23,6 @@ class Config {
     // API Keys
     const SteamApiKey = "[Steam API Key]";
     const CurrencyConverterApiKey = "[Currency Converter API Key]";
-    const OpenCriticKey = "[OpenCritic API Key]";
     const IsThereAnyDealKey = "[IsThereAnyDeal.com API Key]";
     const TwitchApiKey = "[Twitch API Key]";
 
@@ -32,7 +31,6 @@ class Config {
     const KeyLOLEndpoint = "[KeyLOL API Server Endpoint]";
     const SteamSpyEndpoint = "[SteamSpy API Server Endpoint]";
     const SteamToolsApiEndpoint = "[Steam.tools API Server Endpoint]";
-    const OpenCriticEndpoint = "[OpenCritic API Server Endpoint]";
     const SteamRepEndpoint = "[SteamRep API Server Endpoint]";
     const PCGWEndpoint = "[PCGamingWiki API Server Endpoint]";
 

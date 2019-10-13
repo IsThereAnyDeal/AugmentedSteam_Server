@@ -28,7 +28,6 @@ Please be aware that this code has been running on api.enhancedsteam.com for sev
 The included config.php file requires the following API keys be obtained for full compatibility:
 - Steam API Key (for proxying Steam API requests)
 - Open Exchange Rates API Key (for currency conversion data)
-- OpenCritic API Key (to retrieve review data from OpenCritic)
 - IsThereAnyDeal.com API Key (to retrieve pricing information)
 - Twitch API Key (to get streamer data on Steam profiles)
 
