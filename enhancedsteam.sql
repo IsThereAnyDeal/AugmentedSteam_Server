@@ -16,12 +16,6 @@ CREATE TABLE IF NOT EXISTS `dlc_category` (
   PRIMARY KEY(`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS `early_access` (
-  `appid` int(11) NOT NULL,
-  `timestamp` int unsigned NOT NULL,
-  PRIMARY KEY(`appid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 CREATE TABLE IF NOT EXISTS `exfgls` (
   `appid` int(11) NOT NULL,
   PRIMARY KEY(`appid`)

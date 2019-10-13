@@ -5,13 +5,24 @@ require_once __DIR__ . "/../code/autoloader.php";
 
 (new \Api\Endpoint());
 
-$select = \dibi::query("SELECT [appid] FROM [early_access]");
+$data = [];
+try {
+    $url = "https://api.isthereanydeal.com/v01/augmentedsteam/earlyaccess/?".http_build_query([
+            "key" => Config::IsThereAnyDealKey,
+        ]);
+    $result = \Core\Load::load($url);
+    $json = json_decode($result, true);
 
-$appids = [];
-foreach($select as $a) {
-    $appids[$a['appid']] = $a['appid'];
+    if (!isset($json['data'])) {
+        $response->fail();
+    }
+
+    $data = $json['data'];
+
+} catch(\Exception $e) {
+    $response->fail();
 }
 
 (new \Api\Response())
-    ->data($appids)
+    ->data($data)
     ->respond();
