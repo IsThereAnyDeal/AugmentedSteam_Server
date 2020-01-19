@@ -171,3 +171,10 @@ CREATE TABLE IF NOT EXISTS `supporter_users_pending` (
   `real_name` varchar(255) NOT NULL,
   PRIMARY KEY(`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `similar` (
+  `appid` int NOT NULL,
+  `data` text NOT NULL,
+  `timestamp` int unsigned NOT NULL,
+  PRIMARY KEY(`appid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

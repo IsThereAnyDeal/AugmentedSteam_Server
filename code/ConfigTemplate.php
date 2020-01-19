@@ -24,6 +24,7 @@ class Config {
     const SteamApiKey = "[Steam API Key]";
     const IsThereAnyDealKey = "[IsThereAnyDeal.com API Key]";
     const TwitchApiKey = "[Twitch API Key]";
+    const SteamPeekKey = "[SteamPeek API KEY]]";
 
     // Server endpoints
     const WSGFEndpoint = "[WSGF API Server Endpoint]";
@@ -32,6 +33,7 @@ class Config {
     const SteamToolsApiEndpoint = "[Steam.tools API Server Endpoint]";
     const SteamRepEndpoint = "[SteamRep API Server Endpoint]";
     const PCGWEndpoint = "[PCGamingWiki API Server Endpoint]";
+    const SteampeekEndpoint = "[SteamPeek API Server Endpoint]";
 
     // Public facing
     const SteamLoginOpenIdHost = "[Host]";
