@@ -34,6 +34,7 @@ class Config {
     const SteamRepEndpoint = "[SteamRep API Server Endpoint]";
     const PCGWEndpoint = "[PCGamingWiki API Server Endpoint]";
     const SteampeekEndpoint = "[SteamPeek API Server Endpoint]";
+    const GeforceNowEndpoint = "[GeForce Now Game Listing Endpoint]";
 
     // Public facing
     const SteamLoginOpenIdHost = "[Host]";

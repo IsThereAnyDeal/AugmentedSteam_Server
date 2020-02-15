@@ -178,3 +178,9 @@ CREATE TABLE IF NOT EXISTS `similar` (
   `timestamp` int unsigned NOT NULL,
   PRIMARY KEY(`appid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS `streaming` (
+  `appid` int NOT NULL PRIMARY KEY,
+  `geforce_now` bit NOT NULL,
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
