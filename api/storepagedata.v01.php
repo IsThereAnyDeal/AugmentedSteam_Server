@@ -102,6 +102,7 @@ function GetNewSpyValue($the_appid) {
 	try {
 		$filestring = \Core\Load::load($url);
 		$a = json_decode($filestring, true);
+		if ($a === false || !isset($a['owners'])) { return []; }
 
 		// FIXME update db
 		\dibi::query("INSERT INTO [steamspy] %v",
