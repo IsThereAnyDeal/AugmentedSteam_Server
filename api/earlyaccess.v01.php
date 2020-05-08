@@ -4,6 +4,7 @@ require_once __DIR__ . "/../code/autoloader.php";
 \Core\Database::connect();
 
 (new \Api\Endpoint());
+$response = new \Api\Response();
 
 $data = [];
 try {
@@ -14,15 +15,17 @@ try {
     $json = json_decode($result, true);
 
     if (!isset($json['data'])) {
-        $response->fail();
+        $response
+            ->fail();
     }
 
     $data = $json['data'];
 
 } catch(\Exception $e) {
-    $response->fail();
+    $response
+        ->fail();
 }
 
-(new \Api\Response())
+$response
     ->data($data)
     ->respond();
