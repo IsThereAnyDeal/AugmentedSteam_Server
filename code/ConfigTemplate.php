@@ -23,8 +23,11 @@ class Config {
     // API Keys
     const SteamApiKey = "[Steam API Key]";
     const IsThereAnyDealKey = "[IsThereAnyDeal.com API Key]";
-    const TwitchApiKey = "[Twitch API Key]";
     const SteamPeekKey = "[SteamPeek API KEY]]";
+
+	// Twitch
+	const TwitchClientId = "[Twitch Client Id]";
+	const TwitchClientSecret = "[Twitch Client Secret]";
 
     // Server endpoints
     const WSGFEndpoint = "[WSGF API Server Endpoint]";

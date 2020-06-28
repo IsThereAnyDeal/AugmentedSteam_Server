@@ -89,12 +89,14 @@ abstract class AbstractPaginableEndpoint extends AbstractEndpoint {
         }
     }
 
-    public function getItemEnumerator() {
+    public function getItemEnumerator(int $limit = -1) {
         $data = $this->getNextPage();
 
+        $items = 0;
         while (!empty($data)) {
             foreach($data as $item) {
                 yield $item;
+                if ($limit > 0 && ++$items >= $limit) { break 2; }
             }
             $data = $this->getNextPage();
         }

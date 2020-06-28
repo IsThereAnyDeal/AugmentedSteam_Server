@@ -8,7 +8,10 @@ $endpoint = (new \Api\Endpoint())
 
 $guzzle = new \GuzzleHttp\Client();
 try {
+    $token = (new \Twitch\Api\Authorization($guzzle))->getToken();
+
     $streams = new \Twitch\Api\Endpoint\GetStreams($guzzle);
+    $streams->setToken($token);
     $streams->setUserLogin($endpoint->getParam("channel"));
     $stream = $streams->getItemEnumerator()->current();
 
@@ -19,6 +22,7 @@ try {
     }
 
     $games = new \Twitch\Api\Endpoint\GetGames($guzzle);
+    $games->setToken($token);
     $games->setGameId($stream['game_id']);
     $game = $games->getItemEnumerator()->current();
 

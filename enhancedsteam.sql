@@ -178,3 +178,10 @@ CREATE TABLE IF NOT EXISTS `similar` (
   `timestamp` int unsigned NOT NULL,
   PRIMARY KEY(`appid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS `twitch_token` (
+  `token` char(30) NOT NULL,
+  `expiry` int NOT NULL,
+  INDEX(`expiry`),
+  PRIMARY KEY(`token`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4

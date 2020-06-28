@@ -35,7 +35,7 @@ abstract class AbstractEndpoint {
 
     private function getHeaders(): array {
         $headers = [
-            "Client-Id" => \Config::TwitchApiKey
+            "Client-Id" => \Config::TwitchClientId
         ];
 
         if (!is_null($this->token)) {
