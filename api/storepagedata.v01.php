@@ -19,6 +19,8 @@ $appid = $endpoint->getParamAsInt("appid");
 
 $current_time = time();
 
+$proxy = new \Proxy\LuminatiProxy(Config::ProxyUser, Config::ProxyPassword, Config::ProxyZone);
+
 // sanitation function
 function strip($string) {
 	$string = str_replace("&#189;", "", $string);
@@ -96,11 +98,11 @@ function GetNewChartValue($the_appid) {
     return [];
 }
 
-function GetNewSpyValue($the_appid) {
+function GetNewSpyValue($the_appid, \Proxy\LuminatiProxy $proxy) {
 	$url = Config::SteamSpyEndpoint.$the_appid;
 
 	try {
-		$filestring = \Core\Load::load($url);
+		$filestring = \Core\Load::load($url, $proxy->getCurlOptions());
 		$a = json_decode($filestring, true);
 		if ($a === false || !isset($a['owners'])) { return []; }
 
@@ -119,6 +121,7 @@ function GetNewSpyValue($the_appid) {
             ]
         );
 
+        \Log::channel("steamspy")->info("Updated $the_appid");
 		return [
             "owners" => $a['owners'],
             "average_forever" => $a['average_forever'],
@@ -164,9 +167,9 @@ $data = [];
     if (!empty($row)) {
         $access_time = strtotime($row['access_time']);
 
-        if ($current_time - $access_time >= 43200) {
+        if ($current_time - $access_time >= 86400) {
             \dibi::query("DELETE FROM `steamspy` WHERE [appid]=%i", $appid);
-            $data['steamspy'] = GetNewSpyValue($appid);
+            $data['steamspy'] = GetNewSpyValue($appid, $proxy);
         } else {
             $data['steamspy'] = [
                 "owners" => $row['owners'],
@@ -180,7 +183,7 @@ $data = [];
             ];
         }
     } else {
-        $data['steamspy'] = GetNewSpyValue($appid);
+        $data['steamspy'] = GetNewSpyValue($appid, $proxy);
     }
 }
 

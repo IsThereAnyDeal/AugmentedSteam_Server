@@ -5,9 +5,9 @@ use GuzzleHttp\Client;
 
 class Load {
 
-    public static function load(string $url): string {
+    public static function load(string $url, array $curlOptions = []): string {
         $client = new Client();
-        $response = $client->request("GET", $url);
+        $response = $client->request("GET", $url, ["curl" => $curlOptions]);
         return (string)$response->getBody();
     }
 

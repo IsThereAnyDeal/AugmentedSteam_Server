@@ -5,7 +5,8 @@
     "guzzlehttp/guzzle": "^6.3",
     "ext-json": "*",
     "ext-simplexml": "*",
-    "iignatov/lightopenid": "*"
+    "iignatov/lightopenid": "*",
+    "ext-curl": "*"
   },
   "repositories": [
     {

@@ -40,5 +40,10 @@ class Config {
 
     // Public facing
     const SteamLoginOpenIdHost = "[Host]";
+
+    // Proxy
+    const ProxyUser = "[Proxy User]";
+    const ProxyPassword = "[Proxy Password]";
+    const ProxyZone = "[Proxy Zone]";
 }
 */
