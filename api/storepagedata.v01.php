@@ -163,24 +163,35 @@ function GetNewYouTubeValue($the_appid) {
 	try {
 		$reviewJson = json_decode(\Core\Load::load($url.urlencode("$game \"PC\" intitle:Review")), true);
 		if ($reviewJson === null) {
-            \Log::channel("youtube")->error("Failed to decode response for $the_appid ($game)");
-            return null;
+            \Log::channel("youtube")->error("Failed to decode review response for $the_appid ($game)");
+        } else {
+            $reviews = getDbValue($reviewJson);
         }
 
         $gameplayJson = json_decode(\Core\Load::load($url.urlencode("$game \"PC Gameplay\"")), true);
 		if ($gameplayJson === null) {
-            \Log::channel("youtube")->error("Failed to decode response for $the_appid ($game)");
-            return null;
+            \Log::channel("youtube")->error("Failed to decode gameplay response for $the_appid ($game)");
+        } else {
+            $gameplay = getDbValue($gameplayJson);
         }
 
+        \dibi::query("INSERT INTO [youtube] %v",
+            [
+                "appid" => $the_appid,
+                "reviews" => $reviews,
+                "gameplay" => $gameplay,
+            ]
+        );
+
         return [
-            "reviews" => getDbValue($reviewJson),
-            "gameplay" => getDbValue($gameplayJson),
+            "reviews" => $reviews,
+            "gameplay" => $gameplay,
         ];
 	} catch(\Exception $e) {
         \Log::channel("youtube")->error($e->getMessage());
+        return null;
     }
-    return null;
+
 }
 
 $data = [];
@@ -479,8 +490,8 @@ try {
             $data['youtube'] = GetNewYouTubeValue($appid);
         } else {
             $data['youtube'] = [
-                "reviews" => $row['reviews'],
-                "gameplay" => $row['gameplay'],
+                "reviews" => $result['reviews'],
+                "gameplay" => $result['gameplay'],
             ];
         }
     } else {
