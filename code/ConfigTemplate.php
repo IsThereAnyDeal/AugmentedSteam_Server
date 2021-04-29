@@ -24,6 +24,7 @@ class Config {
     const SteamApiKey = "[Steam API Key]";
     const IsThereAnyDealKey = "[IsThereAnyDeal.com API Key]";
     const SteamPeekKey = "[SteamPeek API KEY]]";
+    const YouTubeKey = "[YouTube API Key]";
 
 	// Twitch
 	const TwitchClientId = "[Twitch Client Id]";

@@ -133,6 +133,56 @@ function GetNewSpyValue($the_appid, \Proxy\LuminatiProxy $proxy) {
     return [];
 }
 
+function GetNewYouTubeValue($the_appid) {
+
+    $game = \dibi::fetchSingle("SELECT [game] FROM [market_data] WHERE [appid]=%i", $the_appid);
+
+    if (empty($game)) {
+        \Log::channel("youtube")->error("Can't find app name for appid $the_appid");
+        return null;
+    }
+
+    $url = "https://www.googleapis.com/youtube/v3/search?".http_build_query([
+        "part" => "snippet",
+        "key" => \Config::YouTubeKey,
+        "type" => "video",
+        "regionCode" => "US",
+        "videoEmbeddable" => "true",
+        "maxResults" => 10,
+    ])."&q=";
+
+    function getDbValue($json) {
+        return implode(
+            ",",
+            array_map(function($item) {
+                return $item["id"]["videoId"];
+            }, $json["items"]),
+        );
+    }
+
+	try {
+		$reviewJson = json_decode(\Core\Load::load($url.urlencode("$game \"PC\" intitle:Review")), true);
+		if ($reviewJson === null) {
+            \Log::channel("youtube")->error("Failed to decode response for $the_appid ($game)");
+            return null;
+        }
+
+        $gameplayJson = json_decode(\Core\Load::load($url.urlencode("$game \"PC Gameplay\"")), true);
+		if ($gameplayJson === null) {
+            \Log::channel("youtube")->error("Failed to decode response for $the_appid ($game)");
+            return null;
+        }
+
+        return [
+            "reviews" => getDbValue($reviewJson),
+            "gameplay" => getDbValue($gameplayJson),
+        ];
+	} catch(\Exception $e) {
+        \Log::channel("youtube")->error($e->getMessage());
+    }
+    return null;
+}
+
 $data = [];
 
 // Get SteamChart data
@@ -418,8 +468,27 @@ try {
     // ignore exception
 }
 
+{
+    $result = \dibi::fetch("SELECT * FROM [youtube] WHERE [appid]=%i", $appid);
+
+    if (!empty($result)) {
+        $access_time = strtotime($result['access_time']);
+
+        if ($current_time - $access_time >= 60 * 60 * 24 * 7) {
+            \dibi::query("DELETE FROM `youtube` WHERE [appid]=%i", $appid);
+            $data['youtube'] = GetNewYouTubeValue($appid);
+        } else {
+            $data['youtube'] = [
+                "reviews" => $row['reviews'],
+                "gameplay" => $row['gameplay'],
+            ];
+        }
+    } else {
+        $data['youtube'] = GetNewYouTubeValue($appid);
+    }
+}
+
 $response = new \Api\Response();
 $response
     ->data($data)
     ->respond();
-

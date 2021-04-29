@@ -185,3 +185,11 @@ CREATE TABLE IF NOT EXISTS `twitch_token` (
   INDEX(`expiry`),
   PRIMARY KEY(`token`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+
+CREATE TABLE IF NOT EXISTS `youtube` (
+  `appid` int(11) NOT NULL,
+  `reviews` varchar(119) NOT NULL,
+  `gameplay` varchar(119) NOT NULL,
+  `access_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY(`appid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
