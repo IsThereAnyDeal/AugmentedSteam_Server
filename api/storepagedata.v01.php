@@ -161,15 +161,18 @@ function GetNewYouTubeValue($the_appid) {
     }
 
 	try {
+        $reviews = NULL;
+        $gameplay = NULL;
+
 		$reviewJson = json_decode(\Core\Load::load($url.urlencode("$game \"PC\" intitle:Review")), true);
-		if ($reviewJson === null) {
+		if (is_null($reviewJson)) {
             \Log::channel("youtube")->error("Failed to decode review response for $the_appid ($game)");
         } else {
             $reviews = getDbValue($reviewJson);
         }
 
         $gameplayJson = json_decode(\Core\Load::load($url.urlencode("$game \"PC Gameplay\"")), true);
-		if ($gameplayJson === null) {
+		if (is_null($gameplayJson)) {
             \Log::channel("youtube")->error("Failed to decode gameplay response for $the_appid ($game)");
         } else {
             $gameplay = getDbValue($gameplayJson);
@@ -482,7 +485,9 @@ try {
 {
     $result = \dibi::fetch("SELECT * FROM [youtube] WHERE [appid]=%i", $appid);
 
-    if (!empty($result)) {
+    if (empty($result)) {
+        $data['youtube'] = GetNewYouTubeValue($appid);
+    } else {
         $access_time = strtotime($result['access_time']);
 
         if ($current_time - $access_time >= 60 * 60 * 24 * 7) {
@@ -494,8 +499,6 @@ try {
                 "gameplay" => $result['gameplay'],
             ];
         }
-    } else {
-        $data['youtube'] = GetNewYouTubeValue($appid);
     }
 }
 
