@@ -34,6 +34,11 @@ $expiry = strtotime("+4 weeks");
 
 \dibi::query("INSERT INTO [session_ids] ([session_id], [steam_id], [expiry]) VALUES (%bin, %s, %dt)", $sessionID, $steamID, $expiry);
 
-$response
-    ->data(["sessionId" => bin2hex($sessionID)])
-    ->respond();
+setcookie("session_id", bin2hex($sessionID), [
+    "expires"   => $expiry,
+    "path"      => "/",
+    "secure"    => true,
+    "httponly"  => true,
+]);
+
+$response->respond();
