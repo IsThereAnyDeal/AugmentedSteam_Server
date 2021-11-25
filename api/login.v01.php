@@ -6,7 +6,7 @@ require_once __DIR__ . "/../code/autoloader.php";
 $openid = new LightOpenID(Config::SteamLoginOpenIdHost);
 
 if (!$openid->mode) {
-    $openid->returnUrl = Config::SteamLoginOpenIdHost . $_SERVER["REQUEST_URI"];
+    $openid->returnUrl = Config::SteamLoginOpenIdHost . parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
     $openid->identity = "https://steamcommunity.com/openid";
     \Core\Redirect::to($openid->authUrl());
 }
