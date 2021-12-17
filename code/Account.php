@@ -18,6 +18,6 @@ class Account {
     }
 
     private static function redirect() {
-        (new \Api\Response())->fail("login_required", "Login required", 400);
+        (new \Api\Response())->fail("login_required", "Login required", 401);
     }
 }
