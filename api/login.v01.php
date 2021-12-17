@@ -41,4 +41,4 @@ setcookie("session_id", bin2hex($sessionID), [
     "httponly"  => true,
 ]);
 
-$response->respond();
+\Core\Redirect::to(Config::SteamLoginOpenIdHost . "/connectaugmentedsteam");
