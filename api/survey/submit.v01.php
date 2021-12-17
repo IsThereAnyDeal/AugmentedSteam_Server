@@ -6,24 +6,26 @@ require_once __DIR__ . "/../../code/autoloader.php";
 $steamId = \Account::login();
 
 const validValues = [
-    "mr" => ["less", "hd", "wqhd", "4k"],
-    "fs" => ["yes", "no"],
-    "fr" => ["30", "fi", "va", "ns"],
-    "gs" => ["yes", "no"],
-    "pw" => ["yes", "no"],
-    "gc" => ["nvidia", "amd", "intel", "ns"],
+    "framerate" => ["30", "60", "va"],
+    "optimized" => ["yes", "no"],
+    "lag" => ["yes", "no"],
+    "graphics_settings" => ["no", "bs", "gr"],
+    "bg_sound" => ["yes", "no"],
+    "good_controls" => ["yes", "no"],
 ];
 
 $endpoint = new \Api\Endpoint();
 $endpoint->params([], [], [
     "appid",
-    "mr",
-    "fs",
-    "fr",
-    "gs",
-    "pw",
-    "gc",
-], []);
+    "steam_id"
+], [
+    "framerate" => NULL,
+    "optimized" => NULL,
+    "lag" => NULL,
+    "graphics_settings" => NULL,
+    "bg_sound" => NULL,
+    "good_controls" => NULL,
+]);
 
 $response = new \Api\Response();
 
@@ -33,7 +35,7 @@ function invalidArg($key, $value) {
 
 foreach (validValues as $key => $values) {
     $passedArg = $endpoint->getParam($key);
-    if (!in_array($passedArg, $values)) {
+    if (!is_null($passedArg) && !in_array($passedArg, $values)) {
         invalidArg($key, $passedArg);
     }
 }
@@ -43,16 +45,35 @@ $appid = $endpoint->getParamAsInt("appid");
 // App IDs are always a multiple of 10
 if ($appid < 10 || $appid % 10 !== 0) { invalidArg("appid", $appid); }
 
+function toBoolean($key) {
+    $value = $GLOBALS["endpoint"]->getParam($key);
+    if ($value === "yes") {
+        return true;
+    } else if ($value === "no") {
+        return false;
+    } else {
+        return NULL;
+    }
+}
+
 \dibi::query(
-    "INSERT INTO [game_survey] ([appid], [steamid], [mr], [fs], [fr], [gs], [pw], [gc]) VALUES (%i, %i, %s, %s, %s, %s, %s, %s)",
+    "INSERT INTO [game_survey] ([appid], [steamid], [framerate], [optimized], [lag], [graphics_settings], [bg_sound], [good_controls])
+    VALUES (%i, %i, %s, %b, %b, %s, %b, %b)
+        ON DUPLICATE KEY UPDATE
+            [framerate]=VALUES([framerate]),
+            [optimized]=VALUES([optimized]),
+            [lag]=VALUES([lag]),
+            [graphics_settings]=VALUES([graphics_settings]),
+            [bg_sound]=VALUES([bg_sound]),
+            [good_controls]=VALUES([good_controls])",
     $appid,
     $steamId,
-    $endpoint->getParam("mr"),
-    $endpoint->getParam("fs"),
-    $endpoint->getParam("fr"),
-    $endpoint->getParam("gs"),
-    $endpoint->getParam("pw"),
-    $endpoint->getParam("gc"),
+    $endpoint->getParam("framerate"),
+    toBoolean("optimized"),
+    toBoolean("lag"),
+    $endpoint->getParam("graphics_settings"),
+    toBoolean("bg_sound"),
+    toBoolean("good_controls"),
 );
 
 $response->respond();
