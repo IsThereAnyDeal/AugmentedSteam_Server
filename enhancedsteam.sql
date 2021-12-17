@@ -49,19 +49,18 @@ CREATE TABLE IF NOT EXISTS `game_links` (
   UNIQUE (`appid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS `game_survey` (
-  `id` bigint(20) NOT NULL auto_increment,
-  `appid` int(11) NOT NULL,
+CREATE TABLE `game_survey` (
+  `appid` int NOT NULL,
+  `steamid` bigint NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `steamid` bigint(11) NOT NULL,
-  `mr` varchar(4) NOT NULL,
-  `fs` varchar(3) NOT NULL,
-  `fr` varchar(2) NOT NULL,
-  `gs` varchar(3) NOT NULL,
-  `pw` varchar(3) NOT NULL,
-  `gc` varchar(6) NOT NULL,
-  PRIMARY KEY(`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `framerate` char(2),
+  `optimized` boolean,
+  `lag` boolean,
+  `graphics_settings` char(2),
+  `bg_sound` boolean,
+  `good_controls` boolean,
+  PRIMARY KEY (`appid`, `steamid`)
+);
 
 CREATE TABLE IF NOT EXISTS `market_data` (
   `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
