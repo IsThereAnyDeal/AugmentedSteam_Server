@@ -19,10 +19,8 @@ $endpoint->params([], [], [
     "good_controls" => NULL,
 ]);
 
-$response = new \Api\Response();
-
 function invalidArg($key, $value) {
-    $GLOBALS["response"]->fail("invalid_request", "$value is not in the domain of $key", 400);
+    (new \Api\Response())->fail("invalid_request", "$value is not in the domain of $key", 400);
 }
 
 foreach (SURVEY_VALID_VALUES as $key => $values) {
@@ -37,9 +35,7 @@ $appid = $endpoint->getParamAsInt("appid");
 // App IDs are always a multiple of 10
 if ($appid < 10 || $appid % 10 !== 0) { invalidArg("appid", $appid); }
 
-function toBoolean($key) {
-    $value = $GLOBALS["endpoint"]->getParam($key);
-
+function toBoolean($value) {
     if ($value === "yes") {
         return true;
     } else if ($value === "no") {
@@ -62,11 +58,11 @@ function toBoolean($key) {
     $appid,
     $steamId,
     $endpoint->getParam("framerate"),
-    toBoolean("optimized"),
-    toBoolean("lag"),
+    toBoolean($endpoint->getParam("optimized")),
+    toBoolean($endpoint->getParam("lag")),
     $endpoint->getParam("graphics_settings"),
-    toBoolean("bg_sound"),
-    toBoolean("good_controls"),
+    toBoolean($endpoint->getParam("bg_sound")),
+    toBoolean($endpoint->getParam("good_controls")),
 );
 
-$response->respond();
+(new \Api\Response())->respond();
