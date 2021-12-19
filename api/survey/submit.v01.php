@@ -1,18 +1,10 @@
 <?php
 
 require_once __DIR__ . "/../../code/autoloader.php";
+require_once __DIR__ . "/../../code/Survey/ValidValues.php";
 
 \Core\Database::connect();
 $steamId = \Account::login();
-
-const validValues = [
-    "framerate" => ["30", "60", "va"],
-    "optimized" => ["yes", "no"],
-    "lag" => ["yes", "no"],
-    "graphics_settings" => ["no", "bs", "gr"],
-    "bg_sound" => ["yes", "no"],
-    "good_controls" => ["yes", "no"],
-];
 
 $endpoint = new \Api\Endpoint();
 $endpoint->params([], [], [
@@ -33,9 +25,9 @@ function invalidArg($key, $value) {
     $GLOBALS["response"]->fail("invalid_request", "$value is not in the domain of $key", 400);
 }
 
-foreach (validValues as $key => $values) {
+foreach (SURVEY_VALID_VALUES as $key => $values) {
     $passedArg = $endpoint->getParam($key);
-    if (!is_null($passedArg) && !in_array($passedArg, $values)) {
+    if (!is_null($passedArg) && !in_array($passedArg, $values, true)) {
         invalidArg($key, $passedArg);
     }
 }
@@ -47,6 +39,7 @@ if ($appid < 10 || $appid % 10 !== 0) { invalidArg("appid", $appid); }
 
 function toBoolean($key) {
     $value = $GLOBALS["endpoint"]->getParam($key);
+
     if ($value === "yes") {
         return true;
     } else if ($value === "no") {
