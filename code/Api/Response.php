@@ -38,7 +38,6 @@ class Response {
 
         switch($httpCode) {
             case 400: header("HTTP/1.1 400 Bad Request"); break;
-            case 401: header("HTTP/1.1 401 Unauthorized"); break;
             case 500: header("HTTP/1.1 500 Internal Server Error"); break;
         }
 

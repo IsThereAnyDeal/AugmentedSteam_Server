@@ -49,23 +49,24 @@ CREATE TABLE IF NOT EXISTS `game_links` (
   UNIQUE (`appid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE `game_survey` (
-  `appid` int NOT NULL,
-  `steamid` bigint NOT NULL,
+CREATE TABLE IF NOT EXISTS `game_survey` (
+  `id` bigint(20) NOT NULL auto_increment,
+  `appid` int(11) NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `framerate` char(2),
-  `optimized` boolean,
-  `lag` boolean,
-  `graphics_settings` char(2),
-  `bg_sound` boolean,
-  `good_controls` boolean,
-  PRIMARY KEY (`appid`, `steamid`)
-);
+  `steamid` bigint(11) NOT NULL,
+  `mr` varchar(4) NOT NULL,
+  `fs` varchar(3) NOT NULL,
+  `fr` varchar(2) NOT NULL,
+  `gs` varchar(3) NOT NULL,
+  `pw` varchar(3) NOT NULL,
+  `gc` varchar(6) NOT NULL,
+  PRIMARY KEY(`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `market_data` (
-  `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `game` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `title` varchar(255) NOT NULL CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `game` varchar(255) NOT NULL CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `name` varchar(255) NOT NULL CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `img` varchar(1024) NOT NULL,
   `appid` int(11) NOT NULL,
   `url` varchar(1024) NOT NULL,
@@ -75,7 +76,7 @@ CREATE TABLE IF NOT EXISTS `market_data` (
   `modified` varchar(255) NOT NULL,
   `rarity` varchar(255) NOT NULL,
   INDEX(`type`, `title`),
-  INDEX(`type`, `appid`)
+  INDEX(`type`, `appid`),
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `profile_style_users` (
@@ -183,11 +184,4 @@ CREATE TABLE IF NOT EXISTS `twitch_token` (
   `expiry` int NOT NULL,
   INDEX(`expiry`),
   PRIMARY KEY(`token`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-CREATE TABLE IF NOT EXISTS `session_ids` (
-  `session_id` binary(16) NOT NULL,
-  `steam_id` varchar(25) NOT NULL,
-  `expiry` timestamp NOT NULL,
-  PRIMARY KEY(`session_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
