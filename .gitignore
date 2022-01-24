@@ -1,4 +1,5 @@
 .idea/
+logs/
 lib/composer.phar
 lib/vendor/
 code/Config.php
