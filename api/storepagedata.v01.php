@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . "/../code/autoloader.php";
+require_once __DIR__ . "/../code/Survey/ValidValues.php";
 
 \Core\Database::connect();
 
@@ -214,111 +215,50 @@ $data = [];
         $data['survey']['responses'] = count($sql);
     }
 
-	// Initialize variables
-    $fr = [
-        '30' => 0,
-        'fi' => 0,
-        'va' => 0,
-        'ns' => 0,
-    ];
-	$gs_y = $gs_n = 0;
-	$nvidia = $amd = $intel = $other = 0;
-	$nvidia_y = $amd_y = $intel_y = $other_y = 0;
-	$less = $hd = $wqhd = $fk = 1;
-	$less_y = $hd_y = $wqhd_y = $fk_y = 0;
+    $keys = [];
 
-	// Gather data from the records
-	foreach($sql as $row) {
-	    if (empty($row['fr'])) { continue; }
-	    $fr[$row['fr']]++;
+    foreach (SURVEY_VALID_VALUES as $key => $values) {
+        $keys[] = $key;
+        $values[] = "total";
 
-		if ($row["mr"] == "less") {
-			$less++;
-			if ($row["fs"] == "yes") {
-				$less_y++;
-			}
-		}
-		if ($row["mr"] == "hd") {
-			$hd++;
-			if ($row["fs"] == "yes") {
-				$hd_y++;
-			}
-		}
-		if ($row["mr"] == "wqhd") {
-			$wqhd++;
-			if ($row["fs"] == "yes") {
-				$wqhd_y++;
-			}
-		}
-		if ($row["mr"] == "4k") {
-			$fk++;
-			if ($row["fs"] == "yes") {
-				$fk_y++;
-			}
-		}
+        $$key = [];
+        // array_fill_keys weirdly converts false to "" and not 0, so do it manually
+        foreach ($values as $value) {
+            $$key[$value] = 0;
+        }
+    }
 
-		if ($row["gs"] == "yes") { $gs_y++; }
-		if ($row["gs"] == "no") { $gs_n++; }
+    function countEntry($row, $key, &$var) {
+        $value = $row[$key];
 
-		if ($row["gc"] == "nvidia") { $nvidia++; }
-		if ($row["gc"] == "amd") { $amd++; }
-		if ($row["gc"] == "intel") { $intel++; }
-		if ($row["gc"] == "ns") { $other++; }
+        if (is_null($value)) { return; }
 
-		if ($row["gc"] == "nvidia" && $row["pw"] == "yes") { $nvidia_y++; }
-		if ($row["gc"] == "amd" && $row["pw"] == "yes") { $amd_y++; }
-		if ($row["gc"] == "intel" && $row["pw"] == "yes") { $intel_y++; }
-		if ($row["gc"] == "ns" && $row["pw"] == "yes") { $other_y++; }
+        $var[$value]++;
+        $var["total"]++;
+    }
+
+	foreach ($sql as $row) {
+        foreach ($keys as $key) {
+            countEntry($row, $key, $$key);
+        }
 	}
 
-	// Determine Framerate rendered
-	if ($num_rows == 0) { $num_rows = 1; }
+    function calculateMostVoted($counts, $name, &$survey) {
+        $totalCount = $counts["total"];
+        unset($counts["total"]);
 
-	if ($fr['30'] >= $fr['fi'] && $fr['30'] >= $fr['va']) {
-	    $data['survey']['fr'] = "30";
-	    $data['survey']['frp'] = round(($fr['30'] / $num_rows)*100);
-	} elseif ($fr['fi'] > $fr['30'] && $fr['fi'] > $fr['va']) {
-        $data['survey']['fr'] = "fi";
-        $data['survey']['frp'] = round(($fr['fi'] / $num_rows)*100);
-    } elseif ($fr['va'] >= $fr['30'] && $fr['va'] >= $fr['fi']) {
-        $data['survey']['fr'] = "va";
-        $data['survey']['frp'] = round(($fr['va'] / $num_rows)*100);
-	}
+        $maxCount = max($counts);
 
-	// Determine resolution rendered
-	$less_avg = $less_y / $less;
-	$hd_avg = $hd_y / $hd;
-	$wqhd_avg = $wqhd_y / $wqhd;
-	$fk_avg = $fk_y / $fk;
+        // This may be ambigous if there are multiple values with the same count
+        $mostVoted = array_search($maxCount, $counts);
 
-	if ($fk_avg >= $wqhd_avg && $fk_avg >= $hd_avg && $fk_avg >= $less_avg) {
-	    $data['survey']['mr'] = "4k";
-	} elseif ($wqhd_avg >= $fk_avg && $wqhd_avg >= $hd_avg && $wqhd_avg >= $less_avg) {
-        $data['survey']['mr'] = "wqhd";
-    } elseif ($hd_avg >= $fk_avg && $hd_avg >= $wqhd_avg && $hd_avg >= $less_avg) {
-        $data['survey']['mr'] = "hd";
-    } elseif ($less_avg >= $fk_avg && $less_avg >= $wqhd_avg && $less_avg >= $hd_avg) {
-        $data['survey']['mr'] = "less";
-    } else {
-        $data['survey']['mr'] = "less";
-	}
+        $survey[$name] = $mostVoted;
+        $survey["${name}p"] = round(($maxCount / ($totalCount === 0 ? 1 : $totalCount)) * 100);
+    }
 
-	// Determine Game Settings rendered
-    $data['survey']['gs'] = ($gs_y >= $gs_n);
-
-	// Determine satisfaction rates rendered
-	if ($nvidia > 0) {
-	    $data['survey']['nvidia'] = round(($nvidia_y / $nvidia)*100);
-	}
-	if ($amd > 0) {
-        $data['survey']['amd'] = round(($amd_y / $amd)*100);
-	}
-	if ($intel > 0) {
-        $data['survey']['intel'] = round(($intel_y / $intel)*100);
-	}
-	if ($other > 0) {
-	    $data['survey']['other'] = round(($other_y / $other)*100);
-	}
+    foreach ($keys as $key) {
+        calculateMostVoted($$key, $key, $data["survey"]);
+    }
 }
 
 // Get EXFGLS data
@@ -422,4 +362,3 @@ $response = new \Api\Response();
 $response
     ->data($data)
     ->respond();
-
