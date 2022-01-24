@@ -1,0 +1,16 @@
+{
+  "require": {
+    "ext-json": "*",
+    "ext-simplexml": "*",
+    "ext-curl": "*",
+    "league/config": "^1.1",
+    "league/oauth2-client": "^2.6",
+    "league/route": "^5.1",
+    "guzzlehttp/guzzle": "^7.4",
+    "monolog/monolog": "^2.3"
+  },
+  "require-dev": {
+    "deployer/dist": "^6.8",
+    "phpstan/phpstan": "^1.4"
+  }
+}

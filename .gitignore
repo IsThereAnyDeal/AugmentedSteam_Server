@@ -1,6 +1,5 @@
 .idea/
 logs/
-lib/composer.phar
-lib/vendor/
+vendor/
 code/Config.php
 .nginx
