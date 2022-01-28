@@ -1,4 +1,10 @@
 {
+  "scripts": {
+    "push": "vendor/bin/dep push",
+    "publish": "vendor/bin/dep publish",
+    "deploy": "vendor/bin/dep deploy",
+    "unlock": "vendor/bin/dep deploy:unlock"
+  },
   "require": {
     "ext-json": "*",
     "ext-simplexml": "*",
@@ -7,10 +13,20 @@
     "league/oauth2-client": "^2.6",
     "league/route": "^5.1",
     "guzzlehttp/guzzle": "^7.4",
-    "monolog/monolog": "^2.3"
+    "monolog/monolog": "^2.3",
+    "itad/db": "dev-master@dev",
+    "laminas/laminas-diactoros": "^2.8",
+    "laminas/laminas-httphandlerrunner": "^2.1"
   },
   "require-dev": {
-    "deployer/dist": "^6.8",
-    "phpstan/phpstan": "^1.4"
-  }
+    "deployer/deployer": "^7.0@rc",
+    "phpstan/phpstan": "^1.4",
+    "filp/whoops": "^2.14"
+  },
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "git@github.com:IsThereAnyDeal/Database.git"
+    }
+  ]
 }
