@@ -1,0 +1,119 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Augmented Steam Server",
+    "description": "Augmented Steam server for Augmented Steam browser extension",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {"url": "https://esapi.isthereanydeal.com"},
+    {"url": "https://api.augmentedsteam.com"}
+  ],
+  "paths": {
+    "/v1/rates": {
+      "get": {
+        "parameters": [
+          {
+            "name": "to",
+            "in": "query",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/CurrencyCode"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "$ref": "#/components/schemas/ErrorResponse"
+          },
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "result": {
+                      "type": "string",
+                      "enum": ["success"]
+                    },
+                    "data": {
+                      "type": "object",
+                      "propertyNames": { "pattern": "^[A-Z]{3}$" },
+                      "additionalProperties": {
+                        "type": "object",
+                        "propertyNames": { "pattern": "^[A-Z]{3}$" },
+                        "additionalProperties": { "type": "number" }
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "successResponse": {
+                    "value": {
+                      "result": "success",
+                      "data": {
+                        "AED": {
+                          "USD": 0.27225
+                        },
+                        "AFN": {
+                          "USD": 0.009711
+                        },
+                        "ALL": {
+                          "USD": 0.009228
+                        },
+                        "AMD": {
+                          "USD": 0.002073
+                        },
+                        "ANG": {
+                          "USD": 0.557916
+                        },
+                        "AOA": {
+                          "USD": 0.00189
+                        },
+                        "ARS": {
+                          "USD": 0.009559
+                        },
+                        "AUD": {
+                          "USD": 0.6987
+                        },
+                        "AWG": {
+                          "USD": 0.555401
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "result": {"type": "string", "enum": ["error"]},
+          "error": {
+            "type": "string",
+            "enum": [ "missing_param" ]
+          },
+          "error_description": {"type": "string"},
+          "status_code": {"type": "integer"},
+          "reason_phrase": {"type": "string"}
+        }
+      },
+      "CurrencyCode": {
+        "type": "string",
+        "pattern": "^[A-Z]{3}$"
+      }
+    }
+  }
+}
