@@ -1,5 +1,6 @@
 .idea/
-logs/
+.configs/
 vendor/
-code/Config.php
+logs/
 .nginx
+deployer.yaml
