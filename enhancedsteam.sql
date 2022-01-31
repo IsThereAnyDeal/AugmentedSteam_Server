@@ -8,13 +8,22 @@ CREATE TABLE IF NOT EXISTS `currency` (
   UNIQUE(`to`, `from`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS `dlc_category` (
-  `id` int(11) NOT NULL auto_increment,
-  `category_name` varchar(45) NOT NULL,
-  `category_icon` varchar(300) NOT NULL,
-  `category_text` varchar(300) NOT NULL,
+CREATE TABLE IF NOT EXISTS `dlc_categories` (
+  `id` tinyint NOT NULL,
+  `name` varchar(25) NOT NULL,
+  `icon` varchar(25) NOT NULL,
+  `description` varchar(180) NOT NULL,
   PRIMARY KEY(`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `game_dlc` (
+  `appid` int NOT NULL,
+  `dlc_category` tinyint NOT NULL,
+  `score` int NOT NULL,
+  PRIMARY KEY (`appid`, `dlc_category`),
+  FOREIGN KEY (dlc_category) REFERENCES dlc_categories(id) ON UPDATE CASCADE ON DELETE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 
 CREATE TABLE IF NOT EXISTS `exfgls` (
   `appid` int(11) NOT NULL,
@@ -29,13 +38,6 @@ CREATE TABLE IF NOT EXISTS `features` (
   `screenshot_before` varchar(255) NOT NULL,
   `screenshot_after` varchar(255) NOT NULL,
   `description` longtext NOT NULL,
-  PRIMARY KEY(`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE IF NOT EXISTS `gamedata` (
-  `id` int(11) NOT NULL auto_increment,
-  `appid` int(11) NOT NULL,
-  `dlc_category` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY(`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

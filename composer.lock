@@ -365,12 +365,12 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:IsThereAnyDeal/Database.git",
-                "reference": "47ab1b29bbc1a39e6640d91538b0d3fd6b35ebfc"
+                "reference": "46154555f22bdde775e10f339bb508d81aed3e43"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/IsThereAnyDeal/Database/zipball/47ab1b29bbc1a39e6640d91538b0d3fd6b35ebfc",
-                "reference": "47ab1b29bbc1a39e6640d91538b0d3fd6b35ebfc",
+                "url": "https://api.github.com/repos/IsThereAnyDeal/Database/zipball/46154555f22bdde775e10f339bb508d81aed3e43",
+                "reference": "46154555f22bdde775e10f339bb508d81aed3e43",
                 "shasum": ""
             },
             "require": {
@@ -391,7 +391,7 @@
                 "source": "https://github.com/IsThereAnyDeal/Database/tree/master",
                 "issues": "https://github.com/IsThereAnyDeal/Database/issues"
             },
-            "time": "2022-01-29T01:34:09+00:00"
+            "time": "2022-01-31T00:56:21+00:00"
         },
         {
             "name": "laminas/laminas-diactoros",

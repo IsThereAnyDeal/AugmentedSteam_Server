@@ -7,7 +7,7 @@ use Psr\Http\Message\ServerRequestInterface;
 
 class RatesController extends Controller {
 
-    public function getRatesV1(ServerRequestInterface $request, array $params): array {
+    public function getRatesV1(ServerRequestInterface $request): array {
         $query = $request->getQueryParams();
         if (empty($query['to'])) {
             throw new MissingParameterException("to");

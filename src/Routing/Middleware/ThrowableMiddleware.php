@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace AugmentedSteam\Server\Routing\Middleware;
 
+use AugmentedSteam\Server\Config\CoreConfig;
 use AugmentedSteam\Server\Routing\Response\ApiResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -12,17 +13,23 @@ use Throwable;
 
 class ThrowableMiddleware implements MiddlewareInterface
 {
-    private ApiResponseFactoryInterface  $responseFactory;
+    private CoreConfig $config;
+    private ApiResponseFactoryInterface $responseFactory;
 
-    public function __construct(ApiResponseFactoryInterface $responseFactory) {
+    public function __construct(CoreConfig $config, ApiResponseFactoryInterface $responseFactory) {
+        $this->config = $config;
         $this->responseFactory = $responseFactory;
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
-        try {
+        if ($this->config->isShowErrors() && !$this->config->isProduction()) {
             return $handler->handle($request);
-        } catch (Throwable $exception) {
-            return $this->responseFactory->createErrorResponse($exception);
+        } else {
+            try {
+                return $handler->handle($request);
+            } catch (Throwable $exception) {
+                return $this->responseFactory->createErrorResponse($exception);
+            }
         }
     }
 }

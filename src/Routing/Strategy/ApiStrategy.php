@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace AugmentedSteam\Server\Routing\Strategy;
 
+use AugmentedSteam\Server\Config\CoreConfig;
 use AugmentedSteam\Server\Routing\Response\ApiResponseFactoryInterface;
 use AugmentedSteam\Server\Routing\Middleware\ErrorApiResponseMiddleware;
 use AugmentedSteam\Server\Routing\Middleware\ThrowableMiddleware;
@@ -20,9 +21,11 @@ class ApiStrategy extends AbstractStrategy implements ContainerAwareInterface
 {
     use ContainerAwareTrait;
 
+    private CoreConfig $config;
     private ApiResponseFactoryInterface $responseFactory;
 
-    public function __construct(ApiResponseFactoryInterface $responseFactory) {
+    public function __construct(CoreConfig $config, ApiResponseFactoryInterface $responseFactory) {
+        $this->config = $config;
         $this->responseFactory = $responseFactory;
     }
 
@@ -35,7 +38,7 @@ class ApiStrategy extends AbstractStrategy implements ContainerAwareInterface
     }
 
     public function getThrowableHandler(): MiddlewareInterface {
-        return new ThrowableMiddleware($this->responseFactory);
+        return new ThrowableMiddleware($this->config, $this->responseFactory);
     }
 
     public function invokeRouteCallable(Route $route, ServerRequestInterface $request): ResponseInterface {

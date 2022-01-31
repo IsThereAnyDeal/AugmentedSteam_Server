@@ -6,14 +6,13 @@ namespace AugmentedSteam\Server\Model\Tables;
 use IsThereAnyDeal\Database\Sql\Column;
 use IsThereAnyDeal\Database\Sql\Table;
 
-class TCurrency extends Table
+class TGameDlc extends Table
 {
-    public Column $from;
-    public Column $to;
-    public Column $rate;
-    public Column $timestamp;
+    public Column $appid;
+    public Column $dlc_category;
+    public Column $score;
 
     public function __construct(string $alias = "") {
-        parent::__construct("currency", [], $alias);
+        parent::__construct("game_dlc", [], $alias);
     }
 }

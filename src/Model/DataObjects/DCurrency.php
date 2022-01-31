@@ -4,8 +4,9 @@ declare(strict_types=1);
 namespace AugmentedSteam\Server\Model\DataObjects;
 
 use IsThereAnyDeal\Database\Sql\AInsertableObject;
+use IsThereAnyDeal\Database\Sql\ISelectable;
 
-class DCurrency extends AInsertableObject
+class DCurrency extends AInsertableObject implements ISelectable
 {
     protected string $from;
     protected string $to;
