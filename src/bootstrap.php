@@ -7,7 +7,6 @@ use AugmentedSteam\Server\Config\CoreConfig;
 use AugmentedSteam\Server\Config\EndpointsConfig;
 use AugmentedSteam\Server\Config\KeysConfig;
 use AugmentedSteam\Server\Config\LoggingConfig;
-use AugmentedSteam\Server\Routing\Router;
 use IsThereAnyDeal\Config\Config;
 use IsThereAnyDeal\Database\DbConfig;
 use Psr\Container\ContainerInterface;
@@ -26,13 +25,18 @@ $config->map([
 
 $core = $config->getConfig(CoreConfig::class);
 
-if ($core->isShowErrors()) {
-    (new \Whoops\Run())
-        ->pushHandler(new \Whoops\Handler\PrettyPageHandler)
-        ->register();
+$isCli = php_sapi_name() == "cli";
+if ($core->isShowErrors() || $isCli) {
+    $whoops = (new \Whoops\Run());
+    if ($isCli) {
+        $whoops->pushHandler(new \Whoops\Handler\PlainTextHandler());
+    } else {
+        $whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler);
+    }
+    $whoops->register();
 }
 
-$container = (new \DI\ContainerBuilder())
+return (new \DI\ContainerBuilder())
     ->addDefinitions([
         CoreConfig::class => fn(ContainerInterface $container) => $config->getConfig(CoreConfig::class),
         DbConfig::class => fn(ContainerInterface $container) => $config->getConfig(DbConfig::class),
@@ -46,6 +50,3 @@ $container = (new \DI\ContainerBuilder())
     ->useAutowiring(false)
     ->useAnnotations(false)
     ->build();
-
-(new Router($container))
-    ->route();

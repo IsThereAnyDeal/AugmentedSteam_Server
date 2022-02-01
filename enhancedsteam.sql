@@ -1,28 +1,50 @@
-SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 
-CREATE TABLE IF NOT EXISTS `currency` (
+CREATE TABLE `currency` (
   `from` char(3) NOT NULL,
   `to`   char(3) NOT NULL,
   `rate` float NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   UNIQUE(`to`, `from`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB;
 
-CREATE TABLE IF NOT EXISTS `dlc_categories` (
+CREATE TABLE `dlc_categories` (
   `id` tinyint NOT NULL,
   `name` varchar(25) NOT NULL,
   `icon` varchar(25) NOT NULL,
   `description` varchar(180) NOT NULL,
   PRIMARY KEY(`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB;
 
-CREATE TABLE IF NOT EXISTS `game_dlc` (
+CREATE TABLE `game_dlc` (
   `appid` int NOT NULL,
   `dlc_category` tinyint NOT NULL,
   `score` int NOT NULL,
   PRIMARY KEY (`appid`, `dlc_category`),
   FOREIGN KEY (dlc_category) REFERENCES dlc_categories(id) ON UPDATE CASCADE ON DELETE RESTRICT
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB;
+
+CREATE TABLE `market_index` (
+  `appid` int NOT NULL,
+  `last_update` int NOT NULL DEFAULT 0,
+  `last_request` int NOT NULL,
+  `request_counter` int NOT NULL DEFAULT 0,
+  PRIMARY KEY (`appid`),
+  INDEX (`last_update` DESC, `appid`)
+) ENGINE=InnoDB;
+
+CREATE TABLE `market_data` (
+  `hash_name` varchar(255) NOT NULL,
+  `appid` int NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `sell_listings` int NOT NULL DEFAULT 0,
+  `sell_price_usd` int NOT NULL,
+  `icon_url` text NOT NULL,
+  `type` enum('unknown', 'background', 'booster', 'card', 'emoticon', 'item') NOT NULL,
+  `rarity` enum('normal', 'uncommon', 'foil', 'rare'),
+  `timestamp` int unsigned NOT NULL,
+  PRIMARY KEY (`hash_name`),
+  INDEX (`appid`)
+) ENGINE=InnoDB;
 
 
 CREATE TABLE IF NOT EXISTS `exfgls` (
@@ -30,7 +52,7 @@ CREATE TABLE IF NOT EXISTS `exfgls` (
   PRIMARY KEY(`appid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS `features` (
+CREATE TABLE `features` (
   `id` bigint(20) NOT NULL auto_increment,
   `category` varchar(3) NOT NULL,
   `name` varchar(500) NOT NULL,
@@ -41,7 +63,7 @@ CREATE TABLE IF NOT EXISTS `features` (
   PRIMARY KEY(`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS `game_links` (
+CREATE TABLE `game_links` (
   `id` int(11) NOT NULL auto_increment,
   `appid` int(11) NOT NULL,
   `hltb_id` int(11) NOT NULL,
@@ -63,6 +85,7 @@ CREATE TABLE `game_survey` (
   `good_controls` boolean,
   PRIMARY KEY (`appid`, `steamid`)
 );
+
 
 CREATE TABLE IF NOT EXISTS `market_data` (
   `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,

@@ -28,7 +28,9 @@
     "laminas/laminas-diactoros": "^2.8",
     "laminas/laminas-httphandlerrunner": "^2.1",
     "php-di/php-di": "^6.3",
-    "nette/schema": "^1.2"
+    "nette/schema": "^1.2",
+    "league/uri": "^6.5",
+    "league/uri-components": "^2.4"
   },
   "require-dev": {
     "deployer/deployer": "^7.0@rc",
