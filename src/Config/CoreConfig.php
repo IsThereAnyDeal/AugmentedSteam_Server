@@ -10,9 +10,14 @@ class CoreConfig extends AConfig
 {
     protected function getSchema(): Schema {
         return Expect::structure([
+            "host" => Expect::string()->required(),
             "env" => Expect::anyOf("prod", "dev")->default("prod"),
             "errors" => Expect::bool(false),
         ]);
+    }
+
+    public function getHost(): string {
+        return $this->config->host;
     }
 
     public function isProduction(): bool {

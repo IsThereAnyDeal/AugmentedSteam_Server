@@ -13,7 +13,10 @@
   "autoload": {
     "psr-4": {
       "AugmentedSteam\\Server\\": "src"
-    }
+    },
+    "classmap": [
+      "lib/LightOpenID/openid.php"
+    ]
   },
   "require": {
     "ext-json": "*",
@@ -21,7 +24,6 @@
     "ext-curl": "*",
     "itad/db": "dev-master@dev",
     "itad/config": "dev-master@dev",
-    "league/oauth2-client": "^2.6",
     "league/route": "^5.1",
     "guzzlehttp/guzzle": "^7.4",
     "monolog/monolog": "^2.3",
