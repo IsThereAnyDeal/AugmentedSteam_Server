@@ -1,19 +1,20 @@
 <?php
 namespace AugmentedSteam\Server\Controllers;
 
-use AugmentedSteam\Server\Exceptions\MissingParameterException;
+use AugmentedSteam\Server\Http\Param;
 use AugmentedSteam\Server\Model\Money\CurrencyConverter;
+use League\Route\Http\Exception\BadRequestException;
 use Psr\Http\Message\ServerRequestInterface;
 
 class RatesController extends Controller {
 
     public function getRatesV1(ServerRequestInterface $request): array {
-        $query = $request->getQueryParams();
-        if (empty($query['to'])) {
-            throw new MissingParameterException("to");
-        }
+        $currencies = (new Param($request, "to"))
+            ->list();
 
-        $currencies = explode(",", $query['to']);
+        if (count($currencies) == 0) {
+            throw new BadRequestException();
+        }
 
         $converter = new CurrencyConverter($this->db);
         return $converter->getAllConversionsTo($currencies);

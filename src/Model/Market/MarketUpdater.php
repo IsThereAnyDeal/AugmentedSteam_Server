@@ -215,11 +215,12 @@ class MarketUpdater
     private function updateIndex(array $appids): void {
         $i = new TMarketIndex();
         (new SqlUpdateObjectQuery($this->db, $i))
-            ->columns($i->last_update)
+            ->columns($i->last_update, $i->request_counter)
             ->whereSql("$i->appid IN :appids", [":appids" => $appids])
             ->update(
                 (new DMarketIndex())
                     ->setLastUpdate($this->timestamp)
+                    ->setRequestCounter(0)
             );
     }
 

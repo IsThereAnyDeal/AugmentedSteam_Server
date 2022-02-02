@@ -19,6 +19,9 @@ class CurrencyConverter
     public function getConversion(string $from, string $to): ?float {
         $from = strtoupper($from);
         $to = strtoupper($to);
+        if ($from == $to) {
+            return 1;
+        }
 
         $c = new TCurrency();
 

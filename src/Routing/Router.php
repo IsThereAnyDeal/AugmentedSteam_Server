@@ -5,6 +5,7 @@ namespace AugmentedSteam\Server\Routing;
 
 use AugmentedSteam\Server\Config\CoreConfig;
 use AugmentedSteam\Server\Controllers\GameController;
+use AugmentedSteam\Server\Controllers\MarketController;
 use AugmentedSteam\Server\Controllers\RatesController;
 use AugmentedSteam\Server\Routing\Response\ApiResponseFactoryInterface;
 use AugmentedSteam\Server\Routing\Strategy\ApiStrategy;
@@ -37,6 +38,9 @@ class Router
         /** @deprecated */ $router->get("/v1/dlcinfo/", [GameController::class, "getDlcInfoV1"]);
         $router->get("/v2/dlcinfo/", [GameController::class, "getDlcInfoV2"]);
 
+        /** @deprecated */ $router->get("/v1/market/averagecardprices/", [MarketController::class, "getAverageCardPricesV1"]);
+        $router->get("/v2/market/averagecardprices/", [MarketController::class, "getAverageCardPricesV2"]);
+        $router->get("/v1/market/cardprices/", [MarketController::class, "getCardPricesV1"]);
 
         $request = ServerRequestFactory::fromGlobals();
         $response = $router->dispatch($request);

@@ -3,8 +3,7 @@ declare(strict_types=1);
 
 namespace AugmentedSteam\Server\Controllers;
 
-use AugmentedSteam\Server\Exceptions\InvalidValueException;
-use AugmentedSteam\Server\Exceptions\MissingParameterException;
+use AugmentedSteam\Server\Http\Param;
 use AugmentedSteam\Server\Model\DataObjects\DDlcCategories;
 use AugmentedSteam\Server\Model\Tables\TDlcCategories;
 use AugmentedSteam\Server\Model\Tables\TGameDlc;
@@ -13,23 +12,10 @@ use Psr\Http\Message\ServerRequestInterface;
 
 class GameController extends Controller
 {
-
-    private function getAppidParam(ServerRequestInterface $request): int {
-        $query = $request->getQueryParams();
-        if (empty($query['appid'])) {
-            throw new MissingParameterException("appid");
-        }
-
-        if (!is_numeric($query['appid'])) {
-            throw new InvalidValueException("appid");
-        }
-
-        return (int)$query['appid'];
-    }
-
     /** @deprecated */
     public function getDlcInfoV1(ServerRequestInterface $request): array {
-        $appid = $this->getAppidParam($request);
+        $appid = (new Param($request, "appid"))
+            ->int();
 
         $g = new TGameDlc();
         $d = new TDlcCategories();
@@ -59,7 +45,8 @@ class GameController extends Controller
     }
 
     public function getDlcInfoV2(ServerRequestInterface $request): array {
-        $appid = $this->getAppidParam($request);
+        $appid = (new Param($request, "appid"))
+            ->int();
 
         $g = new TGameDlc();
         $d = new TDlcCategories();
