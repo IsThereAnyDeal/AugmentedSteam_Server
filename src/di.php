@@ -10,6 +10,7 @@ use AugmentedSteam\Server\Controllers\ProfileController;
 use AugmentedSteam\Server\Controllers\ProfileManagementController;
 use AugmentedSteam\Server\Controllers\RatesController;
 use AugmentedSteam\Server\Cron\CronJobFactory;
+use AugmentedSteam\Server\Loader\SimpleLoader;
 use AugmentedSteam\Server\Logging\LoggerFactoryInterface;
 use AugmentedSteam\Server\Logging\MonologLoggerFactory;
 use AugmentedSteam\Server\Model\Market\MarketManager;
@@ -28,6 +29,9 @@ require_once __DIR__."/../vendor/autoload.php";
 
 return [
     "guzzle" => DI\create(\GuzzleHttp\Client::class),
+
+    SimpleLoader::class => DI\create()
+        ->constructor(DI\get("guzzle")),
 
     DbDriver::class => function(ContainerInterface $c) {
         return DbFactory::getDatabase($c->get(DbConfig::class));
@@ -57,7 +61,7 @@ return [
     SteamRepManager::class => DI\create()
         ->constructor(
             DI\get(DbDriver::class),
-            DI\get("guzzle"),
+            DI\get(SimpleLoader::class),
             DI\get(EndpointsConfig::class),
             DI\get(LoggerFactoryInterface::class)
         ),
