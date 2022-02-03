@@ -50,11 +50,13 @@ class MarketUpdater
         $this->insertQuery = (new SqlInsertQuery($this->db, $d))
             ->columns(
                 $d->hash_name, $d->appid,
-                $d->name, $d->sell_listings, $d->sell_price_usd, $d->icon_url,
+                $d->appname,
+                $d->name, $d->sell_listings, $d->sell_price_usd, $d->img,
                 $d->type, $d->rarity, $d->timestamp
             )
             ->onDuplicateKeyUpdate(
-                $d->name, $d->sell_listings, $d->sell_price_usd, $d->icon_url,
+                $d->appname,
+                $d->name, $d->sell_listings, $d->sell_price_usd, $d->img,
                 $d->type, $d->rarity, $d->timestamp
             )
             ->stackSize(0);
@@ -142,20 +144,25 @@ class MarketUpdater
         foreach($json['results'] as $item) {
             $asset = $item['asset_description'];
 
-            if (preg_match("#(Uncommon|Foil|Rare|)? (Profile Background|Emoticon|Booster Pack|Trading Card|Sale Item)$#", $asset['type'], $m)) {
+            if (preg_match(
+                "#^(.+?)(?:\s+(Uncommon|Foil|Rare|))?\s+(Profile Background|Emoticon|Booster Pack|Trading Card|Sale Item)$#",
+                $asset['type'] === "Booster Pack" ? $asset['name'] : $asset['type'],
+                $m
+            )) {
+                $appName = $m[1];
 
-                switch($m[1]) {
+                switch($m[2]) {
                     case "Uncommon":
                     case "Foil":
                     case "Rare":
-                        $rarity = strtolower($m[1]);
+                        $rarity = strtolower($m[2]);
                         break;
                     default:
                         $rarity = "normal";
                         break;
                 }
 
-                switch($m[2]) {
+                switch($m[3]) {
                     case "Profile Background":
                         $type = "background";
                         break;
@@ -176,8 +183,10 @@ class MarketUpdater
                         break;
                 }
             } else {
+                $appName = $asset['type'];
                 $rarity = "normal";
                 $type = "unknown";
+                $this->logger->notice($appName);
             }
 
             list($appid) = explode("-", $item['hash_name'], 2);
@@ -185,10 +194,11 @@ class MarketUpdater
                 (new DMarketData())
                     ->setHashName($item['hash_name'])
                     ->setAppid((int)$appid)
+                    ->setAppName($appName)
                     ->setName($item['name'])
                     ->setSellListings($item['sell_listings'])
                     ->setSellPriceUsd($item['sell_price'])
-                    ->setIconUrl($asset['icon_url'])
+                    ->setImg($asset['icon_url'])
                     ->setType($type)
                     ->setRarity($rarity)
                     ->setTimestamp(time())

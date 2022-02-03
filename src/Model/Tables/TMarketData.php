@@ -10,10 +10,11 @@ class TMarketData extends Table
 {
     public Column $hash_name;
     public Column $appid;
+    public Column $appname;
     public Column $name;
     public Column $sell_listings;
     public Column $sell_price_usd;
-    public Column $icon_url;
+    public Column $img;
     public Column $type;
     public Column $rarity;
     public Column $timestamp;

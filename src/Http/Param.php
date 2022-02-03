@@ -78,7 +78,10 @@ class Param
      */
     public function string(): ?string {
         if ($this->exists()) {
-            return trim($this->value());
+            $value = trim($this->value());
+            if (!empty($value)) {
+                return $value;
+            }
         } elseif (isset($this->default)) {
             return $this->default;
         }

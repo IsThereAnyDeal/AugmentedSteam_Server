@@ -6,8 +6,12 @@
     "version": "1.0.0"
   },
   "servers": [
-    {"url": "https://esapi.isthereanydeal.com"},
-    {"url": "https://api.augmentedsteam.com"}
+    {
+      "url": "https://esapi.isthereanydeal.com"
+    },
+    {
+      "url": "https://api.augmentedsteam.com"
+    }
   ],
   "paths": {
     "/v1/rates": {
@@ -27,9 +31,6 @@
           }
         ],
         "responses": {
-          "default": {
-            "$ref": "#/components/schemas/ErrorResponse"
-          },
           "200": {
             "description": "Success",
             "content": {
@@ -37,14 +38,22 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "result": { "$ref": "#/components/schemas/SuccessResult" },
+                    "result": {
+                      "$ref": "#/components/schemas/SuccessResult"
+                    },
                     "data": {
                       "type": "object",
-                      "propertyNames": { "pattern": "^[A-Z]{3}$" },
+                      "propertyNames": {
+                        "pattern": "^[A-Z]{3}$"
+                      },
                       "additionalProperties": {
                         "type": "object",
-                        "propertyNames": { "pattern": "^[A-Z]{3}$" },
-                        "additionalProperties": { "type": "number" }
+                        "propertyNames": {
+                          "pattern": "^[A-Z]{3}$"
+                        },
+                        "additionalProperties": {
+                          "type": "number"
+                        }
                       }
                     }
                   }
@@ -87,17 +96,22 @@
                 }
               }
             }
+          },
+          "default": {
+            "$ref": "#/components/schemas/ErrorResponse"
           }
-        }
+        },
+        "description": "Get current conversion rates"
       }
     },
     "/v2/dlcinfo": {
       "get": {
-        "parameters": [{"$ref": "#/components/parameters/AppId"}],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/AppId"
+          }
+        ],
         "responses": {
-          "default": {
-            "$ref": "#/components/schemas/ErrorResponse"
-          },
           "200": {
             "description": "Success",
             "content": {
@@ -105,15 +119,23 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "result": { "$ref": "#/components/schemas/SuccessResult" },
+                    "result": {
+                      "$ref": "#/components/schemas/SuccessResult"
+                    },
                     "data": {
                       "type": "array",
                       "items": {
                         "type": "object",
                         "properties": {
-                          "id": { "type": "integer" },
-                          "name": { "type":  "string" },
-                          "description": { "type":  "string" }
+                          "id": {
+                            "type": "integer"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "description": {
+                            "type": "string"
+                          }
                         }
                       }
                     }
@@ -140,6 +162,9 @@
                 }
               }
             }
+          },
+          "default": {
+            "$ref": "#/components/schemas/ErrorResponse"
           }
         }
       }
@@ -147,7 +172,9 @@
     "/v2/market/averagecardprices": {
       "get": {
         "parameters": [
-          { "$ref": "#/components/parameters/Currency" },
+          {
+            "$ref": "#/components/parameters/Currency"
+          },
           {
             "name": "appids",
             "in": "query",
@@ -155,47 +182,190 @@
             "style": "array",
             "schema": {
               "type": "array",
-              "items": { "type": "integer" }
+              "items": {
+                "type": "integer"
+              }
             }
           }
         ],
         "responses": {
-          "default": {
-            "$ref": "#/components/schemas/ErrorResponse"
-          },
           "200": {
             "description": "Success",
             "content": {
               "application/json": {
                 "type": "object",
                 "properties": {
-                  "result": { "$ref": "#/components/schemas/SuccessResult" },
+                  "result": {
+                    "$ref": "#/components/schemas/SuccessResult"
+                  },
                   "data": {
                     "type": "object",
-                    "propertyNames": { "pattern": "^\\d+$" },
+                    "propertyNames": {
+                      "pattern": "^\\d+$"
+                    },
                     "additionalProperties": {
                       "type": "object",
                       "properties": {
-                        "regular": { "type": "number" },
-                        "foil": { "type": "number" }
+                        "regular": {
+                          "type": "number"
+                        },
+                        "foil": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "successResponse": {
+                    "value": {
+                      "result": "success",
+                      "data": {
+                        "220": {
+                          "regular": 0.087143,
+                          "foil": 0.707143
+                        },
+                        "440": {
+                          "foil": 0.905714,
+                          "regular": 0.051429
+                        }
                       }
                     }
                   }
                 }
               }
-            },
-            "examples": {
-              "successResponse": {
-                "value": {
-                  "result": "success",
-                  "data": {
-                    "220": {
-                      "regular": 0.087143,
-                      "foil": 0.707143
+            }
+          },
+          "default": {
+            "$ref": "#/components/schemas/ErrorResponse"
+          }
+        }
+      }
+    },
+    "/v2/market/cardprices": {
+      "get": {
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Currency"
+          },
+          {
+            "$ref": "#/components/parameters/AppId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "result": {
+                      "$ref": "#/components/schemas/SuccessResult"
                     },
-                    "440": {
-                      "foil": 0.905714,
-                      "regular": 0.051429
+                    "data": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {
+                        "type": "object",
+                        "properties": {
+                          "img": {
+                            "type": "string"
+                          },
+                          "url": {
+                            "type": "string"
+                          },
+                          "price": {
+                            "type": "number"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "successResponse": {
+                    "value": {
+                      "result": "success",
+                      "data": {
+                        "Alyx Vance": {
+                          "img": "IzMF03bk9WpSBq-S-ekoE33L-iLqGFHVaU25ZzQNQcXdA3g5gMEPvUZZEfSMJ6dESN8p_2SVTY7V2NsNxGVIwXpaL3_Z0W11LtNtNsjDhgz2oOWIQXDzMG-WKXeNHVs5HLBXNG6IqDCitO6TSjGbEukkQAoCfKMH-mFBaJyXf0xqwtVUuWG9hXt0Excvd5gXJFfjzndKN74gkHAUcchSynbwIMaPjQplahRtWbCxX72TOdPxmXwlQ1o5SLZcaYl9HTjTpg",
+                          "url": "220-Alyx%20Vance",
+                          "price": 0.09
+                        },
+                        "Alyx Vance (Foil)": {
+                          "img": "IzMF03bk9WpSBq-S-ekoE33L-iLqGFHVaU25ZzQNQcXdA3g5gMEPvUZZEfSMJ6dESN8p_2SVTY7V2NsNxGVIwXpaL3_Z0W11LtNtNsjDhgz2oOWIQXDzMG-WKXeNHVs5HLBXNG6IqDCitO6TSjGbEukkQAoCfKMH-mFBaJyXf0xqwtVUuWG9hXt0Excvd5gWKF-6kiwXab8kkHZAJpMGnCT3I5eIgllgbEI8XurmVryUa4P3wS11Q1o5SLZcaYlIj14tyA",
+                          "url": "220-Alyx%20Vance%20%28Foil%29",
+                          "price": 0.82
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "$ref": "#/components/schemas/ErrorResponse"
+          }
+        }
+      }
+    },
+    "/v1/profile/background/background": {
+      "get": {
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/AppId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "result": {
+                      "$ref": "#/components/schemas/SuccessResult"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "array",
+                        "minItems": 2,
+                        "maxItems": 2,
+                        "items": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "SuccessResponse": {
+                    "value": {
+                      "result": "success",
+                      "data": [
+                        [
+                          "-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxH5rd9eDAjcFyv45SRYAFMIcKL_PArgVSL403ulRUWEndVKv_h5iFBg07cFRV5u2he1ZjhvWRIjhGtIjjx4LbkvSgYu2Ixz1XsZZ02bCV99zzihqkpRQDzXCjUg",
+                          "Four TOMs"
+                        ],
+                        [
+                          "-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxH5rd9eDAjcFyv45SRYAFMIcKL_PArgVSL403ulRUWEndVKv_h5iFBg07dVZS5ruhcgYyhKGYdW8Uv97kzYPfxKCtZLiCzj1V6pch27-Yrdqs2hq-uxTNuqVgqQ",
+                          "Globotron Smash"
+                        ],
+                        [
+                          "-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxH5rd9eDAjcFyv45SRYAFMIcKL_PArgVSL403ulRUWEndVKv_h5iFBg07JFBR7-7wLVNlhqCdImkXtd7vl4XdlKKiYuyCk28F7ZUh2LiT8Nzxihq-uxQ0JEHyMw",
+                          "Roll Over"
+                        ],
+                        [
+                          "-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxH5rd9eDAjcFyv45SRYAFMIcKL_PArgVSL403ulRUWEndVKv_h5iFBg07c1RVsOL0eF9lhabMKGkQut2zl9eOk_GkMrqJlDwJv8Ami-iY8I2gixq-uxQb695Neg",
+                          "TOM & Dr. X"
+                        ]
+                      ]
                     }
                   }
                 }
@@ -205,59 +375,239 @@
         }
       }
     },
-    "/v2/market/cardprices": {
+    "/v1/profile/background/games": {
       "get": {
-        "parameters": [
-          { "$ref": "#/components/parameters/Currency" },
-          { "$ref": "#/components/parameters/AppId" }
-        ],
+        "summary": "",
+        "operationId": "get-v1-profile-background-games",
         "responses": {
-          "default": {
-            "$ref": "#/components/schemas/ErrorResponse"
-          },
           "200": {
-            "description": "Success",
+            "description": "OK",
             "content": {
               "application/json": {
-                "type": "object",
-                "properties": {
-                  "result": { "$ref": "#/components/schemas/SuccessResult" },
-                  "data": {
-                    "type": "object",
-                    "propertyNames": { "type": "string" },
-                    "additionalProperties": {
-                      "type": "object",
-                      "properties": {
-                        "img": { "type": "string" },
-                        "url": { "type": "string" },
-                        "price": { "type": "number" }
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "result": {
+                      "$ref": "#/components/schemas/SuccessResult"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "array",
+                        "minItems": 2,
+                        "maxItems": 2,
+                        "items": {
+                          "type": [
+                            "string",
+                            "integer"
+                          ]
+                        }
                       }
                     }
                   }
-                }
-              }
-            },
-            "examples": {
-              "successResponse": {
-                "value": {
-                  "result": "success",
-                  "data": {
-                    "Alyx Vance": {
-                      "img": "IzMF03bk9WpSBq-S-ekoE33L-iLqGFHVaU25ZzQNQcXdA3g5gMEPvUZZEfSMJ6dESN8p_2SVTY7V2NsNxGVIwXpaL3_Z0W11LtNtNsjDhgz2oOWIQXDzMG-WKXeNHVs5HLBXNG6IqDCitO6TSjGbEukkQAoCfKMH-mFBaJyXf0xqwtVUuWG9hXt0Excvd5gXJFfjzndKN74gkHAUcchSynbwIMaPjQplahRtWbCxX72TOdPxmXwlQ1o5SLZcaYl9HTjTpg",
-                      "url": "220-Alyx%20Vance",
-                      "price": 0.09
-                    },
-                    "Alyx Vance (Foil)": {
-                      "img": "IzMF03bk9WpSBq-S-ekoE33L-iLqGFHVaU25ZzQNQcXdA3g5gMEPvUZZEfSMJ6dESN8p_2SVTY7V2NsNxGVIwXpaL3_Z0W11LtNtNsjDhgz2oOWIQXDzMG-WKXeNHVs5HLBXNG6IqDCitO6TSjGbEukkQAoCfKMH-mFBaJyXf0xqwtVUuWG9hXt0Excvd5gWKF-6kiwXab8kkHZAJpMGnCT3I5eIgllgbEI8XurmVryUa4P3wS11Q1o5SLZcaYlIj14tyA",
-                      "url": "220-Alyx%20Vance%20%28Foil%29",
-                      "price": 0.82
+                },
+                "examples": {
+                  "SuccessResponse": {
+                    "value": {
+                      "result": "success",
+                      "data": [
+                        [
+                          209330,
+                          "A Valley Without Wind"
+                        ],
+                        [
+                          207650,
+                          "A Virus Named TOM"
+                        ],
+                        [
+                          222640,
+                          "Aarklash: Legacy"
+                        ],
+                        [
+                          224420,
+                          "Afterfall InSanity Extended Edition"
+                        ]
+                      ]
                     }
                   }
                 }
               }
             }
           }
+        },
+        "parameters": []
+      }
+    },
+    "/v1/profile/background/edit/delete": {
+      "get": {
+        "summary": "",
+        "operationId": "get-v1-profile-background-edit-delete",
+        "responses": {
+          "302": {
+            "description": "Found"
+          }
         }
+      }
+    },
+    "/v1/profile/background/edit/save": {
+      "get": {
+        "summary": "",
+        "operationId": "get-v1-profile-background-edit-save",
+        "responses": {
+          "302": {
+            "description": "Found"
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/AppId"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "img",
+            "required": true
+          }
+        ]
+      }
+    },
+    "/v1/profile/style/edit/delete": {
+      "get": {
+        "summary": "",
+        "operationId": "get-v1-profile-style-edit-delete",
+        "responses": {
+          "302": {
+            "description": "Found"
+          }
+        }
+      }
+    },
+    "/v1/profile/style/edit/save": {
+      "get": {
+        "summary": "",
+        "operationId": "get-v1-profile-style-edit-save",
+        "responses": {
+          "302": {
+            "description": "Found"
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "style",
+            "required": true
+          }
+        ]
+      }
+    },
+    "/v1/profile/profile": {
+      "get": {
+        "summary": "",
+        "operationId": "get-v1-profile-profile",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "result": {
+                      "$ref": "#/components/schemas/SuccessResult"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "badges": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "link": {
+                                "type": "string"
+                              },
+                              "title": {
+                                "type": "string"
+                              },
+                              "img": {
+                                "type": "string"
+                              }
+                            }
+                          }
+                        },
+                        "steamrep": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "style": {
+                          "type": [
+                            "null",
+                            "string"
+                          ]
+                        },
+                        "bg": {
+                          "type": "object",
+                          "properties": {
+                            "img": {
+                              "type": [
+                                "null",
+                                "string"
+                              ]
+                            },
+                            "appid": {
+                              "type": [
+                                "null",
+                                "integer"
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "examples": {}
+              }
+            }
+          },
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "examples": {
+                  "ErrorResponse": {
+                    "value": {
+                      "result": "error",
+                      "error": "missing_param",
+                      "error_description": "string",
+                      "status_code": 0,
+                      "reason_phrase": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer"
+            },
+            "in": "query",
+            "name": "profile"
+          }
+        ]
       }
     }
   },
@@ -284,24 +634,53 @@
       "ErrorResponse": {
         "type": "object",
         "properties": {
-          "result": {"type": "string", "enum": ["error"]},
+          "result": {
+            "type": "string",
+            "enum": [
+              "error"
+            ]
+          },
           "error": {
             "type": "string",
-            "enum": [ "missing_param", "invalid_value" ]
+            "enum": [
+              "missing_param",
+              "invalid_value"
+            ]
           },
-          "error_description": {"type": "string"},
-          "status_code": {"type": "integer"},
-          "reason_phrase": {"type": "string"}
-        }
+          "error_description": {
+            "type": "string"
+          },
+          "status_code": {
+            "type": "integer"
+          },
+          "reason_phrase": {
+            "type": "string"
+          }
+        },
+        "examples": [
+          {
+            "result": "error",
+            "error": "missing_param",
+            "error_description": "string",
+            "status_code": 0,
+            "reason_phrase": "string"
+          }
+        ]
       },
       "SuccessResult": {
         "type": "string",
-        "enum": ["success"]
+        "enum": [
+          "success"
+        ],
+        "examples": [
+          "success"
+        ]
       },
       "CurrencyCode": {
         "type": "string",
         "pattern": "^[A-Z]{3}$"
       }
-    }
+    },
+    "securitySchemes": {}
   }
 }

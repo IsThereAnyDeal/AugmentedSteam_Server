@@ -10,10 +10,11 @@ class DMarketData extends AInsertableObject implements ISelectable
 {
     protected string $hash_name;
     protected int $appid;
+    protected string $appname;
     protected string $name;
     protected int $sell_listings;
     protected int $sell_price_usd;
-    protected string $icon_url;
+    protected string $img;
     protected string $type;
     protected string $rarity;
     protected int $timestamp;
@@ -33,6 +34,15 @@ class DMarketData extends AInsertableObject implements ISelectable
 
     public function setAppid(int $appid): self {
         $this->appid = $appid;
+        return $this;
+    }
+
+    public function getAppName(): string {
+        return $this->appname;
+    }
+
+    public function setAppName(string $appname): self {
+        $this->appname = $appname;
         return $this;
     }
 
@@ -63,12 +73,12 @@ class DMarketData extends AInsertableObject implements ISelectable
         return $this;
     }
 
-    public function getIconUrl(): string {
-        return $this->icon_url;
+    public function getImg(): string {
+        return $this->img;
     }
 
-    public function setIconUrl(string $icon_url): self {
-        $this->icon_url = $icon_url;
+    public function setImg(string $img): self {
+        $this->img = $img;
         return $this;
     }
 

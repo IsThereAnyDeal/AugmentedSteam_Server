@@ -133,7 +133,7 @@ class MarketController extends Controller {
 
         $d = new TMarketData();
         $select = (new SqlSelectQuery($this->db,
-            "SELECT $d->name, $d->icon_url, $d->hash_name, $d->sell_price_usd
+            "SELECT $d->name, $d->img, $d->hash_name, $d->sell_price_usd
             FROM $d
             WHERE $d->appid=:appid
               AND $d->type='card'"
@@ -147,7 +147,7 @@ class MarketController extends Controller {
         /** @var DMarketData $o */
         foreach($select as $o) {
             $result[$o->getName()] = [
-                "img" => $o->getIconUrl(),
+                "img" => $o->getImg(),
                 "url" => rawurlencode($o->getHashName()),
                 "price" => ($o->getSellPriceUsd() / 100) * $conversion,
             ];
