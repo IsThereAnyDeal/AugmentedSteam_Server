@@ -22,6 +22,8 @@
     "ext-json": "*",
     "ext-simplexml": "*",
     "ext-curl": "*",
+    "ext-dom": "*",
+    "ext-libxml": "*",
     "itad/db": "dev-master@dev",
     "itad/config": "dev-master@dev",
     "league/route": "^5.1",

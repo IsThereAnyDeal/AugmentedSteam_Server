@@ -61,6 +61,10 @@ class Loader
                 $settings['headers'][$header] = $value;
             }
 
+            if (!empty($item->getFormData())) {
+                $settings['form_params'] = $item->getFormData();
+            }
+
             if (!empty($item->getBody())) {
                 $settings['body'] = $item->getBody();
             }

@@ -79,14 +79,55 @@ CREATE TABLE `steamrep` (
   INDEX (`checked`, `timestamp`)
 ) ENGINE=InnoDB;
 
+CREATE TABLE `steamcharts` (
+  `appid` int NOT NULL,
+  `recent` int,
+  `peak_day` int,
+  `peak_all` int,
+  `timestamp` int unsigned NOT NULL,
+  PRIMARY KEY (`appid`),
+  INDEX (`timestamp`)
+) ENGINE=InnoDB;
 
+CREATE TABLE `steamspy` (
+  `appid` int NOT NULL,
+  `owners` varchar(30) NOT NULL,
+  `average_forever` int NOT NULL,
+  `average_2weeks` int NOT NULL,
+  `timestamp` int unsigned NOT NULL,
+  PRIMARY KEY (`appid`)
+) ENGINE=InnoDB;
 
+CREATE TABLE `cache` (
+  `appid` int NOT NULL,
+  `key` tinyint unsigned NOT NULL,
+  `json` json NOT NULL,
+  `timestamp` int unsigned NOT NULL,
+  PRIMARY KEY (`appid`, `key`)
+);
 
-
-CREATE TABLE IF NOT EXISTS `exfgls` (
-  `appid` int(11) NOT NULL,
+CREATE TABLE `exfgls` (
+  `appid` int NOT NULL,
+  `excluded` tinyint NOT NULL,
+  `checked` tinyint NOT NULL,
+  `timestamp` int unsigned NOT NULL,
   PRIMARY KEY(`appid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB;
+
+CREATE TABLE `hltb` (
+  `id` int NOT NULL,
+  `appid` int,
+  `main` float,
+  `extra` float,
+  `complete` float,
+  `found_timestamp` int unsigned NOT NULL DEFAULT 0,
+  `checked_timestamp` int unsigned,
+  PRIMARY KEY (`id`),
+  INDEX(`appid`)
+) ENGINE=InnoDb;
+
+
+
 
 CREATE TABLE `features` (
   `id` bigint(20) NOT NULL auto_increment,
@@ -97,16 +138,6 @@ CREATE TABLE `features` (
   `screenshot_after` varchar(255) NOT NULL,
   `description` longtext NOT NULL,
   PRIMARY KEY(`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE `game_links` (
-  `id` int(11) NOT NULL auto_increment,
-  `appid` int(11) NOT NULL,
-  `hltb_id` int(11) NOT NULL,
-  `steam_id` bigint(20) NOT NULL,
-  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  UNIQUE (`appid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `game_survey` (
@@ -122,16 +153,6 @@ CREATE TABLE `game_survey` (
   PRIMARY KEY (`appid`, `steamid`)
 );
 
-CREATE TABLE IF NOT EXISTS `steamcharts` (
-  `id` bigint(20) NOT NULL auto_increment,
-  `appid` int(11) NOT NULL,
-  `one_hour` varchar(11) NOT NULL,
-  `one_day` varchar(11) NOT NULL,
-  `all_time` varchar(11) NOT NULL,
-  `access_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY(`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 CREATE TABLE IF NOT EXISTS `steamcn` (
   `id` bigint(20) NOT NULL auto_increment,
   `appid` int(11) NOT NULL,
@@ -139,20 +160,6 @@ CREATE TABLE IF NOT EXISTS `steamcn` (
   `access_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY(`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-CREATE TABLE IF NOT EXISTS `steamspy` (
-  `appid` int(11) NOT NULL,
-  `owners` varchar(30) NOT NULL,
-  `owners_variance` int(11),
-  `players_forever` int(11),
-  `players_forever_variance` int(11),
-  `players_2weeks` int(11),
-  `players_2weeks_variance` int(11),
-  `average_forever` int(11) NOT NULL,
-  `average_2weeks` int(11) NOT NULL,
-  `access_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY(`appid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `steam_reviews` (
   `id` bigint(20) NOT NULL auto_increment,

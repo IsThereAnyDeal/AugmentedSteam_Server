@@ -9,6 +9,7 @@ use AugmentedSteam\Server\Controllers\MarketController;
 use AugmentedSteam\Server\Controllers\ProfileController;
 use AugmentedSteam\Server\Controllers\ProfileManagementController;
 use AugmentedSteam\Server\Controllers\RatesController;
+use AugmentedSteam\Server\Controllers\StorePageController;
 use AugmentedSteam\Server\OpenId\OpenId;
 use AugmentedSteam\Server\Routing\Response\ApiResponseFactoryInterface;
 use AugmentedSteam\Server\Routing\Strategy\ApiStrategy;
@@ -63,6 +64,8 @@ class Router
         })->setStrategy(new ApplicationStrategy());
 
         $router->get("/v1/profile/profile/", [ProfileController::class, "getProfileV1"]);
+
+        $router->get("/v1/storepagedata/", [StorePageController::class, "getStorePageDataV1"]);
 
         $request = ServerRequestFactory::fromGlobals();
         $response = $router->dispatch($request);

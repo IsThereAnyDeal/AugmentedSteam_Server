@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace AugmentedSteam\Server\SteamRep;
+namespace AugmentedSteam\Server\Model\SteamRep;
 
 use AugmentedSteam\Server\Config\EndpointsConfig;
 use AugmentedSteam\Server\Loader\SimpleLoader;

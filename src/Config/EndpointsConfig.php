@@ -13,23 +13,29 @@ class EndpointsConfig extends AConfig
             "wsgf" => Expect::string()->required(),
             "keylol" => Expect::string()->required(),
             "steamspy" => Expect::string()->required(),
+            "steamcharts" => Expect::string()->required(),
             "steamtools" => Expect::string()->required(),
             "steamrep" => Expect::string()->required(),
             "pcgw" => Expect::string()->required(),
             "steampeek" => Expect::string()->required(),
+            "itad" => Expect::string()->required()
         ]);
     }
 
-    public function getWSGFEndpoint(): string {
-        return $this->config->wsgf;
+    public function getWSGFEndpoint(int $appid): string {
+        return sprintf($this->config->wsgf, $appid);
     }
 
     public function getKeyLolEndpoint(): string {
         return $this->config->keylol;
     }
 
-    public function getSteamSpyEndpoint(): string {
-        return $this->config->steamspy;
+    public function getSteamSpyEndpoint(int $appid): string {
+        return sprintf($this->config->steamspy, $appid);
+    }
+
+    public function getSteamChartsEndpoint(int $appid): string {
+        return sprintf($this->config->steamcharts, $appid);
     }
 
     public function getSteamToolsEndpoint(): string {
@@ -46,5 +52,9 @@ class EndpointsConfig extends AConfig
 
     public function getSteamPeekEndpoint(): string {
         return $this->config->steampeek;
+    }
+
+    public function getIsThereAnyDealApiHost(): string {
+        return $this->config->itad;
     }
 }

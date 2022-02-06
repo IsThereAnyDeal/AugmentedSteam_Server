@@ -5,6 +5,9 @@ namespace AugmentedSteam\Server\Model\Market;
 
 use AugmentedSteam\Server\Loader\Loader;
 use AugmentedSteam\Server\Loader\Item;
+use AugmentedSteam\Server\Loader\Proxy\ProxyFactoryInterface;
+use AugmentedSteam\Server\Loader\Proxy\ProxyInterface;
+use AugmentedSteam\Server\Model\Crawler;
 use AugmentedSteam\Server\Model\DataObjects\DMarketData;
 use AugmentedSteam\Server\Model\DataObjects\DMarketIndex;
 use AugmentedSteam\Server\Model\Tables\TMarketData;
@@ -21,7 +24,7 @@ use Psr\Log\LoggerInterface;
 use SplQueue;
 use Throwable;
 
-class MarketUpdater
+class MarketCrawler extends Crawler
 {
     private const BatchCount = 5;
     private const RequestBatchSize = 30;
@@ -29,21 +32,18 @@ class MarketUpdater
     private const MaxAttempts = 3;
 
     private DbDriver $db;
-    private Loader $loader;
-    private LoggerInterface $logger;
+    private ProxyInterface $proxy;
 
-    private SplQueue $requestQueue;
     private SqlInsertQuery $insertQuery;
 
     private int $requestCounter = 0;
     private int $timestamp;
 
-    public function __construct(DbDriver $db, Loader $loader, LoggerInterface $logger) {
+    public function __construct(DbDriver $db, Loader $loader, LoggerInterface $logger, ProxyFactoryInterface $proxyFactory) {
+        parent::__construct($loader, $logger);
         $this->db = $db;
-        $this->loader = $loader;
-        $this->logger = $logger;
+        $this->proxy = $proxyFactory->createProxy();
 
-        $this->requestQueue = new SplQueue();
         $this->timestamp = time();
 
         $d = new TMarketData();
@@ -95,36 +95,15 @@ class MarketUpdater
             ->withQuery(QueryString::build($params));
 
         $item = (new Item((string)$uri))
-            ->setData(["appids" => $appids]);
+            ->setData(["appids" => $appids])
+            ->setCurlOptions($this->proxy->getCurlOptions());
 
         $this->enqueueRequest($item);
         $this->requestCounter++;
     }
 
-    private function enqueueRequest(Item $item): void {
-        $request = $this->loader->createRequest(
-            $item,
-            fn(Item $item, ResponseInterface $response, string $effectiveUri) => $this->successHandler($item, $response, $effectiveUri),
-            fn(Item $item, Throwable $e) => $this->errorHandler($item, $e)
-        );
-        $this->requestQueue->enqueue($request);
-    }
-
-    private function successHandler(Item $request, ResponseInterface $response, string $effectiveUri) {
-        $status = $response->getStatusCode();
-        if ($status !== 200) {
-            if ($status === 429) {
-                $this->logger->info("Throttling");
-                sleep(60);
-            }
-            if ($request->getAttempt() <= self::MaxAttempts) {
-                // replay request
-                $request->incrementAttempt();
-                $this->enqueueRequest($request);
-                $this->logger->info("Retrying");
-            } else {
-                $this->logger->error($request->getUrl());
-            }
+    protected function successHandler(Item $request, ResponseInterface $response, string $effectiveUri): void {
+        if (!$this->mayProcess($request, $response, self::MaxAttempts)) {
             return;
         }
 
@@ -211,17 +190,6 @@ class MarketUpdater
         $this->logger->info("", ["appids" => $appids, "start" => $json['start']]);
     }
 
-    private function errorHandler(Item $item, Throwable $e) {
-        $this->logger->error($e->getMessage().": ".$item->getUrl());
-    }
-
-    private function requestGenerator(): \Generator {
-        while(true) {
-            if ($this->requestQueue->isEmpty()) { break; }
-            yield $this->requestQueue->dequeue();
-        }
-    }
-
     private function updateIndex(array $appids): void {
         $i = new TMarketIndex();
         (new SqlUpdateObjectQuery($this->db, $i))
@@ -252,11 +220,7 @@ class MarketUpdater
             $appids = $this->getAppidBatch();
             $this->makeRequest($appids, 0);
 
-            while (true) {
-                if ($this->requestQueue->isEmpty()) { break; }
-                $this->loader->run($this->requestGenerator());
-            }
-
+            $this->runLoader();
             $this->updateIndex($appids);
 
             if ($this->requestCounter === 0) {

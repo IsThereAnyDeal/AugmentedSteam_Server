@@ -10,6 +10,7 @@ final class Item
     private bool $allowRedirect = true;
     private ?string $body = null;
     private array $headers = [];
+    private array $formData = [];
     private array $data = [];
 
     private int $attempt = 1;
@@ -74,6 +75,15 @@ final class Item
 
     public function setHeaders(array $headers): self {
         $this->headers = $headers;
+        return $this;
+    }
+
+    public function getFormData(): array {
+        return $this->formData;
+    }
+
+    public function setFormData(array $data): self {
+        $this->formData = $data;
         return $this;
     }
 

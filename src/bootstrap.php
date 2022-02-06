@@ -3,8 +3,10 @@ declare(strict_types=1);
 
 require_once __DIR__."/../vendor/autoload.php";
 
+use AugmentedSteam\Server\Config\BrightDataConfig;
 use AugmentedSteam\Server\Config\CoreConfig;
 use AugmentedSteam\Server\Config\EndpointsConfig;
+use AugmentedSteam\Server\Config\ExfglsConfig;
 use AugmentedSteam\Server\Config\KeysConfig;
 use AugmentedSteam\Server\Config\LoggingConfig;
 use IsThereAnyDeal\Config\Config;
@@ -18,9 +20,10 @@ $config->map([
     DbConfig::class => "db",
     LoggingConfig::class => "logging",
     KeysConfig::class => "keys",
-    EndpointsConfig::class => "endpoints"
+    EndpointsConfig::class => "endpoints",
+    BrightDataConfig::class => "brightdata",
+    ExfglsConfig::class => "exfgls"
     // TODO twitch
-    // TODO proxy
 ]);
 
 $core = $config->getConfig(CoreConfig::class);
@@ -43,6 +46,8 @@ return (new \DI\ContainerBuilder())
         LoggingConfig::class => fn(ContainerInterface $container) => $config->getConfig(LoggingConfig::class),
         KeysConfig::class => fn(ContainerInterface $container) => $config->getConfig(KeysConfig::class),
         EndpointsConfig::class => fn(ContainerInterface $container) => $config->getConfig(EndpointsConfig::class),
+        BrightDataConfig::class => fn(ContainerInterface $container) => $config->getConfig(BrightDataConfig::class),
+        ExfglsConfig::class => fn(ContainerInterface $container) => $config->getConfig(ExfglsConfig::class),
     ])
     ->addDefinitions(__DIR__."/di.php")
     // ->enableCompilation() FIXME production

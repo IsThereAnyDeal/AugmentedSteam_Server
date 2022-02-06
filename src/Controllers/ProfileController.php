@@ -5,7 +5,7 @@ namespace AugmentedSteam\Server\Controllers;
 
 use AugmentedSteam\Server\Http\Param;
 use AugmentedSteam\Server\Model\User\UserManager;
-use AugmentedSteam\Server\SteamRep\SteamRepManager;
+use AugmentedSteam\Server\Model\SteamRep\SteamRepManager;
 use IsThereAnyDeal\Database\DbDriver;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ServerRequestInterface;

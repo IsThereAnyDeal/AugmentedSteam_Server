@@ -5,7 +5,7 @@ namespace AugmentedSteam\Server\Controllers;
 
 use AugmentedSteam\Server\Config\CoreConfig;
 use AugmentedSteam\Server\Http\Param;
-use AugmentedSteam\Server\Model\Market\MarketManager;
+use AugmentedSteam\Server\Model\HowLongToBeat\MarketManager;
 use AugmentedSteam\Server\Model\User\UserManager;
 use AugmentedSteam\Server\OpenId\OpenId;
 use IsThereAnyDeal\Database\DbDriver;
