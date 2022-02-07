@@ -126,6 +126,12 @@ CREATE TABLE `hltb` (
   INDEX(`appid`)
 ) ENGINE=InnoDb;
 
+CREATE TABLE `similar` (
+  `appid` int NOT NULL,
+  `data` text,
+  `timestamp` int unsigned NOT NULL,
+  PRIMARY KEY(`appid`)
+) ENGINE=InnoDB;
 
 
 
@@ -170,13 +176,6 @@ CREATE TABLE IF NOT EXISTS `steam_reviews` (
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY(`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE IF NOT EXISTS `similar` (
-  `appid` int NOT NULL,
-  `data` text NOT NULL,
-  `timestamp` int unsigned NOT NULL,
-  PRIMARY KEY(`appid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `twitch_token` (
   `token` char(30) NOT NULL,

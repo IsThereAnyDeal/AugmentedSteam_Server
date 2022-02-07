@@ -50,8 +50,8 @@ class EndpointsConfig extends AConfig
         return $this->config->pcgw;
     }
 
-    public function getSteamPeekEndpoint(): string {
-        return $this->config->steampeek;
+    public function getSteamPeekEndpoint(int $appid, string $key): string {
+        return sprintf($this->config->steampeek, $appid, $key);
     }
 
     public function getIsThereAnyDealApiHost(): string {

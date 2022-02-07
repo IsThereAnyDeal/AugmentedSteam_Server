@@ -12,6 +12,7 @@ use AugmentedSteam\Server\Controllers\MarketController;
 use AugmentedSteam\Server\Controllers\ProfileController;
 use AugmentedSteam\Server\Controllers\ProfileManagementController;
 use AugmentedSteam\Server\Controllers\RatesController;
+use AugmentedSteam\Server\Controllers\SimilarController;
 use AugmentedSteam\Server\Controllers\StorePageController;
 use AugmentedSteam\Server\Cron\CronJobFactory;
 use AugmentedSteam\Server\Loader\Proxy\ProxyFactory;
@@ -23,6 +24,7 @@ use AugmentedSteam\Server\Model\Cache\Cache;
 use AugmentedSteam\Server\Model\HowLongToBeat\HLTBManager;
 use AugmentedSteam\Server\Model\IsThereAnyDeal\ReviewsManager;
 use AugmentedSteam\Server\Model\Market\MarketManager;
+use AugmentedSteam\Server\Model\SteamPeek\SteamPeekManager;
 use AugmentedSteam\Server\Model\StorePage\ExfglsManager;
 use AugmentedSteam\Server\Model\StorePage\SteamChartsManager;
 use AugmentedSteam\Server\Model\StorePage\SteamSpyManager;
@@ -134,6 +136,14 @@ return [
             DI\get(EndpointsConfig::class),
             DI\get(KeysConfig::class)
         ),
+    SteamPeekManager::class => DI\create()
+        ->constructor(
+            DI\get(DbDriver::class),
+            DI\get(SimpleLoader::class),
+            DI\get(EndpointsConfig::class),
+            DI\get(KeysConfig::class),
+            DI\get(LoggerFactoryInterface::class)
+        ),
 
     // controllers
 
@@ -179,5 +189,12 @@ return [
             DI\get(ExfglsManager::class),
             DI\get(HLTBManager::class),
             DI\get(ReviewsManager::class)
+        ),
+
+    SimilarController::class => DI\create()
+        ->constructor(
+            DI\get(ResponseFactoryInterface::class),
+            DI\get(DbDriver::class),
+            DI\get(SteamPeekManager::class)
         )
 ];
