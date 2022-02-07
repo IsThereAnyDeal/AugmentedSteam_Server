@@ -10,6 +10,7 @@ class Param
     private array $data;
     private string $name;
     private $default;
+    private $hasDefault = false;
 
     public function __construct(ServerRequestInterface $request, string $name) {
         $this->data = $request->getQueryParams();
@@ -18,6 +19,7 @@ class Param
 
     public function default($value): self {
         $this->default = $value;
+        $this->hasDefault = true;
         return $this;
     }
 
@@ -82,7 +84,7 @@ class Param
             if (!empty($value)) {
                 return $value;
             }
-        } elseif (isset($this->default)) {
+        } elseif ($this->hasDefault) {
             return $this->default;
         }
 

@@ -6,21 +6,19 @@ namespace AugmentedSteam\Server\Routing;
 use AugmentedSteam\Server\Config\CoreConfig;
 use AugmentedSteam\Server\Controllers\GameController;
 use AugmentedSteam\Server\Controllers\MarketController;
+use AugmentedSteam\Server\Controllers\PricesController;
 use AugmentedSteam\Server\Controllers\ProfileController;
 use AugmentedSteam\Server\Controllers\ProfileManagementController;
 use AugmentedSteam\Server\Controllers\RatesController;
 use AugmentedSteam\Server\Controllers\SimilarController;
 use AugmentedSteam\Server\Controllers\StorePageController;
-use AugmentedSteam\Server\OpenId\OpenId;
 use AugmentedSteam\Server\Routing\Response\ApiResponseFactoryInterface;
 use AugmentedSteam\Server\Routing\Strategy\ApiStrategy;
-use Laminas\Diactoros\Response;
 use Laminas\Diactoros\ServerRequestFactory;
 use Laminas\HttpHandlerRunner\Emitter\SapiEmitter;
 use League\Route\RouteGroup;
 use League\Route\Strategy\ApplicationStrategy;
 use Psr\Container\ContainerInterface;
-use Psr\Http\Message\ServerRequestInterface;
 
 class Router
 {
@@ -69,6 +67,8 @@ class Router
         $router->get("/v1/storepagedata/", [StorePageController::class, "getStorePageDataV1"]);
 
         $router->get("/v1/similar/", [SimilarController::class, "getSimilarV1"]);
+
+        $router->get("/v1/prices/", [PricesController::class, "getPricesV1"]);
 
         $request = ServerRequestFactory::fromGlobals();
         $response = $router->dispatch($request);

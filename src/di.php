@@ -9,6 +9,7 @@ use AugmentedSteam\Server\Config\KeysConfig;
 use AugmentedSteam\Server\Config\LoggingConfig;
 use AugmentedSteam\Server\Controllers\GameController;
 use AugmentedSteam\Server\Controllers\MarketController;
+use AugmentedSteam\Server\Controllers\PricesController;
 use AugmentedSteam\Server\Controllers\ProfileController;
 use AugmentedSteam\Server\Controllers\ProfileManagementController;
 use AugmentedSteam\Server\Controllers\RatesController;
@@ -22,6 +23,7 @@ use AugmentedSteam\Server\Logging\LoggerFactoryInterface;
 use AugmentedSteam\Server\Logging\MonologLoggerFactory;
 use AugmentedSteam\Server\Model\Cache\Cache;
 use AugmentedSteam\Server\Model\HowLongToBeat\HLTBManager;
+use AugmentedSteam\Server\Model\Prices\PricesManager;
 use AugmentedSteam\Server\Model\Reviews\ReviewsManager;
 use AugmentedSteam\Server\Model\Market\MarketManager;
 use AugmentedSteam\Server\Model\SteamPeek\SteamPeekManager;
@@ -144,6 +146,12 @@ return [
             DI\get(KeysConfig::class),
             DI\get(LoggerFactoryInterface::class)
         ),
+    PricesManager::class => DI\create()
+        ->constructor(
+            DI\get(SimpleLoader::class),
+            DI\get(EndpointsConfig::class),
+            DI\get(KeysConfig::class)
+        ),
 
     // controllers
 
@@ -196,5 +204,12 @@ return [
             DI\get(ResponseFactoryInterface::class),
             DI\get(DbDriver::class),
             DI\get(SteamPeekManager::class)
+        ),
+
+    PricesController::class => DI\create()
+        ->constructor(
+            DI\get(ResponseFactoryInterface::class),
+            DI\get(DbDriver::class),
+            DI\get(PricesManager::class)
         )
 ];
