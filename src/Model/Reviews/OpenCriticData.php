@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace AugmentedSteam\Server\Model\IsThereAnyDeal;
+namespace AugmentedSteam\Server\Model\Reviews;
 
 class OpenCriticData
 {

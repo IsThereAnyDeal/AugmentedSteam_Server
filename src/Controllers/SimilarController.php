@@ -21,7 +21,6 @@ class SimilarController extends Controller {
         $count = (new Param($request, "count"))->default(5)->int();
         $shuffle = (new Param($request, "shuffle"))->default(false)->bool();
 
-
         $games = $this->steamPeekManager->getSimilar($appid, $count, $shuffle);
         $data = [];
         foreach($games as $game) {

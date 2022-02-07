@@ -22,7 +22,7 @@ use AugmentedSteam\Server\Logging\LoggerFactoryInterface;
 use AugmentedSteam\Server\Logging\MonologLoggerFactory;
 use AugmentedSteam\Server\Model\Cache\Cache;
 use AugmentedSteam\Server\Model\HowLongToBeat\HLTBManager;
-use AugmentedSteam\Server\Model\IsThereAnyDeal\ReviewsManager;
+use AugmentedSteam\Server\Model\Reviews\ReviewsManager;
 use AugmentedSteam\Server\Model\Market\MarketManager;
 use AugmentedSteam\Server\Model\SteamPeek\SteamPeekManager;
 use AugmentedSteam\Server\Model\StorePage\ExfglsManager;

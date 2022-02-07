@@ -5,7 +5,7 @@ namespace AugmentedSteam\Server\Controllers;
 
 use AugmentedSteam\Server\Http\Param;
 use AugmentedSteam\Server\Model\HowLongToBeat\HLTBManager;
-use AugmentedSteam\Server\Model\IsThereAnyDeal\ReviewsManager;
+use AugmentedSteam\Server\Model\Reviews\ReviewsManager;
 use AugmentedSteam\Server\Model\StorePage\ExfglsManager;
 use AugmentedSteam\Server\Model\StorePage\SteamChartsManager;
 use AugmentedSteam\Server\Model\StorePage\SteamSpyManager;
