@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace AugmentedSteam\Server\Routing;
 
 use AugmentedSteam\Server\Config\CoreConfig;
+use AugmentedSteam\Server\Controllers\EarlyAccessController;
 use AugmentedSteam\Server\Controllers\GameController;
 use AugmentedSteam\Server\Controllers\MarketController;
 use AugmentedSteam\Server\Controllers\PricesController;
@@ -63,12 +64,10 @@ class Router
         })->setStrategy(new ApplicationStrategy());
 
         $router->get("/v1/profile/profile/", [ProfileController::class, "getProfileV1"]);
-
         $router->get("/v1/storepagedata/", [StorePageController::class, "getStorePageDataV1"]);
-
         $router->get("/v1/similar/", [SimilarController::class, "getSimilarV1"]);
-
         $router->get("/v1/prices/", [PricesController::class, "getPricesV1"]);
+        $router->get("/v1/earlyaccess/", [EarlyAccessController::class, "getAppidsV1"]);
 
         $request = ServerRequestFactory::fromGlobals();
         $response = $router->dispatch($request);

@@ -123,15 +123,23 @@ CREATE TABLE `hltb` (
   `found_timestamp` int unsigned NOT NULL DEFAULT 0,
   `checked_timestamp` int unsigned,
   PRIMARY KEY (`id`),
-  INDEX(`appid`)
+  INDEX (`appid`)
 ) ENGINE=InnoDb;
 
 CREATE TABLE `similar` (
   `appid` int NOT NULL,
   `data` text,
   `timestamp` int unsigned NOT NULL,
-  PRIMARY KEY(`appid`)
+  PRIMARY KEY (`appid`)
 ) ENGINE=InnoDB;
+
+CREATE TABLE `earlyaccess` (
+  `appid` int NOT NULL,
+  `timestamp` int unsigned NOT NULL,
+  PRIMARY KEY (`appid`),
+  INDEX (`timestamp`)
+) ENGINE=InnoDB;
+
 
 
 

@@ -7,6 +7,7 @@ use AugmentedSteam\Server\Config\EndpointsConfig;
 use AugmentedSteam\Server\Config\ExfglsConfig;
 use AugmentedSteam\Server\Config\KeysConfig;
 use AugmentedSteam\Server\Config\LoggingConfig;
+use AugmentedSteam\Server\Controllers\EarlyAccessController;
 use AugmentedSteam\Server\Controllers\GameController;
 use AugmentedSteam\Server\Controllers\MarketController;
 use AugmentedSteam\Server\Controllers\PricesController;
@@ -22,6 +23,7 @@ use AugmentedSteam\Server\Loader\SimpleLoader;
 use AugmentedSteam\Server\Logging\LoggerFactoryInterface;
 use AugmentedSteam\Server\Logging\MonologLoggerFactory;
 use AugmentedSteam\Server\Model\Cache\Cache;
+use AugmentedSteam\Server\Model\EarlyAccess\EarlyAccessManager;
 use AugmentedSteam\Server\Model\HowLongToBeat\HLTBManager;
 use AugmentedSteam\Server\Model\Prices\PricesManager;
 use AugmentedSteam\Server\Model\Reviews\ReviewsManager;
@@ -35,6 +37,7 @@ use AugmentedSteam\Server\Model\User\UserManager;
 use AugmentedSteam\Server\Routing\Response\ApiResponseFactory;
 use AugmentedSteam\Server\Routing\Response\ApiResponseFactoryInterface;
 use AugmentedSteam\Server\Model\SteamRep\SteamRepManager;
+use GuzzleHttp\Client;
 use IsThereAnyDeal\Database\DbConfig;
 use IsThereAnyDeal\Database\DbDriver;
 use IsThereAnyDeal\Database\DbFactory;
@@ -45,7 +48,7 @@ use Psr\Http\Message\ResponseFactoryInterface;
 require_once __DIR__."/../vendor/autoload.php";
 
 return [
-    "guzzle" => DI\create(\GuzzleHttp\Client::class),
+    "guzzle" => DI\create(Client::class),
 
     SimpleLoader::class => DI\create()
         ->constructor(
@@ -152,6 +155,10 @@ return [
             DI\get(EndpointsConfig::class),
             DI\get(KeysConfig::class)
         ),
+    EarlyAccessManager::class => DI\create()
+        ->constructor(
+            DI\get(DbDriver::class)
+        ),
 
     // controllers
 
@@ -211,5 +218,12 @@ return [
             DI\get(ResponseFactoryInterface::class),
             DI\get(DbDriver::class),
             DI\get(PricesManager::class)
+        ),
+
+    EarlyAccessController::class => DI\create()
+        ->constructor(
+            DI\get(ResponseFactoryInterface::class),
+            DI\get(DbDriver::class),
+            DI\get(EarlyAccessManager::class)
         )
 ];

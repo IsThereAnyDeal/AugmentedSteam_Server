@@ -6,6 +6,7 @@ namespace AugmentedSteam\Server\Cron;
 use AugmentedSteam\Server\Loader\Loader;
 use AugmentedSteam\Server\Loader\Proxy\ProxyFactoryInterface;
 use AugmentedSteam\Server\Logging\LoggerFactoryInterface;
+use AugmentedSteam\Server\Model\EarlyAccessCrawler;
 use AugmentedSteam\Server\Model\HowLongToBeat\GamePageCrawler;
 use AugmentedSteam\Server\Model\HowLongToBeat\SearchResultsCrawler;
 use AugmentedSteam\Server\Model\Market\MarketCrawler;
@@ -64,6 +65,18 @@ class CronJobFactory
 
                 $loader = new Loader($logger, $this->guzzle);
                 $updater = new GamePageCrawler($this->db, $loader, $logger, $this->proxyFactory);
+                $updater->update();
+            });
+    }
+
+    public function createEarlyAccessJob(): CronJob {
+        return (new CronJob())
+            ->lock("earlyaccess", 5)
+            ->callable(function(){
+                $logger = $this->loggerFactory->createLogger("earlyaccess");
+
+                $loader = new Loader($logger, $this->guzzle);
+                $updater = new EarlyAccessCrawler($this->db, $loader, $logger, $this->proxyFactory);
                 $updater->update();
             });
     }
