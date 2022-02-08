@@ -140,6 +140,19 @@ CREATE TABLE `earlyaccess` (
   INDEX (`timestamp`)
 ) ENGINE=InnoDB;
 
+CREATE TABLE `surveys` (
+  `appid` int NOT NULL,
+  `steamid` bigint NOT NULL,
+  `framerate` tinyint unsigned,
+  `optimized` tinyint,
+  `lag` tinyint,
+  `graphics_settings` enum('none', 'basic', 'granular'),
+  `bg_sound_mute` tinyint,
+  `good_controls` tinyint,
+  `timestamp` int unsigned NOT NULL,
+  PRIMARY KEY (`appid`, `steamid`)
+);
+
 
 
 
@@ -153,19 +166,6 @@ CREATE TABLE `features` (
   `description` longtext NOT NULL,
   PRIMARY KEY(`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE `game_survey` (
-  `appid` int NOT NULL,
-  `steamid` bigint NOT NULL,
-  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `framerate` char(2),
-  `optimized` boolean,
-  `lag` boolean,
-  `graphics_settings` char(2),
-  `bg_sound` boolean,
-  `good_controls` boolean,
-  PRIMARY KEY (`appid`, `steamid`)
-);
 
 CREATE TABLE IF NOT EXISTS `steamcn` (
   `id` bigint(20) NOT NULL auto_increment,

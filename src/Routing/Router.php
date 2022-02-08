@@ -13,6 +13,7 @@ use AugmentedSteam\Server\Controllers\ProfileManagementController;
 use AugmentedSteam\Server\Controllers\RatesController;
 use AugmentedSteam\Server\Controllers\SimilarController;
 use AugmentedSteam\Server\Controllers\StorePageController;
+use AugmentedSteam\Server\Controllers\SurveyController;
 use AugmentedSteam\Server\Routing\Response\ApiResponseFactoryInterface;
 use AugmentedSteam\Server\Routing\Strategy\ApiStrategy;
 use Laminas\Diactoros\ServerRequestFactory;
@@ -38,6 +39,9 @@ class Router
         );
         $strategy->setContainer($this->container);
 
+        $appStrategy = new ApplicationStrategy();
+        $appStrategy->setContainer($this->container);
+
         $router = new \League\Route\Router();
         $router->setStrategy($strategy);
 
@@ -56,18 +60,21 @@ class Router
         $router->group("/v1/profile/background/edit", function(RouteGroup $group) {
             $group->get("/delete/", [ProfileManagementController::class, "deleteBackgroundV1"]);
             $group->get("/save/", [ProfileManagementController::class, "saveBackgroundV1"]);
-        })->setStrategy(new ApplicationStrategy());
+        })->setStrategy($appStrategy);
 
         $router->group("/v1/profile/style/edit", function(RouteGroup $group) {
             $group->get("/delete/", [ProfileManagementController::class, "deleteStyleV1"]);
             $group->get("/save/", [ProfileManagementController::class, "saveStyleV1"]);
-        })->setStrategy(new ApplicationStrategy());
+        })->setStrategy($appStrategy);
 
         $router->get("/v1/profile/profile/", [ProfileController::class, "getProfileV1"]);
         $router->get("/v1/storepagedata/", [StorePageController::class, "getStorePageDataV1"]);
         $router->get("/v1/similar/", [SimilarController::class, "getSimilarV1"]);
         $router->get("/v1/prices/", [PricesController::class, "getPricesV1"]);
         $router->get("/v1/earlyaccess/", [EarlyAccessController::class, "getAppidsV1"]);
+
+        $router->get("/v1/survey/submit/", [SurveyController::class, "getSubmitV1"])
+            ->setStrategy($appStrategy);
 
         $request = ServerRequestFactory::fromGlobals();
         $response = $router->dispatch($request);

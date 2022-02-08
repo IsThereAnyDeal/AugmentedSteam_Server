@@ -16,6 +16,7 @@ use AugmentedSteam\Server\Controllers\ProfileManagementController;
 use AugmentedSteam\Server\Controllers\RatesController;
 use AugmentedSteam\Server\Controllers\SimilarController;
 use AugmentedSteam\Server\Controllers\StorePageController;
+use AugmentedSteam\Server\Controllers\SurveyController;
 use AugmentedSteam\Server\Cron\CronJobFactory;
 use AugmentedSteam\Server\Loader\Proxy\ProxyFactory;
 use AugmentedSteam\Server\Loader\Proxy\ProxyFactoryInterface;
@@ -33,6 +34,7 @@ use AugmentedSteam\Server\Model\StorePage\ExfglsManager;
 use AugmentedSteam\Server\Model\StorePage\SteamChartsManager;
 use AugmentedSteam\Server\Model\StorePage\SteamSpyManager;
 use AugmentedSteam\Server\Model\StorePage\WSGFManager;
+use AugmentedSteam\Server\Model\Survey\SurveyManager;
 use AugmentedSteam\Server\Model\User\UserManager;
 use AugmentedSteam\Server\Routing\Response\ApiResponseFactory;
 use AugmentedSteam\Server\Routing\Response\ApiResponseFactoryInterface;
@@ -159,6 +161,11 @@ return [
         ->constructor(
             DI\get(DbDriver::class)
         ),
+    SurveyManager::class => DI\create()
+        ->constructor(
+            DI\get(DbDriver::class),
+            DI\get(LoggerFactoryInterface::class)
+        ),
 
     // controllers
 
@@ -225,5 +232,13 @@ return [
             DI\get(ResponseFactoryInterface::class),
             DI\get(DbDriver::class),
             DI\get(EarlyAccessManager::class)
+        ),
+
+    SurveyController::class => DI\create()
+        ->constructor(
+            DI\get(ResponseFactoryInterface::class),
+            DI\get(DbDriver::class),
+            DI\get(CoreConfig::class),
+            DI\get(SurveyManager::class),
         )
 ];

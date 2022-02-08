@@ -60,7 +60,7 @@ class ProfileManagementController extends Controller
 
         $openId = new OpenId($this->config->getHost(), "/v1/profile/background/edit/delete/");
         if (!$openId->isAuthenticationStarted()) {
-            return new RedirectResponse($openId->getAuthUrl());
+            return new RedirectResponse($openId->getAuthUrl()->toString());
         }
 
         if (!$openId->authenticate()) {
@@ -89,7 +89,7 @@ class ProfileManagementController extends Controller
 
         $openId = new OpenId($this->config->getHost(), "/v1/profile/background/edit/save/?appid=$appid&img=$img");
         if (!$openId->isAuthenticationStarted()) {
-            return new RedirectResponse($openId->getAuthUrl());
+            return new RedirectResponse($openId->getAuthUrl()->toString());
         }
 
         if (!$openId->authenticate()) {
@@ -107,7 +107,7 @@ class ProfileManagementController extends Controller
 
         $openId = new OpenId($this->config->getHost(), "/v1/profile/style/edit/delete/");
         if (!$openId->isAuthenticationStarted()) {
-            return new RedirectResponse($openId->getAuthUrl());
+            return new RedirectResponse($openId->getAuthUrl()->toString());
         }
 
         if (!$openId->authenticate()) {
@@ -131,7 +131,7 @@ class ProfileManagementController extends Controller
 
         $openId = new OpenId($this->config->getHost(), "/v1/profile/style/edit/save/?style=$style");
         if (!$openId->isAuthenticationStarted()) {
-            return new RedirectResponse($openId->getAuthUrl());
+            return new RedirectResponse($openId->getAuthUrl()->toString());
         }
 
         if (!$openId->authenticate()) {
