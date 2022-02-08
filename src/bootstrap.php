@@ -9,6 +9,7 @@ use AugmentedSteam\Server\Config\EndpointsConfig;
 use AugmentedSteam\Server\Config\ExfglsConfig;
 use AugmentedSteam\Server\Config\KeysConfig;
 use AugmentedSteam\Server\Config\LoggingConfig;
+use AugmentedSteam\Server\Config\TwitchConfig;
 use IsThereAnyDeal\Config\Config;
 use IsThereAnyDeal\Database\DbConfig;
 use Psr\Container\ContainerInterface;
@@ -22,8 +23,8 @@ $config->map([
     KeysConfig::class => "keys",
     EndpointsConfig::class => "endpoints",
     BrightDataConfig::class => "brightdata",
-    ExfglsConfig::class => "exfgls"
-    // TODO twitch
+    ExfglsConfig::class => "exfgls",
+    TwitchConfig::class => "twitch"
 ]);
 
 $core = $config->getConfig(CoreConfig::class);
@@ -41,13 +42,14 @@ if ($core->isShowErrors() || $isCli) {
 
 return (new \DI\ContainerBuilder())
     ->addDefinitions([
-        CoreConfig::class => fn(ContainerInterface $container) => $config->getConfig(CoreConfig::class),
-        DbConfig::class => fn(ContainerInterface $container) => $config->getConfig(DbConfig::class),
-        LoggingConfig::class => fn(ContainerInterface $container) => $config->getConfig(LoggingConfig::class),
-        KeysConfig::class => fn(ContainerInterface $container) => $config->getConfig(KeysConfig::class),
-        EndpointsConfig::class => fn(ContainerInterface $container) => $config->getConfig(EndpointsConfig::class),
-        BrightDataConfig::class => fn(ContainerInterface $container) => $config->getConfig(BrightDataConfig::class),
-        ExfglsConfig::class => fn(ContainerInterface $container) => $config->getConfig(ExfglsConfig::class),
+        CoreConfig::class => fn(ContainerInterface $c) => $config->getConfig(CoreConfig::class),
+        DbConfig::class => fn(ContainerInterface $c) => $config->getConfig(DbConfig::class),
+        LoggingConfig::class => fn(ContainerInterface $c) => $config->getConfig(LoggingConfig::class),
+        KeysConfig::class => fn(ContainerInterface $c) => $config->getConfig(KeysConfig::class),
+        EndpointsConfig::class => fn(ContainerInterface $c) => $config->getConfig(EndpointsConfig::class),
+        BrightDataConfig::class => fn(ContainerInterface $c) => $config->getConfig(BrightDataConfig::class),
+        ExfglsConfig::class => fn(ContainerInterface $c) => $config->getConfig(ExfglsConfig::class),
+        TwitchConfig::class => fn(ContainerInterface $c) => $config->getConfig(TwitchConfig::class),
     ])
     ->addDefinitions(__DIR__."/di.php")
     // ->enableCompilation() FIXME production

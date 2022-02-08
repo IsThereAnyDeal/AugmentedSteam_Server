@@ -14,6 +14,7 @@ use AugmentedSteam\Server\Controllers\RatesController;
 use AugmentedSteam\Server\Controllers\SimilarController;
 use AugmentedSteam\Server\Controllers\StorePageController;
 use AugmentedSteam\Server\Controllers\SurveyController;
+use AugmentedSteam\Server\Controllers\TwitchController;
 use AugmentedSteam\Server\Routing\Response\ApiResponseFactoryInterface;
 use AugmentedSteam\Server\Routing\Strategy\ApiStrategy;
 use Laminas\Diactoros\ServerRequestFactory;
@@ -75,6 +76,8 @@ class Router
 
         $router->get("/v1/survey/submit/", [SurveyController::class, "getSubmitV1"])
             ->setStrategy($appStrategy);
+
+        $router->get("/v1/twitch/stream/", [TwitchController::class, "getStreamV1"]);
 
         $request = ServerRequestFactory::fromGlobals();
         $response = $router->dispatch($request);

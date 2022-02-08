@@ -7,6 +7,7 @@ use AugmentedSteam\Server\Config\EndpointsConfig;
 use AugmentedSteam\Server\Config\ExfglsConfig;
 use AugmentedSteam\Server\Config\KeysConfig;
 use AugmentedSteam\Server\Config\LoggingConfig;
+use AugmentedSteam\Server\Config\TwitchConfig;
 use AugmentedSteam\Server\Controllers\EarlyAccessController;
 use AugmentedSteam\Server\Controllers\GameController;
 use AugmentedSteam\Server\Controllers\MarketController;
@@ -17,6 +18,7 @@ use AugmentedSteam\Server\Controllers\RatesController;
 use AugmentedSteam\Server\Controllers\SimilarController;
 use AugmentedSteam\Server\Controllers\StorePageController;
 use AugmentedSteam\Server\Controllers\SurveyController;
+use AugmentedSteam\Server\Controllers\TwitchController;
 use AugmentedSteam\Server\Cron\CronJobFactory;
 use AugmentedSteam\Server\Loader\Proxy\ProxyFactory;
 use AugmentedSteam\Server\Loader\Proxy\ProxyFactoryInterface;
@@ -35,6 +37,8 @@ use AugmentedSteam\Server\Model\StorePage\SteamChartsManager;
 use AugmentedSteam\Server\Model\StorePage\SteamSpyManager;
 use AugmentedSteam\Server\Model\StorePage\WSGFManager;
 use AugmentedSteam\Server\Model\Survey\SurveyManager;
+use AugmentedSteam\Server\Model\Twitch\TokenStorage;
+use AugmentedSteam\Server\Model\Twitch\TwitchManager;
 use AugmentedSteam\Server\Model\User\UserManager;
 use AugmentedSteam\Server\Routing\Response\ApiResponseFactory;
 use AugmentedSteam\Server\Routing\Response\ApiResponseFactoryInterface;
@@ -43,6 +47,7 @@ use GuzzleHttp\Client;
 use IsThereAnyDeal\Database\DbConfig;
 use IsThereAnyDeal\Database\DbDriver;
 use IsThereAnyDeal\Database\DbFactory;
+use IsThereAnyDeal\Twitch\Api\TokenStorageInterface;
 use Laminas\Diactoros\ResponseFactory;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
@@ -76,6 +81,12 @@ return [
     LoggerFactoryInterface::class => DI\create(MonologLoggerFactory::class)
         ->constructor(DI\get(LoggingConfig::class)),
 
+    ProxyFactoryInterface::class => DI\create(ProxyFactory::class)
+        ->constructor(DI\get(BrightDataConfig::class)),
+
+    TokenStorageInterface::class => DI\create(TokenStorage::class)
+        ->constructor(DI\get(DbDriver::class)),
+
     CronJobFactory::class => DI\create()
         ->constructor(
             DI\get(LoggerFactoryInterface::class),
@@ -83,9 +94,6 @@ return [
             DI\get(DbDriver::class),
             DI\get("guzzle")
         ),
-
-    ProxyFactoryInterface::class => DI\create(ProxyFactory::class)
-        ->constructor(DI\get(BrightDataConfig::class)),
 
     // managers
 
@@ -166,6 +174,12 @@ return [
             DI\get(DbDriver::class),
             DI\get(LoggerFactoryInterface::class)
         ),
+    TwitchManager::class => DI\create()
+        ->constructor(
+            DI\get(TwitchConfig::class),
+            DI\get(TokenStorageInterface::class),
+            DI\get("guzzle")
+        ),
 
     // controllers
 
@@ -241,5 +255,12 @@ return [
             DI\get(DbDriver::class),
             DI\get(CoreConfig::class),
             DI\get(SurveyManager::class),
+        ),
+
+    TwitchController::class => DI\create()
+        ->constructor(
+            DI\get(ResponseFactoryInterface::class),
+            DI\get(DbDriver::class),
+            DI\get(TwitchManager::class),
         )
 ];

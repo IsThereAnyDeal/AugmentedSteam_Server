@@ -153,6 +153,13 @@ CREATE TABLE `surveys` (
   PRIMARY KEY (`appid`, `steamid`)
 );
 
+CREATE TABLE `twitch_token` (
+  `token` char(30) NOT NULL,
+  `expiry` int NOT NULL,
+  INDEX(`expiry`),
+  PRIMARY KEY(`token`)
+) ENGINE=InnoDB;
+
 
 
 
@@ -184,13 +191,6 @@ CREATE TABLE IF NOT EXISTS `steam_reviews` (
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY(`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE IF NOT EXISTS `twitch_token` (
-  `token` char(30) NOT NULL,
-  `expiry` int NOT NULL,
-  INDEX(`expiry`),
-  PRIMARY KEY(`token`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `session_ids` (
   `session_id` binary(16) NOT NULL,
