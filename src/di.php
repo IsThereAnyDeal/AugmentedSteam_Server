@@ -210,7 +210,8 @@ return [
             DI\get(WSGFManager::class),
             DI\get(ExfglsManager::class),
             DI\get(HLTBManager::class),
-            DI\get(ReviewsManager::class)
+            DI\get(ReviewsManager::class),
+            DI\get(SurveyManager::class)
         ),
 
     SimilarController::class => DI\create()

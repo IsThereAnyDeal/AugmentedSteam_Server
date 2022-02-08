@@ -8,7 +8,9 @@ use AugmentedSteam\Server\Model\DataObjects\DSurvey;
 use AugmentedSteam\Server\Model\Tables\TSurveys;
 use IsThereAnyDeal\Database\DbDriver;
 use IsThereAnyDeal\Database\Sql\SqlInsertQuery;
+use IsThereAnyDeal\Database\Sql\SqlSelectQuery;
 use Psr\Log\LoggerInterface;
+use function Deployer\fetch;
 
 class SurveyManager
 {
@@ -37,5 +39,57 @@ class SurveyManager
             )->persist($survey);
 
         $this->logger->info("{$s->appid} by {$s->steamid}");
+    }
+
+    private function updateCounter(array &$data, string $key, $value): void {
+        if (!is_null($value)) {
+            $data[$key][$value]++;
+        }
+    }
+
+    public function getData(int $appid): ?array {
+
+        $s = new TSurveys();
+        $select = (new SqlSelectQuery($this->db,
+            "SELECT $s->framerate, $s->optimized, $s->lag, $s->graphics_settings,
+                $s->bg_sound_mute, $s->good_controls
+            FROM $s
+            WHERE $s->appid=:appid"
+        ))->params([
+            ":appid" => $appid
+        ])->fetch(DSurvey::class);
+
+        if (count($select) == 0) {
+            return null;
+        }
+
+        $data = [
+            "framerate" => [
+                "0" => 0,
+                "30" => 0,
+                "60" => 0
+            ],
+            "settings" => [
+                EGraphicsSettings::None => 0,
+                EGraphicsSettings::Basic => 0,
+                EGraphicsSettings::Granular => 0
+            ],
+            "optimized" => [0, 0],
+            "lag" => [0, 0],
+            "bg_sound" => [0, 0],
+            "controls" => [0, 0],
+        ];
+
+        /** @var DSurvey $o */
+        foreach($select as $o) {
+            $this->updateCounter($data, "framerate", $o->getFramerate());
+            $this->updateCounter($data, "settings", $o->getGraphicsSettings());
+            $this->updateCounter($data, "optimized", $o->getOptimized());
+            $this->updateCounter($data, "lag", $o->getLag());
+            $this->updateCounter($data, "bg_sound", $o->getBgSoundMute());
+            $this->updateCounter($data, "controls", $o->getGoodControls());
+        }
+
+        return $data;
     }
 }

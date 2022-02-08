@@ -10,6 +10,7 @@ use AugmentedSteam\Server\Model\StorePage\ExfglsManager;
 use AugmentedSteam\Server\Model\StorePage\SteamChartsManager;
 use AugmentedSteam\Server\Model\StorePage\SteamSpyManager;
 use AugmentedSteam\Server\Model\StorePage\WSGFManager;
+use AugmentedSteam\Server\Model\Survey\SurveyManager;
 use IsThereAnyDeal\Database\DbDriver;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -22,6 +23,7 @@ class StorePageController extends Controller
     private ExfglsManager $exfglsManager;
     private HLTBManager $hltbManager;
     private ReviewsManager $reviewsManager;
+    private SurveyManager $surveyManager;
 
     public function __construct(
         ResponseFactoryInterface $responseFactory,
@@ -31,7 +33,8 @@ class StorePageController extends Controller
         WSGFManager $wsgfManager,
         ExfglsManager $exfglsManager,
         HLTBManager $hltbManager,
-        ReviewsManager $reviewsManager
+        ReviewsManager $reviewsManager,
+        SurveyManager $surveyManager
     ) {
         parent::__construct($responseFactory, $db);
 
@@ -41,6 +44,7 @@ class StorePageController extends Controller
         $this->exfglsManager = $exfglsManager;
         $this->hltbManager = $hltbManager;
         $this->reviewsManager = $reviewsManager;
+        $this->surveyManager = $surveyManager;
     }
 
     public function getStorePageDataV1(ServerRequestInterface $request) {
@@ -139,6 +143,13 @@ class StorePageController extends Controller
                     ];
                 }
             }
+        }
+
+        //
+
+        $data = $this->surveyManager->getData($appid);
+        if (!is_null($data)) {
+            $result['survey'] = $data;
         }
 
         return $result;
