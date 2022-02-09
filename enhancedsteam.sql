@@ -167,34 +167,3 @@ CREATE TABLE `sessions` (
   `expiry` int unsigned NOT NULL,
   PRIMARY KEY(`token`)
 ) ENGINE=InnoDB;
-
-
-
-CREATE TABLE `features` (
-  `id` bigint(20) NOT NULL auto_increment,
-  `category` varchar(3) NOT NULL,
-  `name` varchar(500) NOT NULL,
-  `active` tinyint(1) NOT NULL,
-  `screenshot_before` varchar(255) NOT NULL,
-  `screenshot_after` varchar(255) NOT NULL,
-  `description` longtext NOT NULL,
-  PRIMARY KEY(`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE IF NOT EXISTS `steamcn` (
-  `id` bigint(20) NOT NULL auto_increment,
-  `appid` int(11) NOT NULL,
-  `json` varchar(4096) COLLATE utf8_unicode_ci NOT NULL,
-  `access_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY(`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-CREATE TABLE IF NOT EXISTS `steam_reviews` (
-  `id` bigint(20) NOT NULL auto_increment,
-  `appid` int(11) NOT NULL,
-  `total` int(11) NOT NULL,
-  `pos` int(11) NOT NULL,
-  `stm` int(11) NOT NULL,
-  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY(`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
