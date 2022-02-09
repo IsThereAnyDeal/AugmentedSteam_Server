@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ab95307a141d0027e9c152d11a852c08",
+    "content-hash": "7912843a676166f87bad27ab473e1935",
     "packages": [
         {
             "name": "guzzlehttp/guzzle",
@@ -331,22 +331,21 @@
         },
         {
             "name": "itad/config",
-            "version": "dev-master",
+            "version": "v0.1",
             "source": {
                 "type": "git",
                 "url": "git@github.com:IsThereAnyDeal/Config.git",
-                "reference": "32017b9f9bb0bb5f5a5e39c3866d5e677edb76f5"
+                "reference": "6912a11e68be863c80dfffe75e8a06fba625507a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/IsThereAnyDeal/Config/zipball/32017b9f9bb0bb5f5a5e39c3866d5e677edb76f5",
-                "reference": "32017b9f9bb0bb5f5a5e39c3866d5e677edb76f5",
+                "url": "https://api.github.com/repos/IsThereAnyDeal/Config/zipball/6912a11e68be863c80dfffe75e8a06fba625507a",
+                "reference": "6912a11e68be863c80dfffe75e8a06fba625507a",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*"
             },
-            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -354,75 +353,93 @@
                 }
             },
             "support": {
-                "source": "https://github.com/IsThereAnyDeal/Config/tree/master",
+                "source": "https://github.com/IsThereAnyDeal/Config/tree/v0.1",
                 "issues": "https://github.com/IsThereAnyDeal/Config/issues"
             },
-            "time": "2022-01-28T21:19:47+00:00"
+            "time": "2022-02-09T15:29:11+00:00"
         },
         {
             "name": "itad/db",
-            "version": "dev-master",
+            "version": "v0.1",
             "source": {
                 "type": "git",
                 "url": "git@github.com:IsThereAnyDeal/Database.git",
-                "reference": "46154555f22bdde775e10f339bb508d81aed3e43"
+                "reference": "b1615d333facfdb044cab9a000fe5195cc2bed05"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/IsThereAnyDeal/Database/zipball/46154555f22bdde775e10f339bb508d81aed3e43",
-                "reference": "46154555f22bdde775e10f339bb508d81aed3e43",
+                "url": "https://api.github.com/repos/IsThereAnyDeal/Database/zipball/b1615d333facfdb044cab9a000fe5195cc2bed05",
+                "reference": "b1615d333facfdb044cab9a000fe5195cc2bed05",
                 "shasum": ""
             },
             "require": {
                 "ext-pdo": "*",
-                "nette/schema": "^1.2"
+                "nette/schema": "^1.2",
+                "psr/log": "^1.1.4"
             },
             "require-dev": {
+                "phpstan/phpstan": "^1.4",
                 "phpunit/phpunit": "^9.5"
             },
-            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
                     "IsThereAnyDeal\\Database\\": "src"
                 }
             },
+            "autoload-dev": {
+                "psr-4": {
+                    "IsThereAnyDeal\\Database\\": "tests"
+                }
+            },
+            "scripts": {
+                "phpstan": [
+                    "vendor/bin/phpstan analyse -c phpstan.neon"
+                ]
+            },
             "support": {
-                "source": "https://github.com/IsThereAnyDeal/Database/tree/master",
+                "source": "https://github.com/IsThereAnyDeal/Database/tree/v0.1",
                 "issues": "https://github.com/IsThereAnyDeal/Database/issues"
             },
-            "time": "2022-01-31T00:56:21+00:00"
+            "time": "2022-02-09T22:03:47+00:00"
         },
         {
             "name": "itad/twitch-api",
-            "version": "dev-master",
+            "version": "v0.1",
             "source": {
                 "type": "git",
                 "url": "git@github.com:IsThereAnyDeal/TwitchApi.git",
-                "reference": "366d1fd6ee856121349adebf730a92e08db9b294"
+                "reference": "2445d628b749f3c4ef45cac0861d62293af1c04a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/IsThereAnyDeal/TwitchApi/zipball/366d1fd6ee856121349adebf730a92e08db9b294",
-                "reference": "366d1fd6ee856121349adebf730a92e08db9b294",
+                "url": "https://api.github.com/repos/IsThereAnyDeal/TwitchApi/zipball/2445d628b749f3c4ef45cac0861d62293af1c04a",
+                "reference": "2445d628b749f3c4ef45cac0861d62293af1c04a",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
                 "guzzlehttp/guzzle": "^7.4"
             },
-            "default-branch": true,
+            "require-dev": {
+                "phpstan/phpstan": "^1.4"
+            },
             "type": "library",
             "autoload": {
                 "psr-4": {
                     "IsThereAnyDeal\\Twitch\\Api\\": "src"
                 }
             },
+            "scripts": {
+                "phpstan": [
+                    "vendor/bin/phpstan analyse -c phpstan.neon"
+                ]
+            },
             "support": {
-                "source": "https://github.com/IsThereAnyDeal/TwitchApi/tree/master",
+                "source": "https://github.com/IsThereAnyDeal/TwitchApi/tree/v0.1",
                 "issues": "https://github.com/IsThereAnyDeal/TwitchApi/issues"
             },
-            "time": "2022-02-08T21:10:48+00:00"
+            "time": "2022-02-09T22:16:53+00:00"
         },
         {
             "name": "laminas/laminas-diactoros",
@@ -3129,12 +3146,12 @@
                 }
             },
             "autoload": {
-                "psr-4": {
-                    "RingCentral\\Psr7\\": "src/"
-                },
                 "files": [
                     "src/functions_include.php"
-                ]
+                ],
+                "psr-4": {
+                    "RingCentral\\Psr7\\": "src/"
+                }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -4060,9 +4077,6 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "itad/config": 20,
-        "itad/db": 20,
-        "itad/twitch-api": 20,
         "deployer/deployer": 5
     },
     "prefer-stable": false,
@@ -4072,7 +4086,8 @@
         "ext-simplexml": "*",
         "ext-curl": "*",
         "ext-dom": "*",
-        "ext-libxml": "*"
+        "ext-libxml": "*",
+        "ext-openssl": "*"
     },
     "platform-dev": [],
     "platform-overrides": {
