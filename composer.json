@@ -24,6 +24,7 @@
     "ext-curl": "*",
     "ext-dom": "*",
     "ext-libxml": "*",
+    "ext-openssl": "*",
     "itad/config": "dev-master@dev",
     "itad/db": "dev-master@dev",
     "itad/twitch-api": "dev-master@dev",

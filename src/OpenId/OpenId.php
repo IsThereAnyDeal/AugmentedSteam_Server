@@ -10,7 +10,7 @@ class OpenId {
 
     private string $host;
     private LightOpenID $client;
-    private string $steamId;
+    protected string $steamId;
 
     public function __construct(string $host, string $returnUrl) {
         $this->host = $host;

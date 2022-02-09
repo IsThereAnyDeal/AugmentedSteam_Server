@@ -160,6 +160,13 @@ CREATE TABLE `twitch_token` (
   PRIMARY KEY(`token`)
 ) ENGINE=InnoDB;
 
+CREATE TABLE `sessions` (
+  `token` char(10) NOT NULL,
+  `hash` char(64) NOT NULL,
+  `steam_id` bigint NOT NULL,
+  `expiry` int unsigned NOT NULL,
+  PRIMARY KEY(`token`)
+) ENGINE=InnoDB;
 
 
 
@@ -191,10 +198,3 @@ CREATE TABLE IF NOT EXISTS `steam_reviews` (
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY(`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE IF NOT EXISTS `session_ids` (
-  `session_id` binary(16) NOT NULL,
-  `steam_id` varchar(25) NOT NULL,
-  `expiry` timestamp NOT NULL,
-  PRIMARY KEY(`session_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

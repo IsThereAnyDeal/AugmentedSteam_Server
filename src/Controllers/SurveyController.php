@@ -9,6 +9,7 @@ use AugmentedSteam\Server\Model\DataObjects\DSurvey;
 use AugmentedSteam\Server\Model\Survey\EGraphicsSettings;
 use AugmentedSteam\Server\Model\Survey\SurveyManager;
 use AugmentedSteam\Server\OpenId\OpenId;
+use AugmentedSteam\Server\OpenId\Session;
 use IsThereAnyDeal\Database\DbDriver;
 use Laminas\Diactoros\Response\RedirectResponse;
 use Psr\Http\Message\ResponseFactoryInterface;
@@ -40,12 +41,8 @@ class SurveyController extends Controller
         }
 
         $returnUrl = "https://store.steampowered.com/app/{$appid}/";
-        try {
-            $steamId = (new Param($request, "profile"))->int();
-        } catch(\Exception $e) {
-            return new RedirectResponse($returnUrl."#as-error:badrequest");
-        }
 
+        $steamId = (new Param($request, "profile"))->default(null)->int();
         $framerate = (new Param($request, "framerate"))->default(null)->string();
         $optimized = (new Param($request, "optimized"))->default(null)->string();
         $lag = (new Param($request, "lag"))->default(null)->string();
@@ -64,29 +61,31 @@ class SurveyController extends Controller
             "good_controls" => $controls
         ]);
 
-        $openId = new OpenId($this->config->getHost(), "/v1/survey/submit/?$params");
-        if (!$openId->isAuthenticationStarted()) {
-            return new RedirectResponse($openId->getAuthUrl()->toString());
-        }
+        $session = new Session($this->db, $this->config->getHost(), "/v1/survey/submit/?$params");
+        if (!$session->isAuthenticated($request, $steamId)) {
+            if (!$session->isAuthenticationStarted()) {
+                return new RedirectResponse($session->getAuthUrl()->toString());
+            }
 
-        if (!$openId->authenticate()) {
-            return new RedirectResponse($returnUrl."#as-failure");
+            if (!$session->authenticate()) {
+                return new RedirectResponse($returnUrl."#as-failure");
+            }
         }
 
         $this->surveyManager->submit(
             (new DSurvey())
                 ->setAppid($appid)
-                ->setSteamId($steamId)
+                ->setSteamId((int)$session->getSteamId())
                 ->setFramerate(["th" => 30, "sx" => 60, "va" => 0][$framerate] ?? null)
-                ->setOptimized(is_null($optimized) ? null : $optimized == "yes")
-                ->setLag(is_null($lag) ? null : $lag == "yes")
+                ->setOptimized(is_null($optimized) ? null : (int)($optimized == "yes"))
+                ->setLag(is_null($lag) ? null : (int)($lag == "yes"))
                 ->setGraphicsSettings([
                         "no" => EGraphicsSettings::None,
                         "bs" => EGraphicsSettings::Basic,
                         "gr" => EGraphicsSettings::Granular
                     ][$graphicsSettings] ?? null)
-                ->setBgSoundMute(is_null($bgSoundMute) ? null : $bgSoundMute == "yes")
-                ->setGoodControls(is_null($controls) ? null : $controls == "yes")
+                ->setBgSoundMute(is_null($bgSoundMute) ? null : (int)($bgSoundMute == "yes"))
+                ->setGoodControls(is_null($controls) ? null : (int)($controls == "yes"))
                 ->setTimestamp(time())
         );
 

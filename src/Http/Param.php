@@ -47,7 +47,7 @@ class Param
             }
 
             throw new InvalidValueException($this->name);
-        } elseif (isset($this->default)) {
+        } elseif ($this->hasDefault) {
             return $this->default;
         }
 
@@ -68,7 +68,7 @@ class Param
             }
 
             throw new InvalidValueException($this->name);
-        } elseif (isset($this->default)) {
+        } elseif ($this->hasDefault) {
             return $this->default;
         }
 
@@ -97,7 +97,7 @@ class Param
     public function list($separator=","): array {
         if ($this->exists()) {
             return explode($separator, $this->value());
-        } elseif (isset($this->default) && is_array($this->default)) {
+        } elseif ($this->hasDefault && is_array($this->default)) {
             return $this->default;
         }
 
