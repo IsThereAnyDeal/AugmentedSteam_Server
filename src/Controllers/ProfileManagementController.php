@@ -8,6 +8,7 @@ use AugmentedSteam\Server\Http\Param;
 use AugmentedSteam\Server\Model\Market\MarketManager;
 use AugmentedSteam\Server\Model\User\UserManager;
 use AugmentedSteam\Server\OpenId\OpenId;
+use AugmentedSteam\Server\OpenId\Session;
 use IsThereAnyDeal\Database\DbDriver;
 use Laminas\Diactoros\Response\RedirectResponse;
 use Psr\Http\Message\ResponseFactoryInterface;
@@ -50,25 +51,39 @@ class ProfileManagementController extends Controller
     }
 
     public function getGamesV1(ServerRequestInterface $request): array {
-
         return $this->marketManager
             ->getGames();
+    }
+
+    private function authorize(ServerRequestInterface $request, string $selfUrl, string $returnUrl, int $profile) {
+        $session = new Session($this->db, $this->config->getHost(), $selfUrl);
+        if (!$session->isAuthenticated($request, $profile)) {
+            if (!$session->isAuthenticationStarted()) {
+                return new RedirectResponse($session->getAuthUrl()->toString());
+            }
+
+            if (!$session->authenticate()) {
+                return new RedirectResponse($returnUrl."#as-failure");
+            }
+        }
+
+        return (int)$session->getSteamId();
     }
 
     public function deleteBackgroundV1(ServerRequestInterface $request): RedirectResponse {
         $returnUrl = "https://steamcommunity.com/my/profile";
 
-        $openId = new OpenId($this->config->getHost(), "/v1/profile/background/edit/delete/");
-        if (!$openId->isAuthenticationStarted()) {
-            return new RedirectResponse($openId->getAuthUrl()->toString());
-        }
+        $profile = (new Param($request, "profile"))->default(null)->int();
 
-        if (!$openId->authenticate()) {
-            return new RedirectResponse($returnUrl."#as-failure");
+        $authResponse = $this->authorize($request, "/v1/profile/background/edit/delete/", $returnUrl, $profile);
+        if ($authResponse instanceof RedirectResponse) {
+            return $authResponse;
+        } else {
+            $steamId = $authResponse;
         }
 
         $this->userManager
-            ->deleteBackground((int)$openId->getSteamId());
+            ->deleteBackground($steamId);
 
         return new RedirectResponse($returnUrl."#as-success");
     }
@@ -87,17 +102,17 @@ class ProfileManagementController extends Controller
             return new RedirectResponse($returnUrl."#as-error:notfound");
         }
 
-        $openId = new OpenId($this->config->getHost(), "/v1/profile/background/edit/save/?appid=$appid&img=$img");
-        if (!$openId->isAuthenticationStarted()) {
-            return new RedirectResponse($openId->getAuthUrl()->toString());
-        }
+        $profile = (new Param($request, "profile"))->default(null)->int();
 
-        if (!$openId->authenticate()) {
-            return new RedirectResponse($returnUrl."#as-failure");
+        $authResponse = $this->authorize($request, "/v1/profile/background/edit/save/?appid=$appid&img=$img", $returnUrl, $profile);
+        if ($authResponse instanceof RedirectResponse) {
+            return $authResponse;
+        } else {
+            $steamId = $authResponse;
         }
 
         $this->userManager
-            ->saveBackground((int)$openId->getSteamId(), $appid, $img);
+            ->saveBackground($steamId, $appid, $img);
 
         return new RedirectResponse($returnUrl."#as-success");
     }
@@ -105,17 +120,17 @@ class ProfileManagementController extends Controller
     public function deleteStyleV1(ServerRequestInterface $request): RedirectResponse {
         $returnUrl = "https://steamcommunity.com/my/profile";
 
-        $openId = new OpenId($this->config->getHost(), "/v1/profile/style/edit/delete/");
-        if (!$openId->isAuthenticationStarted()) {
-            return new RedirectResponse($openId->getAuthUrl()->toString());
-        }
+        $profile = (new Param($request, "profile"))->default(null)->int();
 
-        if (!$openId->authenticate()) {
-            return new RedirectResponse($returnUrl."#as-failure");
+        $authResponse = $this->authorize($request, "/v1/profile/style/edit/delete/", $returnUrl, $profile);
+        if ($authResponse instanceof RedirectResponse) {
+            return $authResponse;
+        } else {
+            $steamId = $authResponse;
         }
 
         $this->userManager
-            ->deleteStyle((int)$openId->getSteamId());
+            ->deleteStyle($steamId);
 
         return new RedirectResponse($returnUrl."#as-success");
     }
@@ -129,17 +144,17 @@ class ProfileManagementController extends Controller
             return new RedirectResponse($returnUrl."#as-error:badrequest");
         }
 
-        $openId = new OpenId($this->config->getHost(), "/v1/profile/style/edit/save/?style=$style");
-        if (!$openId->isAuthenticationStarted()) {
-            return new RedirectResponse($openId->getAuthUrl()->toString());
-        }
+        $profile = (new Param($request, "profile"))->default(null)->int();
 
-        if (!$openId->authenticate()) {
-            return new RedirectResponse($returnUrl."#as-failure");
+        $authResponse = $this->authorize($request, "/v1/profile/style/edit/save/?style=$style", $returnUrl, $profile);
+        if ($authResponse instanceof RedirectResponse) {
+            return $authResponse;
+        } else {
+            $steamId = $authResponse;
         }
 
         $this->userManager
-            ->saveStyle((int)$openId->getSteamId(), $style);
+            ->saveStyle($steamId, $style);
 
         return new RedirectResponse($returnUrl."#as-success");
     }
