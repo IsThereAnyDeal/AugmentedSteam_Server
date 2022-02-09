@@ -76,6 +76,15 @@ class Router
         $router->get("/v1/twitch/stream/", [TwitchController::class, "getStreamV1"]);
 
         $request = ServerRequestFactory::fromGlobals();
+
+        // backwards compatibility to allow versions prefix with 0
+        $path = $request->getUri()->getPath();
+        if (preg_match("#/v0+\d/#", $path)) {
+            $uri = $request->getUri()
+                ->withPath(preg_replace("#/v0+(\d)/#", "/v$1/", $path));
+            $request = $request->withUri($uri);
+        }
+        
         $response = $router->dispatch($request);
 
         (new SapiEmitter)->emit($response);
