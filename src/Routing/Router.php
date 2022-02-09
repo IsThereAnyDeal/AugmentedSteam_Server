@@ -40,9 +40,6 @@ class Router
         );
         $strategy->setContainer($this->container);
 
-        $appStrategy = new ApplicationStrategy();
-        $appStrategy->setContainer($this->container);
-
         $router = new \League\Route\Router();
         $router->setStrategy($strategy);
 
@@ -61,12 +58,12 @@ class Router
         $router->group("/v1/profile/background/edit", function(RouteGroup $group) {
             $group->get("/delete/", [ProfileManagementController::class, "deleteBackgroundV1"]);
             $group->get("/save/", [ProfileManagementController::class, "saveBackgroundV1"]);
-        })->setStrategy($appStrategy);
+        });
 
         $router->group("/v1/profile/style/edit", function(RouteGroup $group) {
             $group->get("/delete/", [ProfileManagementController::class, "deleteStyleV1"]);
             $group->get("/save/", [ProfileManagementController::class, "saveStyleV1"]);
-        })->setStrategy($appStrategy);
+        });
 
         $router->get("/v1/profile/profile/", [ProfileController::class, "getProfileV1"]);
         $router->get("/v1/storepagedata/", [StorePageController::class, "getStorePageDataV1"]);
@@ -74,8 +71,7 @@ class Router
         $router->get("/v1/prices/", [PricesController::class, "getPricesV1"]);
         $router->get("/v1/earlyaccess/", [EarlyAccessController::class, "getAppidsV1"]);
 
-        $router->get("/v1/survey/submit/", [SurveyController::class, "getSubmitV1"])
-            ->setStrategy($appStrategy);
+        $router->get("/v1/survey/submit/", [SurveyController::class, "getSubmitV1"]);
 
         $router->get("/v1/twitch/stream/", [TwitchController::class, "getStreamV1"]);
 

@@ -44,7 +44,13 @@ class ApiStrategy extends AbstractStrategy implements ContainerAwareInterface
     public function invokeRouteCallable(Route $route, ServerRequestInterface $request): ResponseInterface {
         $controller = $route->getCallable($this->getContainer());
         $data = $controller($request, $route->getVars());
-        $response = $this->responseFactory->createSuccessResponse($data);
+
+        if ($data instanceof ResponseInterface) {
+            $response = $data;
+        } else {
+            $response = $this->responseFactory->createSuccessResponse($data);
+        }
+
         return $this->decorateResponse($response);
     }
 }
