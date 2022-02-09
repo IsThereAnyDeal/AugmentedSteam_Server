@@ -3,7 +3,7 @@ CREATE TABLE `currency` (
   `from` char(3) NOT NULL,
   `to`   char(3) NOT NULL,
   `rate` float NOT NULL,
-  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `timestamp` int unsigned NOT NULL,
   UNIQUE(`to`, `from`)
 ) ENGINE=InnoDB;
 

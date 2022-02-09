@@ -92,7 +92,9 @@ return [
             DI\get(LoggerFactoryInterface::class),
             DI\get(ProxyFactoryInterface::class),
             DI\get(DbDriver::class),
-            DI\get("guzzle")
+            DI\get("guzzle"),
+            DI\get(EndpointsConfig::class),
+            DI\get(KeysConfig::class),
         ),
 
     // managers

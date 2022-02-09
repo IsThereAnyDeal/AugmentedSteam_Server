@@ -8,7 +8,6 @@ use AugmentedSteam\Server\Http\Param;
 use AugmentedSteam\Server\Model\DataObjects\DSurvey;
 use AugmentedSteam\Server\Model\Survey\EGraphicsSettings;
 use AugmentedSteam\Server\Model\Survey\SurveyManager;
-use AugmentedSteam\Server\OpenId\OpenId;
 use AugmentedSteam\Server\OpenId\Session;
 use IsThereAnyDeal\Database\DbDriver;
 use Laminas\Diactoros\Response\RedirectResponse;
