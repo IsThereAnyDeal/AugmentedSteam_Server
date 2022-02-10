@@ -37,6 +37,7 @@ class SteamRepManager {
     public function getRep(int $steamId): array {
         $r = $this->r;
 
+        /** @var ?DSteamRep rep */
         $rep = (new SqlSelectQuery($this->db,
             "SELECT $r->rep
             FROM $r
@@ -47,18 +48,18 @@ class SteamRepManager {
             ":steamId" => $steamId,
             ":successTimestamp" => time() - self::SuccessCacheLimit,
             ":failureTimestamp" => time() - self::FailureCacheLimit
-        ])->fetchValue();
+        ])->fetch(DSteamRep::class)
+          ->getOne();
 
         if (is_null($rep)) {
             $rep = $this->getNewRep($steamId);
         }
 
-        return explode(",", $rep);
+        return explode(",", $rep->getRep() ?? "");
     }
 
-    private function getNewRep(int $steamId): ?string {
-        $endpoint = rtrim($this->config->getSteamRepEndpoint(), "/");
-        $url = "{$endpoint}/$steamId?json=1";
+    private function getNewRep(int $steamId): ?DSteamRep {
+        $url = $this->config->getSteamRepEndpoint($steamId);
 
         $reputation = null;
         $checked = false;
@@ -74,17 +75,17 @@ class SteamRepManager {
             }
         }
 
+        $data = (new DSteamRep())
+            ->setSteam64($steamId)
+            ->setRep($reputation)
+            ->setTimestamp(time())
+            ->setChecked($checked);
+
         $r = $this->r;
         (new SqlInsertQuery($this->db, $r))
             ->columns($r->steam64, $r->rep, $r->timestamp, $r->checked)
             ->onDuplicateKeyUpdate($r->rep, $r->timestamp, $r->checked)
-            ->persist(
-                (new DSteamRep())
-                    ->setSteam64($steamId)
-                    ->setRep($reputation)
-                    ->setTimestamp(time())
-                    ->setChecked($checked)
-            );
+            ->persist($data);
 
         $this->cleanup(); // should be done in cron but shouldn't really cause any trouble here anyway
 
@@ -94,7 +95,7 @@ class SteamRepManager {
             $this->logger->error((string)$steamId);
         }
 
-        return $reputation;
+        return $data;
     }
 
     private function cleanup(): void {

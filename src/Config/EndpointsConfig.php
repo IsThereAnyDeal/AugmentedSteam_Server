@@ -31,8 +31,8 @@ class EndpointsConfig extends AConfig
         return sprintf($this->config->steamcharts, $appid);
     }
 
-    public function getSteamRepEndpoint(): string {
-        return $this->config->steamrep;
+    public function getSteamRepEndpoint(int $steamId): string {
+        return sprintf($this->config->steamrep, $steamId);
     }
 
     public function getSteamPeekEndpoint(int $appid, string $key): string {
