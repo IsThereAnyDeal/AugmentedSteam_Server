@@ -105,9 +105,9 @@ class SteamPeekManager {
             ->persist($data);
 
         if (!is_null($data->getData())) {
-            $this->logger->info($appid);
+            $this->logger->info((string)$appid);
         } else {
-            $this->logger->error($appid);
+            $this->logger->error((string)$appid);
         }
 
         return $results;

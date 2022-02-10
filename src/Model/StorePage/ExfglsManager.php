@@ -83,7 +83,7 @@ class ExfglsManager
             ->onDuplicateKeyUpdate($e->excluded, $e->checked, $e->timestamp)
             ->persist($data);
 
-        $this->logger->info($appid);
+        $this->logger->info((string)$appid);
         return $data;
     }
 }

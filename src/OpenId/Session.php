@@ -58,7 +58,7 @@ class Session extends OpenId {
             && $session->getSteamId() === $steamId
             && hash_equals($session->getHash(), hash(self::HashAlgorithm, $parts[1]))
         ) {
-            $this->steamId = $steamId;
+            $this->steamId = (string)$steamId;
             return true;
         }
         return false;
@@ -87,7 +87,7 @@ class Session extends OpenId {
                 ->persist((new DSession())
                     ->setToken($token)
                     ->setHash(hash(self::HashAlgorithm, $validator))
-                    ->setSteamId($this->getSteamId())
+                    ->setSteamId((int)$this->getSteamId())
                     ->setExpiry($expiry)
                 );
         }

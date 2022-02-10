@@ -34,6 +34,7 @@ class OpenId {
     }
 
     public function getAuthUrl(): Uri {
+        /** @phpstan-ignore-next-line implements magic method */
         $this->client->identity = self::ProviderUrl;
         return Uri::createFromString($this->client->authUrl());
     }
@@ -53,7 +54,9 @@ class OpenId {
         }
 
         $matches = [];
-        if (preg_match("#^".preg_quote(self::ProviderUrl)."id/(\d+)$#", $this->client->identity, $matches)) {
+        /** @phpstan-ignore-next-line implements magic method */
+        $identity = $this->client->identity;
+        if (preg_match("#^".preg_quote(self::ProviderUrl)."id/(\d+)$#", $identity, $matches)) {
             $this->steamId = $matches[1];
             return true;
         }

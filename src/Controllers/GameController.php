@@ -38,7 +38,7 @@ class GameController extends Controller
                 "name" => $o->getName(),
                 "icon" => $o->getIcon(),
                 "desc" => $o->getDescription(),
-                "count" => (int)$o->score // HACK
+                "count" => (int)$o->score  /** @phpstan-ignore-line */ // HACK
             ];
         }
         return $data;

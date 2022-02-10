@@ -27,7 +27,7 @@ class SimpleLoader
                 "curl" => $curlOptions
             ]);
         } catch (GuzzleException $e) {
-            $this->logger->error($e);
+            $this->logger->error($e->getTraceAsString());
         }
         return null;
     }

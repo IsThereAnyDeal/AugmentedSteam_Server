@@ -56,7 +56,7 @@ class DHLTB extends AInsertableObject implements ISelectable
         return $this->getTimeString($this->main);
     }
 
-    public function setMain(?float $main): self {
+    public function setMain(?int $main): self {
         $this->main = $main;
         return $this;
     }
@@ -69,7 +69,7 @@ class DHLTB extends AInsertableObject implements ISelectable
         return $this->getTimeString($this->extra);
     }
 
-    public function setExtra(?float $extra): self {
+    public function setExtra(?int $extra): self {
         $this->extra = $extra;
         return $this;
     }
@@ -82,7 +82,7 @@ class DHLTB extends AInsertableObject implements ISelectable
         return $this->getTimeString($this->complete);
     }
 
-    public function setComplete(?float $complete): self {
+    public function setComplete(?int $complete): self {
         $this->complete = $complete;
         return $this;
     }

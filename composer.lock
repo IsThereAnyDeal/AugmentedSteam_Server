@@ -360,16 +360,16 @@
         },
         {
             "name": "itad/db",
-            "version": "v0.1",
+            "version": "v0.1.1",
             "source": {
                 "type": "git",
                 "url": "git@github.com:IsThereAnyDeal/Database.git",
-                "reference": "b1615d333facfdb044cab9a000fe5195cc2bed05"
+                "reference": "58fc8913b9462d14b0132114990cfdf897a1eb6c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/IsThereAnyDeal/Database/zipball/b1615d333facfdb044cab9a000fe5195cc2bed05",
-                "reference": "b1615d333facfdb044cab9a000fe5195cc2bed05",
+                "url": "https://api.github.com/repos/IsThereAnyDeal/Database/zipball/58fc8913b9462d14b0132114990cfdf897a1eb6c",
+                "reference": "58fc8913b9462d14b0132114990cfdf897a1eb6c",
                 "shasum": ""
             },
             "require": {
@@ -398,23 +398,23 @@
                 ]
             },
             "support": {
-                "source": "https://github.com/IsThereAnyDeal/Database/tree/v0.1",
+                "source": "https://github.com/IsThereAnyDeal/Database/tree/v0.1.1",
                 "issues": "https://github.com/IsThereAnyDeal/Database/issues"
             },
-            "time": "2022-02-09T22:03:47+00:00"
+            "time": "2022-02-10T02:58:37+00:00"
         },
         {
             "name": "itad/twitch-api",
-            "version": "v0.1",
+            "version": "v0.1.1",
             "source": {
                 "type": "git",
                 "url": "git@github.com:IsThereAnyDeal/TwitchApi.git",
-                "reference": "2445d628b749f3c4ef45cac0861d62293af1c04a"
+                "reference": "90ad6fe7a5fe341922b6c766c89ede2b73d3f822"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/IsThereAnyDeal/TwitchApi/zipball/2445d628b749f3c4ef45cac0861d62293af1c04a",
-                "reference": "2445d628b749f3c4ef45cac0861d62293af1c04a",
+                "url": "https://api.github.com/repos/IsThereAnyDeal/TwitchApi/zipball/90ad6fe7a5fe341922b6c766c89ede2b73d3f822",
+                "reference": "90ad6fe7a5fe341922b6c766c89ede2b73d3f822",
                 "shasum": ""
             },
             "require": {
@@ -436,10 +436,10 @@
                 ]
             },
             "support": {
-                "source": "https://github.com/IsThereAnyDeal/TwitchApi/tree/v0.1",
+                "source": "https://github.com/IsThereAnyDeal/TwitchApi/tree/v0.1.1",
                 "issues": "https://github.com/IsThereAnyDeal/TwitchApi/issues"
             },
-            "time": "2022-02-09T22:16:53+00:00"
+            "time": "2022-02-10T03:14:43+00:00"
         },
         {
             "name": "laminas/laminas-diactoros",

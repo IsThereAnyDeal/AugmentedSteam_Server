@@ -8,7 +8,8 @@
     "push": "vendor/bin/dep push",
     "publish": "vendor/bin/dep publish",
     "deploy": "vendor/bin/dep deploy",
-    "unlock": "vendor/bin/dep deploy:unlock"
+    "unlock": "vendor/bin/dep deploy:unlock",
+    "phpstan": "vendor/bin/phpstan analyse -c phpstan.neon"
   },
   "autoload": {
     "psr-4": {

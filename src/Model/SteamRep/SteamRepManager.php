@@ -89,9 +89,9 @@ class SteamRepManager {
         $this->cleanup(); // should be done in cron but shouldn't really cause any trouble here anyway
 
         if ($checked) {
-            $this->logger->info($steamId);
+            $this->logger->info((string)$steamId);
         } else {
-            $this->logger->error($steamId);
+            $this->logger->error((string)$steamId);
         }
 
         return $reputation;

@@ -75,9 +75,9 @@ class WSGFManager
 
         $this->cache->setValue($appid, ECacheKey::WSGF, json_encode($data));
         if (!empty($data)) {
-            $this->logger->info($appid);
+            $this->logger->info((string)$appid);
         } else {
-            $this->logger->error($appid);
+            $this->logger->error((string)$appid);
         }
         return $data;
     }

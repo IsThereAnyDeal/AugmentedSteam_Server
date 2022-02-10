@@ -96,9 +96,9 @@ class SteamSpyManager
             ->persist($data);
 
         if ($hasData) {
-            $this->logger->info($appid);
+            $this->logger->info((string)$appid);
         } else {
-            $this->logger->error($appid);
+            $this->logger->error((string)$appid);
         }
         return $data;
     }
