@@ -50,7 +50,7 @@ if ($sentry->isEnabled()) {
     ]);
 }
 
-return (new \DI\ContainerBuilder())
+$di = (new \DI\ContainerBuilder())
     ->addDefinitions([
         CoreConfig::class => fn(ContainerInterface $c) => $config->getConfig(CoreConfig::class),
         DbConfig::class => fn(ContainerInterface $c) => $config->getConfig(DbConfig::class),
@@ -62,8 +62,11 @@ return (new \DI\ContainerBuilder())
         TwitchConfig::class => fn(ContainerInterface $c) => $config->getConfig(TwitchConfig::class),
     ])
     ->addDefinitions(__DIR__."/di.php")
-    // ->enableCompilation() FIXME production
-    // ->writeProxiesToFile() FIXME production
     ->useAutowiring(false)
-    ->useAnnotations(false)
-    ->build();
+    ->useAnnotations(false);
+
+    if ($core->isProduction()) {
+        $di->enableCompilation(__DIR__."/../di-cache/");
+    }
+
+return $di->build();

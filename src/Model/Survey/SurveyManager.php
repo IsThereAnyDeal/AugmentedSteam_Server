@@ -10,7 +10,6 @@ use IsThereAnyDeal\Database\DbDriver;
 use IsThereAnyDeal\Database\Sql\SqlInsertQuery;
 use IsThereAnyDeal\Database\Sql\SqlSelectQuery;
 use Psr\Log\LoggerInterface;
-use function Deployer\fetch;
 
 class SurveyManager
 {
