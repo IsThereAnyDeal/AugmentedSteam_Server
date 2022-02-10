@@ -66,7 +66,7 @@ $di = (new \DI\ContainerBuilder())
     ->useAnnotations(false);
 
     if ($core->isProduction()) {
-        $di->enableCompilation(__DIR__."/../di-cache/");
+        // FIXME $di->enableCompilation(__DIR__."/../di-cache/");
     }
 
 return $di->build();
