@@ -15,6 +15,9 @@ use AugmentedSteam\Server\Controllers\SimilarController;
 use AugmentedSteam\Server\Controllers\StorePageController;
 use AugmentedSteam\Server\Controllers\SurveyController;
 use AugmentedSteam\Server\Controllers\TwitchController;
+use AugmentedSteam\Server\Logging\LoggerFactoryInterface;
+use AugmentedSteam\Server\Logging\MonologLoggerFactory;
+use AugmentedSteam\Server\Routing\Middleware\ApiLogMiddleware;
 use AugmentedSteam\Server\Routing\Response\ApiResponseFactoryInterface;
 use AugmentedSteam\Server\Routing\Strategy\ApiStrategy;
 use Laminas\Diactoros\ServerRequestFactory;
@@ -39,6 +42,7 @@ class Router
         $strategy->setContainer($this->container);
 
         $router = new \League\Route\Router();
+        $router->middleware(new ApiLogMiddleware($this->container->get(LoggerFactoryInterface::class)));
         $router->setStrategy($strategy);
 
         /** @deprecated */ $router->get("/v1/dlcinfo/", [GameController::class, "getDlcInfoV1"]);

@@ -15,7 +15,6 @@ class MonologLoggerFactory implements LoggerFactoryInterface
     private LoggingConfig $config;
 
     private array $channels = [];
-    private array $apiChannels = [];
 
     public function __construct(LoggingConfig $config) {
         $this->config = $config;
@@ -47,18 +46,5 @@ class MonologLoggerFactory implements LoggerFactoryInterface
                 ->pushHandler($this->getFileHandler($channel));
         }
         return $this->channels[$channel];
-    }
-
-    public function createApiLogger(string $channel): Logger {
-        if (!$this->config->isEnabled()) {
-            return $this->getNullLogger();
-        }
-
-        if (!isset($this->apiChannels[$channel])) {
-            $this->apiChannels[$channel] = (new Logger($channel))
-                ->pushProcessor(new WebProcessor())
-                ->pushHandler($this->getFileHandler($channel));
-        }
-        return $this->apiChannels[$channel];
     }
 }
