@@ -74,12 +74,12 @@ class SearchResultsCrawler extends Crawler
         $this->requestCounter++;
     }
 
-    private function getHours(string $hourString): ?float {
+    private function getHours(string $hourString): ?int {
         $hourString = str_replace("½", ".5", $hourString);
         if (!preg_match("#\d+(\.5)?#", $hourString, $m)) {
             return null;
         }
-        return (float)$m[0];
+        return (int)(((float)$m[0])*60);
     }
 
     private function parseTimeNodes(DOMNodeList $nodes): array {

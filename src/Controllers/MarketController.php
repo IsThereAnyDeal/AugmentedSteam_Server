@@ -124,7 +124,7 @@ class MarketController extends Controller {
         return $result;
     }
 
-    public function getCardPricesV1(ServerRequestInterface $request): array {
+    public function getCardsV2(ServerRequestInterface $request): array {
         $currency = (new Param($request, "currency"))
             ->string();
 

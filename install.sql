@@ -117,9 +117,9 @@ CREATE TABLE `exfgls` (
 CREATE TABLE `hltb` (
   `id` int NOT NULL,
   `appid` int,
-  `main` float,
-  `extra` float,
-  `complete` float,
+  `main` int,
+  `extra` int,
+  `complete` int,
   `found_timestamp` int unsigned NOT NULL DEFAULT 0,
   `checked_timestamp` int unsigned,
   PRIMARY KEY (`id`),

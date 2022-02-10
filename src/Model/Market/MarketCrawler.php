@@ -21,8 +21,6 @@ use League\Uri\QueryString;
 use League\Uri\Uri;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
-use SplQueue;
-use Throwable;
 
 class MarketCrawler extends Crawler
 {
@@ -123,49 +121,55 @@ class MarketCrawler extends Crawler
         foreach($json['results'] as $item) {
             $asset = $item['asset_description'];
 
-            if (preg_match(
-                "#^(.+?)(?:\s+(Uncommon|Foil|Rare|))?\s+(Profile Background|Emoticon|Booster Pack|Trading Card|Sale Item)$#",
-                $asset['type'] === "Booster Pack" ? $asset['name'] : $asset['type'],
-                $m
-            )) {
-                $appName = $m[1];
+            $rarity = "normal";
+            $type = "unknown";
 
-                switch($m[2]) {
-                    case "Uncommon":
-                    case "Foil":
-                    case "Rare":
-                        $rarity = strtolower($m[2]);
-                        break;
-                    default:
-                        $rarity = "normal";
-                        break;
-                }
+            if ($item['app_name'] == "Steam") {
+                if (preg_match(
+                    "#^(.+?)(?:\s+(Uncommon|Foil|Rare|))?\s+(Profile Background|Emoticon|Booster Pack|Trading Card|Sale Item)$#",
+                    $asset['type'] === "Booster Pack" ? $asset['name'] : $asset['type'],
+                    $m
+                )) {
+                    $appName = $m[1];
 
-                switch($m[3]) {
-                    case "Profile Background":
-                        $type = "background";
-                        break;
-                    case "Emoticon":
-                        $type = "emoticon";
-                        break;
-                    case "Booster Pack":
-                        $type = "booster";
-                        break;
-                    case "Trading Card":
-                        $type = "card";
-                        break;
-                    case "Sale Item":
-                        $type = "item";
-                        break;
-                    default:
-                        $type = "unknown";
-                        break;
+                    switch($m[2]) {
+                        case "Uncommon":
+                        case "Foil":
+                        case "Rare":
+                            $rarity = strtolower($m[2]);
+                            break;
+                        default:
+                            $rarity = "normal";
+                            break;
+                    }
+
+                    switch($m[3]) {
+                        case "Profile Background":
+                            $type = "background";
+                            break;
+                        case "Emoticon":
+                            $type = "emoticon";
+                            break;
+                        case "Booster Pack":
+                            $type = "booster";
+                            break;
+                        case "Trading Card":
+                            $type = "card";
+                            break;
+                        case "Sale Item":
+                            $type = "item";
+                            break;
+                        default:
+                            $type = "unknown";
+                            break;
+                    }
+                } else {
+                    $appName = $asset['type'];
+                    $this->logger->notice($appName);
                 }
             } else {
-                $appName = $asset['type'];
-                $rarity = "normal";
-                $type = "unknown";
-                $this->logger->notice($appName);
+                $appName = $item['app_name'];
+                $type = $asset['type'];
             }
 
             list($appid) = explode("-", $item['hash_name'], 2);
@@ -203,6 +207,8 @@ class MarketCrawler extends Crawler
     }
 
     private function cleanup(array $appids): void {
+        if (count($appids) == 0) { return; }
+
         $d = new TMarketData();
         (new SqlDeleteQuery($this->db,
             "DELETE FROM $d
@@ -218,6 +224,8 @@ class MarketCrawler extends Crawler
 
         for ($b = 0; $b < self::BatchCount; $b++) {
             $appids = $this->getAppidBatch();
+            if (count($appids) == 0) { break; }
+
             $this->makeRequest($appids, 0);
 
             $this->runLoader();

@@ -54,6 +54,18 @@ class CronJobFactory
             });
     }
 
+    public function createHLTBSearchResultsAllJob(): CronJob {
+        return (new CronJob())
+            ->lock("hltb.all", 5)
+            ->callable(function(){
+                $logger = $this->loggerFactory->createLogger("hltb");
+
+                $loader = new Loader($logger, $this->guzzle);
+                $updater = new SearchResultsCrawler($this->db, $loader, $logger, $this->proxyFactory);
+                $updater->update();
+            });
+    }
+
     public function createHLTBSearchResultsRecentJob(): CronJob {
         return (new CronJob())
             ->lock("hltb.recent", 5)

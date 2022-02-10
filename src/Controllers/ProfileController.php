@@ -26,8 +26,13 @@ class ProfileController extends Controller
         $this->steamRepManager = $steamRepManager;
     }
 
-    public function getProfileV1(ServerRequestInterface $request): array {
+    public function getProfileLegacyV1(ServerRequestInterface $request): array {
         $steamId = (new Param($request, "profile"))->int();
+        return $this->getProfileV2($request, ["steamId" => $steamId]);
+    }
+
+    public function getProfileV2(ServerRequestInterface $request, array $params): array {
+        $steamId = (int)$params['steamId'];
 
         $result = [
             "badges" => [],

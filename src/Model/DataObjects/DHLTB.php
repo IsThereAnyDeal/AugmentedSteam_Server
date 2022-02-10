@@ -10,9 +10,9 @@ class DHLTB extends AInsertableObject implements ISelectable
 {
     protected int $id;
     protected ?int $appid;
-    protected ?float $main;
-    protected ?float $extra;
-    protected ?float $complete;
+    protected ?int $main;
+    protected ?int $extra;
+    protected ?int $complete;
     protected int $found_timestamp;
     protected ?int $checked_timestamp;
 
@@ -34,13 +34,13 @@ class DHLTB extends AInsertableObject implements ISelectable
         return $this;
     }
 
-    private function getTimeString(?float $time): string {
+    private function getTimeString(?int $time): string {
         if (is_null($time)) {
             return "";
         }
 
-        $hours = floor($time);
-        $minutes = round(($time - $hours)*60);
+        $hours = floor($time/60);
+        $minutes = $time % 60;
         if ($minutes == 0) {
             return "{$hours}h";
         } else {
@@ -48,7 +48,7 @@ class DHLTB extends AInsertableObject implements ISelectable
         }
     }
 
-    public function getMain(): ?float {
+    public function getMain(): ?int {
         return $this->main;
     }
 
@@ -61,7 +61,7 @@ class DHLTB extends AInsertableObject implements ISelectable
         return $this;
     }
 
-    public function getExtra(): ?float {
+    public function getExtra(): ?int {
         return $this->extra;
     }
 
@@ -74,7 +74,7 @@ class DHLTB extends AInsertableObject implements ISelectable
         return $this;
     }
 
-    public function getComplete(): ?float {
+    public function getComplete(): ?int {
         return $this->complete;
     }
 

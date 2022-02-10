@@ -18,6 +18,11 @@ class SimilarController extends Controller {
 
     public function getSimilarV1(ServerRequestInterface $request): array {
         $appid = (new Param($request, "appid"))->int();
+        return $this->getSimilarV2($request, ["appid" => $appid]);
+    }
+
+    public function getSimilarV2(ServerRequestInterface $request, array $params): array {
+        $appid = (int)$params['appid'];
         $count = (new Param($request, "count"))->default(5)->int();
         $shuffle = (new Param($request, "shuffle"))->default(false)->bool();
 

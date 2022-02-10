@@ -8,14 +8,14 @@ use DOMXPath;
 
 class GamePageParser
 {
-    private function getTime(string $text): ?float {
+    private function getTime(string $text): ?int {
         if (!preg_match("#(\d+)h(?:\s+(\d+)m)?#", $text, $m)) {
             return null;
         }
 
-        $hours = (int)$m[1];
+        $hours = ((int)$m[1])*60;
         $minutes = (int)($m[2] ?? 0);
-        return $hours + $minutes/60;
+        return $hours + $minutes;
     }
 
     public function parse(string $html): array {

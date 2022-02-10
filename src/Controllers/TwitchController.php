@@ -22,11 +22,16 @@ class TwitchController extends Controller
         $this->twitchManager = $twitchManager;
     }
 
-    public function getStreamV1(ServerRequestInterface $request): array {
+    public function getStreamV1(ServerRequestInterface $request): ?array {
         $channel = (new Param($request, "channel"))->string();
 
         return $this->twitchManager
             ->getStream($channel);
+    }
+
+    public function getStreamV2(ServerRequestInterface $request, array $params): ?array {
+        return $this->twitchManager
+            ->getStream($params['channel']);
     }
 
 }

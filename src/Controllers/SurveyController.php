@@ -30,15 +30,8 @@ class SurveyController extends Controller
         $this->config = $config;
     }
 
-    public function getSubmitV1(ServerRequestInterface $request): RedirectResponse {
-        $returnUrl = "https://store.steampowered.com/";
-
-        try {
-            $appid = (new Param($request, "appid"))->int();
-        } catch(\Exception $e) {
-            return new RedirectResponse($returnUrl."#as-error:badrequest");
-        }
-
+    public function getSubmitV1(ServerRequestInterface $request, array $params): RedirectResponse {
+        $appid = (int)$params['appid'];
         $returnUrl = "https://store.steampowered.com/app/{$appid}/";
 
         $steamId = (new Param($request, "profile"))->default(null)->int();

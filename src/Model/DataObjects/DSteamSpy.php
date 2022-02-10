@@ -27,6 +27,13 @@ class DSteamSpy extends AInsertableObject implements ISelectable
         return $this->owners;
     }
 
+    public function getOwnersRange(): array {
+        $p = explode("..", str_replace(",", "", $this->owners));
+        if (count($p) != 2) { return []; }
+
+        return [(int)$p[0], (int)$p[1]];
+    }
+
     public function setOwners(string $owners): self {
         $this->owners = $owners;
         return $this;

@@ -47,9 +47,9 @@ class StorePageController extends Controller
         $this->surveyManager = $surveyManager;
     }
 
+    /** @deprecated */
     public function getStorePageDataV1(ServerRequestInterface $request) {
         $appid = (new Param($request, "appid"))->int();
-        // $oc = (new Param($request, "oc"))
 
         $result = [];
 
@@ -150,6 +150,93 @@ class StorePageController extends Controller
         $data = $this->surveyManager->getData($appid);
         if (!is_null($data)) {
             $result['survey'] = $data;
+        }
+
+        return $result;
+    }
+
+
+    public function getGameInfoV2(ServerRequestInterface $request, array $params) {
+        $appid = (int)$params['appid'];
+
+        $steamCharts = $this->steamChartManager->getData($appid);
+        $steamSpy = $this->steamSpyManager->getData($appid);
+        $wsgf = $this->wsgfManager->getData($appid);
+        $exfgls = $this->exfglsManager->getData($appid);
+        $hltb = $this->hltbManager->getData($appid);
+        $reviews = $this->reviewsManager->getData($appid);
+        $survey = $this->surveyManager->getData($appid);
+
+        $result = [
+            "family_sharing" => !$exfgls->isExcluded(),
+            "steamcharts" => [
+                "players" => [
+                    "recent" => $steamCharts->getRecent(),
+                    "peak_today" => $steamCharts->getPeakDay(),
+                    "peak_all" => $steamCharts->getPeakAll(),
+                ]
+            ],
+            "steamspy" => [
+                "owners" => $steamSpy->getOwnersRange(),
+                "playtime" => [
+                    "2weeks" => $steamSpy->getAverage2weeks(),
+                    "forever" => $steamSpy->getAverageForever(),
+                ]
+            ],
+            "wsgf" => null,
+            "hltb" => null,
+            "metacritic" => null,
+            "survey" => null
+        ];
+
+        if (!empty($wsgf)) {
+            $result['wsgf'] = [
+                "url" => $wsgf->getPath(),
+                "wide" => $wsgf->getWideScreenGrade(),
+                "ultrawide" => $wsgf->getUltraWideScreenGrade(),
+                "multi_monitor" => $wsgf->getMultiMonitorGrade(),
+                "4k" => $wsgf->getGrade4k(),
+            ];
+        }
+        if (!is_null($hltb)) {
+            $result['hltb'] = [
+                "id" => $hltb->getId(),
+                "story" => $hltb->getMain(),
+                "extras" => $hltb->getExtra(),
+                "complete" => $hltb->getComplete()
+            ];
+        }
+
+        if (!is_null($reviews)) {
+            $metacritic = $reviews->getMetaCritic();
+            if (!is_null($metacritic)) {
+                $result['metacritic']['userscore'] = $metacritic->getUserScore();
+            }
+
+            $opencritic = $reviews->getOpenCritic();
+            if (!is_null($opencritic)) {
+                $result['opencritic'] = [
+                    "url" => $opencritic->getUrl(),
+                    "score" => $opencritic->getScore(),
+                    "award" => $opencritic->getAward(),
+                    "reviews" => []
+                ];
+
+                foreach($opencritic->getReviews() as $r) {
+                    $result['opencritic']['reviews'][] = [
+                        "date" => $r->getPublishedDate(),
+                        "snippet" => $r->getSnippet(),
+                        "score" => $r->getDisplayScore(),
+                        "url" => $r->getExternalUrl(),
+                        "author" => $r->getAuthor(),
+                        "name" => $r->getOutletName()
+                    ];
+                }
+            }
+        }
+
+        if (!is_null($survey)) {
+            $result['survey'] = $survey;
         }
 
         return $result;

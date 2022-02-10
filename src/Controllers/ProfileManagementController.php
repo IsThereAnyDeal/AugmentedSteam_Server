@@ -33,7 +33,7 @@ class ProfileManagementController extends Controller
         $this->userManager = $userManager;
     }
 
-    public function getBackgroundV1(ServerRequestInterface $request): array {
+    public function getBackgroundsV2(ServerRequestInterface $request): array {
         $appid = (new Param($request, "appid"))->int();
 
         $backgrounds = $this->marketManager
@@ -70,7 +70,7 @@ class ProfileManagementController extends Controller
         return (int)$session->getSteamId();
     }
 
-    public function deleteBackgroundV1(ServerRequestInterface $request): RedirectResponse {
+    public function deleteBackgroundV2(ServerRequestInterface $request): RedirectResponse {
         $returnUrl = "https://steamcommunity.com/my/profile";
 
         $profile = (new Param($request, "profile"))->default(null)->int();
@@ -88,7 +88,7 @@ class ProfileManagementController extends Controller
         return new RedirectResponse($returnUrl."#as-success");
     }
 
-    public function saveBackgroundV1(ServerRequestInterface $request): RedirectResponse {
+    public function saveBackgroundV2(ServerRequestInterface $request): RedirectResponse {
         $returnUrl = "https://steamcommunity.com/my/profile";
 
         try {
@@ -117,7 +117,7 @@ class ProfileManagementController extends Controller
         return new RedirectResponse($returnUrl."#as-success");
     }
 
-    public function deleteStyleV1(ServerRequestInterface $request): RedirectResponse {
+    public function deleteStyleV2(ServerRequestInterface $request): RedirectResponse {
         $returnUrl = "https://steamcommunity.com/my/profile";
 
         $profile = (new Param($request, "profile"))->default(null)->int();
@@ -135,7 +135,7 @@ class ProfileManagementController extends Controller
         return new RedirectResponse($returnUrl."#as-success");
     }
 
-    public function saveStyleV1(ServerRequestInterface $request): RedirectResponse {
+    public function saveStyleV2(ServerRequestInterface $request): RedirectResponse {
         $returnUrl = "https://steamcommunity.com/my/profile";
 
         try {
