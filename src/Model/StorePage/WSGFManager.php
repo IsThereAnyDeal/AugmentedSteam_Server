@@ -56,7 +56,7 @@ class WSGFManager
             $json = json_encode($xml);
 
             $data = json_decode($json, true);
-            if (json_last_error() === JSON_ERROR_NONE) {
+            if (json_last_error() === JSON_ERROR_NONE && !empty($data)) {
                 $node = $data['node'];
                 $data = [
                     "Title" => $node['Title'],
