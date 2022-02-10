@@ -837,7 +837,10 @@
                               "type": "string"
                             },
                             "score": {
-                              "type": "integer"
+                              "type": [
+                                "integer",
+                                "null"
+                              ]
                             },
                             "award": {
                               "type": "string"

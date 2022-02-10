@@ -7,7 +7,7 @@ class OpenCriticData
 {
 
     private string $url;
-    private int $score;
+    private ?int $score;
     private string $award;
     private array $reviews;
 
@@ -26,7 +26,7 @@ class OpenCriticData
         return $this->url;
     }
 
-    public function getScore(): int {
+    public function getScore(): ?int {
         return $this->score;
     }
 
