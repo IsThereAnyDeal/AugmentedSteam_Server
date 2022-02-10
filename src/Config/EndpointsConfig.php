@@ -11,12 +11,9 @@ class EndpointsConfig extends AConfig
     protected function getSchema(): Schema {
         return Expect::structure([
             "wsgf" => Expect::string()->required(),
-            "keylol" => Expect::string()->required(),
             "steamspy" => Expect::string()->required(),
             "steamcharts" => Expect::string()->required(),
-            "steamtools" => Expect::string()->required(),
             "steamrep" => Expect::string()->required(),
-            "pcgw" => Expect::string()->required(),
             "steampeek" => Expect::string()->required(),
             "itad" => Expect::string()->required()
         ]);
@@ -24,10 +21,6 @@ class EndpointsConfig extends AConfig
 
     public function getWSGFEndpoint(int $appid): string {
         return sprintf($this->config->wsgf, $appid);
-    }
-
-    public function getKeyLolEndpoint(): string {
-        return $this->config->keylol;
     }
 
     public function getSteamSpyEndpoint(int $appid): string {
@@ -38,16 +31,8 @@ class EndpointsConfig extends AConfig
         return sprintf($this->config->steamcharts, $appid);
     }
 
-    public function getSteamToolsEndpoint(): string {
-        return $this->config->steamtools;
-    }
-
     public function getSteamRepEndpoint(): string {
         return $this->config->steamrep;
-    }
-
-    public function getPCGWEndpoint(): string {
-        return $this->config->pcgw;
     }
 
     public function getSteamPeekEndpoint(int $appid, string $key): string {

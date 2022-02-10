@@ -10,14 +10,9 @@ class KeysConfig extends AConfig
 {
     protected function getSchema(): Schema {
         return Expect::structure([
-            "steam" => Expect::string()->required(),
             "itad" => Expect::string()->required(),
             "steampeek" => Expect::string()->required()
         ]);
-    }
-
-    public function getSteamApiKey(): string {
-        return $this->config->steam;
     }
 
     public function getIsThereAnyDealApiKey(): string {
