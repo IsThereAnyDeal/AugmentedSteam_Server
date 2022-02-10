@@ -20,6 +20,10 @@ class CoreConfig extends AConfig
         return $this->config->host;
     }
 
+    public function getEnvironment(): string {
+        return $this->config->env;
+    }
+
     public function isProduction(): bool {
         return $this->config->env === "prod";
     }

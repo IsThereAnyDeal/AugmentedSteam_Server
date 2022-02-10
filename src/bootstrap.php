@@ -9,6 +9,7 @@ use AugmentedSteam\Server\Config\EndpointsConfig;
 use AugmentedSteam\Server\Config\ExfglsConfig;
 use AugmentedSteam\Server\Config\KeysConfig;
 use AugmentedSteam\Server\Config\LoggingConfig;
+use AugmentedSteam\Server\Config\SentryConfig;
 use AugmentedSteam\Server\Config\TwitchConfig;
 use IsThereAnyDeal\Config\Config;
 use IsThereAnyDeal\Database\DbConfig;
@@ -24,7 +25,8 @@ $config->map([
     EndpointsConfig::class => "endpoints",
     BrightDataConfig::class => "brightdata",
     ExfglsConfig::class => "exfgls",
-    TwitchConfig::class => "twitch"
+    TwitchConfig::class => "twitch",
+    SentryConfig::class => "sentry"
 ]);
 
 $core = $config->getConfig(CoreConfig::class);
@@ -38,6 +40,14 @@ if ($core->isShowErrors() || $isCli) {
         $whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler);
     }
     $whoops->register();
+}
+
+$sentry = $config->getConfig(SentryConfig::class);
+if ($sentry->isEnabled()) {
+    \Sentry\init([
+        "dsn" => $sentry->getDsn(),
+        "environment" => $core->getEnvironment(),
+    ]);
 }
 
 return (new \DI\ContainerBuilder())
