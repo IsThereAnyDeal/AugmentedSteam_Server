@@ -22,6 +22,7 @@ use AugmentedSteam\Server\Routing\Strategy\ApiStrategy;
 use Laminas\Diactoros\ServerRequestFactory;
 use Laminas\HttpHandlerRunner\Emitter\SapiEmitter;
 use Psr\Container\ContainerInterface;
+use Psr\Http\Message\ResponseInterface;
 
 class Router
 {
@@ -38,6 +39,9 @@ class Router
             $this->container->get(CoreConfig::class),
             $responseFactory
         );
+        $strategy->addResponseDecorator(function (ResponseInterface $response): ResponseInterface {
+            return $response->withAddedHeader("Access-Control-Allow-Origin", "*");
+        });
         $strategy->setContainer($this->container);
 
         $router = new \League\Route\Router();
