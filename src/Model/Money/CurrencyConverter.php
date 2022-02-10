@@ -25,14 +25,20 @@ class CurrencyConverter
 
         $c = new TCurrency();
 
-        return (new SqlSelectQuery($this->db,
+        /** @var ?DCurrency $data */
+        $data = (new SqlSelectQuery($this->db,
             "SELECT $c->rate
             FROM $c
             WHERE $c->from=:from AND $c->to=:to"
         ))->params([
             ":from" => $from,
             ":to" => $to
-        ])->fetchValue();
+        ])->fetch(DCurrency::class)
+          ->getOne();
+
+        return is_null($data)
+            ? null
+            : $data->getRate();
     }
 
     public function getAllConversionsTo(array $list): array {
