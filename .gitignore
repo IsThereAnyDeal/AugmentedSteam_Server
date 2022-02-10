@@ -1,6 +1,8 @@
 .idea/
 .configs/
+bin/
 vendor/
 logs/
+temp/
 .nginx
 deployer.yaml
