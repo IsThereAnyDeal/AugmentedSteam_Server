@@ -28,6 +28,7 @@ class ThrowableMiddleware implements MiddlewareInterface
             try {
                 return $handler->handle($request);
             } catch (Throwable $exception) {
+                \Sentry\captureException($exception);
                 return $this->responseFactory->createErrorResponse($exception);
             }
         }
