@@ -37,12 +37,12 @@
     "php-di/php-di": "^6.3",
     "nette/schema": "^1.2",
     "league/uri": "^6.5",
-    "league/uri-components": "^2.4"
+    "league/uri-components": "^2.4",
+    "filp/whoops": "^2.14"
   },
   "require-dev": {
     "deployer/deployer": "^7.0@rc",
-    "phpstan/phpstan": "^1.4",
-    "filp/whoops": "^2.14"
+    "phpstan/phpstan": "^1.4"
   },
   "repositories": [
     {
