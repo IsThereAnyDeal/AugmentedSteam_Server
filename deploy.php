@@ -25,10 +25,15 @@ add("clear_paths", [
     "phpstan.neon"
 ]);
 
+task("bootstrap", function() {
+    echo run("{{bin/php}} {{release_path}}/src/bootstrap.php");
+});
+
 task("push", [
     "deploy:prepare",
     "deploy:vendors",
-    "deploy:clear_paths"
+    "deploy:clear_paths",
+    "bootstrap"
 ]);
 
 task("publish", [
