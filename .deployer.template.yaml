@@ -1,0 +1,11 @@
+config:
+  repository: ""
+hosts:
+  prod:
+    hostname: ""
+    port: 0
+    remote_user: ""
+    identity_file: ""
+    deploy_path: ""
+    branch: master
+    ssh_multiplexing: false
