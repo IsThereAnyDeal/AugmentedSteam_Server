@@ -27,7 +27,7 @@ class OpenCriticReview
         return $this->data['externalUrl'];
     }
 
-    public function getAuthor(): string {
+    public function getAuthor(): ?string {
         return $this->data['author'];
     }
 
