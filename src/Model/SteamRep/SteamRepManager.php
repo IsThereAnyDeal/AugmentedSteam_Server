@@ -58,7 +58,7 @@ class SteamRepManager {
         return explode(",", $rep->getRep() ?? "");
     }
 
-    private function getNewRep(int $steamId): ?DSteamRep {
+    private function getNewRep(int $steamId): DSteamRep {
         $url = $this->config->getSteamRepEndpoint($steamId);
 
         $reputation = null;
