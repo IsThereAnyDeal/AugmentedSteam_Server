@@ -16,7 +16,6 @@ use AugmentedSteam\Server\Controllers\StorePageController;
 use AugmentedSteam\Server\Controllers\SurveyController;
 use AugmentedSteam\Server\Controllers\TwitchController;
 use AugmentedSteam\Server\Logging\LoggerFactoryInterface;
-use AugmentedSteam\Server\Logging\MonologLoggerFactory;
 use AugmentedSteam\Server\Routing\Middleware\ApiLogMiddleware;
 use AugmentedSteam\Server\Routing\Response\ApiResponseFactoryInterface;
 use AugmentedSteam\Server\Routing\Strategy\ApiStrategy;
