@@ -57,9 +57,9 @@ class StorePageController extends Controller
 
         $steamCharts = $this->steamChartManager->getData($appid);
         $result['charts']['chart'] = [
-            "current" => number_format($steamCharts->getRecent()),
-            "peaktoday" => number_format($steamCharts->getPeakDay()),
-            "peakall" => number_format($steamCharts->getPeakAll()),
+            "current" => number_format($steamCharts->getRecent() ?? 0),
+            "peaktoday" => number_format($steamCharts->getPeakDay() ?? 0),
+            "peakall" => number_format($steamCharts->getPeakAll() ?? 0),
         ];
 
         //
