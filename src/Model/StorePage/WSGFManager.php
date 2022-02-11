@@ -55,9 +55,11 @@ class WSGFManager
         if ($xml !== false && !empty($xml->children())) {
             $json = json_encode($xml);
 
-            $data = json_decode($json, true);
-            if (json_last_error() === JSON_ERROR_NONE && !empty($data['node'])) {
-                $node = $data['node'];
+            $obj = json_decode($json, true);
+            if (json_last_error() === JSON_ERROR_NONE && !empty($obj)) {
+                $node = is_array($obj['node'])
+                    ? $obj['node'][count($obj['node']) - 1] // some entries have multiple nodes, not sure why. Use last?
+                    : $obj['node'];
                 $data = [
                     "Title" => $node['Title'],
                     "SteamID" => $node['SteamID'],
