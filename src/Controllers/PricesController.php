@@ -35,7 +35,7 @@ class PricesController extends Controller {
             throw new BadRequestException();
         }
 
-        return $this->pricesManager->getData($ids, $cc, $stores, $coupon);
+        return $this->pricesManager->getData($ids, $cc, $stores, $coupon) ?? [];
     }
 
     public function getPricesV2(ServerRequestInterface $request): ?array {
@@ -57,6 +57,6 @@ class PricesController extends Controller {
         }
 
         $data = $this->pricesManager->getData($ids, $cc, $stores, $coupon);
-        return $data['data'];
+        return $data['data'] ?? null;
     }
 }
