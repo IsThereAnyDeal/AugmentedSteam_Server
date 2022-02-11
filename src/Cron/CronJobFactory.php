@@ -50,7 +50,7 @@ class CronJobFactory
 
     public function createMarketJob(): CronJob {
         return (new CronJob())
-            ->lock("market", 5)
+            ->lock("market", 10)
             ->callable(function(){
                 $logger = $this->loggerFactory->createLogger("market");
 
