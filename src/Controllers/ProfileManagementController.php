@@ -55,7 +55,7 @@ class ProfileManagementController extends Controller
             ->getGames();
     }
 
-    private function authorize(ServerRequestInterface $request, string $selfUrl, string $returnUrl, int $profile) {
+    private function authorize(ServerRequestInterface $request, string $selfUrl, string $returnUrl, ?int $profile) {
         $session = new Session($this->db, $this->config->getHost(), $selfUrl);
         if (!$session->isAuthenticated($request, $profile)) {
             if (!$session->isAuthenticationStarted()) {
