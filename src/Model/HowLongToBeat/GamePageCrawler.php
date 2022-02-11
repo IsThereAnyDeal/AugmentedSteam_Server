@@ -84,8 +84,8 @@ class GamePageCrawler extends Crawler
             "SELECT $h->id
             FROM $h
             WHERE $h->appid IS NULL
-              AND ($h->checked_timestamp IS NULL OR $h->checked_timestamp >= :timestamp)
-            ORDER BY $h->found_timestamp DESC
+              AND ($h->checked_timestamp IS NULL OR $h->checked_timestamp < :timestamp)
+            ORDER BY $h->found_timestamp ASC
             LIMIT ".self::BatchSize
         ))->params([
             ":timestamp" => time() - self::RecheckTimestamp
