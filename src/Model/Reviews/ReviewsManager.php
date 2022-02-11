@@ -52,40 +52,45 @@ class ReviewsManager
         $key = $this->keysConfig->getIsThereAnyDealApiKey();
         $url = "{$host}/v01/augmentedsteam/info/?key={$key}&appid={$appid}";
 
-        $response = $this->loader->get($url);
-        $json = json_decode($response->getBody()->getContents(), true);
-
         $data = [];
-        if (isset($json['data'])) {
-            if (isset($json['data']['metacritic']['userscore'])) {
-                $data['metacritic']['userscore'] = $json['data']['metacritic']['userscore'];
-            }
 
-            if (isset($json['data']['opencritic'])) {
-                $opencritic = $json['data']['opencritic'];
+        $response = $this->loader->get($url);
+        if (!is_null($response)) {
+            $json = json_decode($response->getBody()->getContents(), true);
 
-                $reviews = [];
-                foreach($opencritic['reviews'] as $r) {
-                    $reviews[] = [
-                        "publishedDate" => $r['publishedDate'],
-                        "snippet" => $r['snippet'],
-                        "displayScore" => $r['displayScore'],
-                        "externalUrl" => $r['externalUrl'],
-                        "author" => $r['author'],
-                        "outletName" => $r['outletName'],
-                    ];
+            if (isset($json['data'])) {
+                if (isset($json['data']['metacritic']['userscore'])) {
+                    $data['metacritic']['userscore'] = $json['data']['metacritic']['userscore'];
                 }
 
-                $data['opencritic'] = [
-                    "url" => $opencritic['url'],
-                    "score" => $opencritic['score'],
-                    "award" => $opencritic['award'],
-                    "reviews" => $reviews,
-                ];
+                if (isset($json['data']['opencritic'])) {
+                    $opencritic = $json['data']['opencritic'];
+
+                    $reviews = [];
+                    foreach($opencritic['reviews'] as $r) {
+                        $reviews[] = [
+                            "publishedDate" => $r['publishedDate'],
+                            "snippet" => $r['snippet'],
+                            "displayScore" => $r['displayScore'],
+                            "externalUrl" => $r['externalUrl'],
+                            "author" => $r['author'],
+                            "outletName" => $r['outletName'],
+                        ];
+                    }
+
+                    $data['opencritic'] = [
+                        "url" => $opencritic['url'],
+                        "score" => $opencritic['score'],
+                        "award" => $opencritic['award'],
+                        "reviews" => $reviews,
+                    ];
+                }
             }
+
+            // TODO should we cache even unsuccessful responses?
+            $this->cache->setValue($appid, ECacheKey::Reviews, json_encode($data));
         }
 
-        $this->cache->setValue($appid, ECacheKey::Reviews, json_encode($data));
         if (!empty($data)) {
             $this->logger->info((string)$appid);
         } else {
