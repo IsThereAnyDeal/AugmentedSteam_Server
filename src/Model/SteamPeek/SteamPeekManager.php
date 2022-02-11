@@ -93,7 +93,7 @@ class SteamPeekManager {
             $json = json_decode($response->getBody()->getContents(), true);
 
             if (!empty($json['response']['success']) && $json['response']['success'] == 1) {
-                $results = $json['response']['results'];
+                $results = $json['response']['results'] ?? null;
                 $data->setData($results);
             }
         }
