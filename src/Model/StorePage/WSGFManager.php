@@ -57,7 +57,7 @@ class WSGFManager
 
             $obj = json_decode($json, true);
             if (json_last_error() === JSON_ERROR_NONE && !empty($obj)) {
-                $node = is_array($obj['node'])
+                $node = isset($obj['node'][0]) // check if we have multiple nodes in indexed array
                     ? $obj['node'][count($obj['node']) - 1] // some entries have multiple nodes, not sure why. Use last?
                     : $obj['node'];
                 $data = [
