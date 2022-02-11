@@ -45,6 +45,9 @@ class MarketController extends Controller {
             throw new BadRequestException();
         }
 
+        $appids = array_filter(array_map(fn($id) => (int)$id, $appids), fn($id) => $id > 0);
+        $foilAppids = array_filter(array_map(fn($id) => (int)$id, $foilAppids), fn($id) => $id > 0);
+
         $d = new TMarketData();
 
         $whereSql = [];
@@ -97,6 +100,8 @@ class MarketController extends Controller {
         if (count($appids) == 0) {
             throw new BadRequestException();
         }
+
+        $appids = array_filter(array_map(fn($id) => (int)$id, $appids), fn($id) => $id > 0);
 
         $d = new TMarketData();
         $select = (new SqlSelectQuery($this->db,
