@@ -40,10 +40,14 @@ class TwitchManager
             $this->guzzle
         ))->getToken();
 
-        $streams = new GetStreams($credentials, $this->guzzle);
-        $streams->setToken($token);
-        $streams->setUserLogin($channel);
-        $stream = $streams->getItemEnumerator()->current();
+        try {
+            $streams = new GetStreams($credentials, $this->guzzle);
+            $streams->setToken($token);
+            $streams->setUserLogin($channel);
+            $stream = $streams->getItemEnumerator()->current();
+        } catch (\Exception $e) {
+            $stream = null;
+        }
 
         if (is_null($stream)) {
             return null;
