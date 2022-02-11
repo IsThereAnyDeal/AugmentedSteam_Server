@@ -67,7 +67,7 @@ class MarketCrawler extends Crawler
             "SELECT $i->appid
             FROM $i
             WHERE $i->last_update <= :timestamp
-            ORDER BY $i->last_update DESC
+            ORDER BY $i->last_update ASC, $i->request_counter DESC
             LIMIT :limit"
         ))->params([
             ":timestamp" => time() - self::UpdateFrequency,
