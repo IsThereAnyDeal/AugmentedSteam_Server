@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace AugmentedSteam\Server\Cron;
 
 use AugmentedSteam\Server\Config\EndpointsConfig;
+use AugmentedSteam\Server\Config\ExfglsConfig;
 use AugmentedSteam\Server\Config\KeysConfig;
 use AugmentedSteam\Server\Loader\Loader;
 use AugmentedSteam\Server\Loader\Proxy\ProxyFactoryInterface;
@@ -14,6 +15,7 @@ use AugmentedSteam\Server\Model\HowLongToBeat\GamePageCrawler;
 use AugmentedSteam\Server\Model\HowLongToBeat\SearchResultsCrawler;
 use AugmentedSteam\Server\Model\Market\MarketCrawler;
 use AugmentedSteam\Server\Model\Money\RatesManager;
+use AugmentedSteam\Server\Model\StorePage\ExfglsManager;
 use GuzzleHttp\Client;
 use IsThereAnyDeal\Database\DbDriver;
 
@@ -25,14 +27,17 @@ class CronJobFactory
     private Client $guzzle;
     private EndpointsConfig $endpointsConfig;
     private KeysConfig $keysConfig;
+    private ExfglsConfig $exfglsConfig;
 
     public function __construct(
         LoggerFactoryInterface $loggerFactory,
         ProxyFactoryInterface $proxyFactory,
         DbDriver $db,
         Client $guzzle,
+        // TODO figure out a way how we don't have to have multiple config objects here
         EndpointsConfig $endpointsConfig,
-        KeysConfig $keysConfig
+        KeysConfig $keysConfig,
+        ExfglsConfig $exfglsConfig
     ) {
         $this->loggerFactory = $loggerFactory;
         $this->proxyFactory = $proxyFactory;
@@ -40,6 +45,7 @@ class CronJobFactory
         $this->guzzle = $guzzle;
         $this->endpointsConfig = $endpointsConfig;
         $this->keysConfig = $keysConfig;
+        $this->exfglsConfig = $exfglsConfig;
     }
 
     public function createMarketJob(): CronJob {
@@ -115,4 +121,12 @@ class CronJobFactory
             });
     }
 
+    public function createExfglsJob(): CronJob {
+        return (new CronJob())
+            ->lock("exfgls", 5)
+            ->callable(function(){
+                $updater = new ExfglsManager($this->db, $this->loggerFactory, $this->exfglsConfig);
+                $updater->update();
+            });
+    }
 }

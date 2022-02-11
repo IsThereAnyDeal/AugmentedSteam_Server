@@ -95,6 +95,7 @@ return [
             DI\get("guzzle"),
             DI\get(EndpointsConfig::class),
             DI\get(KeysConfig::class),
+            DI\get(ExfglsConfig::class)
         ),
 
     // managers

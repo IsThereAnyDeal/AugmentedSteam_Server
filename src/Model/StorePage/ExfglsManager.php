@@ -15,6 +15,7 @@ use Psr\Log\LoggerInterface;
 class ExfglsManager
 {
     private const CacheLimit = 30*86400;
+    private const BatchSize = 100;
 
     private DbDriver $db;
     private LoggerInterface $logger;
@@ -40,50 +41,76 @@ class ExfglsManager
         $data = (new SqlSelectQuery($this->db,
             "SELECT $e->excluded
             FROM $e
-            WHERE $e->appid=:appid
-              AND $e->timestamp >= :timestamp"
+            WHERE $e->appid=:appid"
         ))->params([
-            ":appid" => $appid,
-            ":timestamp" => time() - self::CacheLimit
+            ":appid" => $appid
         ])->fetch(DExfgls::class)
           ->getOne();
 
-        return is_null($data)
-            ? $this->refresh($appid)
-            : $data;
-    }
+        if (is_null($data)) {
+            $data = (new DExfgls())
+                ->setAppid($appid)
+                ->setExcluded(false)
+                ->setChecked(false)
+                ->setTimestamp(time());
 
-    private function refresh(int $appid): DExfgls {
-
-        $data = (new DExfgls())
-            ->setAppid($appid)
-            ->setChecked(false)
-            ->setExcluded(false)
-            ->setTimestamp(time());
-
-        if ($this->config->isEnabled()) {
-            $bin = $this->config->getBin();
-            $user = $this->config->getUser();
-            $password = $this->config->getPassword();
-            $logPath = __DIR__."/../../../logs/".date("Y-m-d").".exfgls.log";
-
-            $result = exec(__DIR__."/../../../bin/$bin \"$user\" \"$password\" $appid \"$logPath\"");
-            $json = json_decode($result, true);
-
-            if (json_last_error() === JSON_ERROR_NONE && isset($json[(string)$appid])) {
-                $data
-                    ->setExcluded($json[(string)$appid])
-                    ->setChecked(true);
-            }
+            (new SqlInsertQuery($this->db, $e))
+                ->columns($e->appid, $e->excluded, $e->checked, $e->timestamp)
+                ->onDuplicateKeyUpdate($e->excluded, $e->checked, $e->timestamp)
+                ->persist($data);
         }
 
-        $e = $this->e;
-        (new SqlInsertQuery($this->db, $e))
-            ->columns($e->appid, $e->excluded, $e->checked, $e->timestamp)
-            ->onDuplicateKeyUpdate($e->excluded, $e->checked, $e->timestamp)
-            ->persist($data);
-
-        $this->logger->info((string)$appid);
         return $data;
+    }
+
+    public function update(): void {
+        if (!$this->config->isEnabled()) { return; }
+        $e = $this->e;
+
+        $appids = (new SqlSelectQuery($this->db,
+            "SELECT $e->appid
+            FROM $e
+            WHERE $e->checked=0
+              OR $e->timestamp < :timestamp
+            ORDER BY $e->checked=0 DESC, $e->timestamp ASC
+            LIMIT ".self::BatchSize
+        ))->params([
+            ":timestamp" => time() - self::CacheLimit
+        ])->fetch(DExfgls::class)
+          ->map(fn(DExfgls $o) => $o->getAppid())
+          ->toArray();
+
+        if (count($appids) == 0) {
+            $this->logger->info("Nothing to update");
+            return;
+        }
+
+        $bin = $this->config->getBin();
+        $user = $this->config->getUser();
+        $password = $this->config->getPassword();
+        $logPath = __DIR__."/../../../logs/".date("Y-m-d").".exfgls.log";
+
+        $appidsParam = implode(",", $appids);
+
+        $result = exec(__DIR__."/../../../bin/$bin \"$user\" \"$password\" \"$appidsParam\" \"$logPath\"");
+        $json = json_decode($result, true);
+
+        $insert = (new SqlInsertQuery($this->db, $e))
+            ->stackSize(50)
+            ->columns($e->appid, $e->excluded, $e->checked, $e->timestamp)
+            ->onDuplicateKeyUpdate($e->excluded, $e->checked, $e->timestamp);
+
+        foreach($appids as $appid) {
+            $insert->stack(
+                (new DExfgls())
+                    ->setAppid($appid)
+                    ->setChecked(isset($json[(string)$appid]))
+                    ->setExcluded($json[(string)$appid] ?? false)
+                    ->setTimestamp(time())
+            );
+        }
+
+        $insert->persist();
+        $this->logger->info("Update done", [$appids, $json]);
     }
 }
