@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace AugmentedSteam\Server\Routing\Middleware;
 
 use AugmentedSteam\Server\Config\CoreConfig;
+use AugmentedSteam\Server\Exceptions\InvalidValueException;
+use AugmentedSteam\Server\Exceptions\MissingParameterException;
 use AugmentedSteam\Server\Routing\Response\ApiResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -27,9 +29,11 @@ class ThrowableMiddleware implements MiddlewareInterface
         } else {
             try {
                 return $handler->handle($request);
-            } catch (Throwable $exception) {
-                \Sentry\captureException($exception);
-                return $this->responseFactory->createErrorResponse($exception);
+            } catch (InvalidValueException | MissingParameterException $e) {
+                return $this->responseFactory->createErrorResponse($e);
+            } catch (Throwable $e) {
+                \Sentry\captureException($e);
+                return $this->responseFactory->createErrorResponse($e);
             }
         }
     }
