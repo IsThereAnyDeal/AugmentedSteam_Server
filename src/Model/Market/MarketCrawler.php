@@ -25,7 +25,7 @@ use Psr\Log\LoggerInterface;
 class MarketCrawler extends Crawler
 {
     private const BatchCount = 5;
-    private const RequestBatchSize = 30;
+    private const RequestBatchSize = 50;
     private const UpdateFrequency = 60*60;
     private const MaxAttempts = 3;
 
