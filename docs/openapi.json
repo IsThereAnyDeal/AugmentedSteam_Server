@@ -10,9 +10,6 @@
   },
   "servers": [
     {
-      "url": "https://esapi.isthereanydeal.com"
-    },
-    {
       "url": "https://api.augmentedsteam.com"
     }
   ],
