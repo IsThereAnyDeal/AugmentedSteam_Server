@@ -49,12 +49,12 @@ class MarketCrawler extends Crawler
             ->columns(
                 $d->hash_name, $d->appid,
                 $d->appname,
-                $d->name, $d->sell_listings, $d->sell_price_usd, $d->img,
+                $d->name, $d->sell_listings, $d->sell_price_usd, $d->img, $d->url,
                 $d->type, $d->rarity, $d->timestamp
             )
             ->onDuplicateKeyUpdate(
                 $d->appname,
-                $d->name, $d->sell_listings, $d->sell_price_usd, $d->img,
+                $d->name, $d->sell_listings, $d->sell_price_usd, $d->img, $d->url,
                 $d->type, $d->rarity, $d->timestamp
             )
             ->stackSize(0);
@@ -182,6 +182,7 @@ class MarketCrawler extends Crawler
                     ->setSellListings($item['sell_listings'])
                     ->setSellPriceUsd($item['sell_price'])
                     ->setImg($asset['icon_url'])
+                    ->setUrl($asset['appid']."/".rawurlencode($item['hash_name']))
                     ->setType($type)
                     ->setRarity($rarity)
                     ->setTimestamp(time())

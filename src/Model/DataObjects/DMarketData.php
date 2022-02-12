@@ -15,6 +15,7 @@ class DMarketData extends AInsertableObject implements ISelectable
     protected int $sell_listings;
     protected int $sell_price_usd;
     protected string $img;
+    protected string $url;
     protected string $type;
     protected string $rarity;
     protected int $timestamp;
@@ -79,6 +80,15 @@ class DMarketData extends AInsertableObject implements ISelectable
 
     public function setImg(string $img): self {
         $this->img = $img;
+        return $this;
+    }
+
+    public function getUrl(): string {
+        return $this->url;
+    }
+
+    public function setUrl(string $url): self {
+        $this->url = $url;
         return $this;
     }
 

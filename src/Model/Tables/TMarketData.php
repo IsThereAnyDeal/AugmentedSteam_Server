@@ -15,6 +15,7 @@ class TMarketData extends Table
     public Column $sell_listings;
     public Column $sell_price_usd;
     public Column $img;
+    public Column $url;
     public Column $type;
     public Column $rarity;
     public Column $timestamp;

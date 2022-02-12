@@ -40,6 +40,7 @@ CREATE TABLE `market_data` (
   `sell_listings` int NOT NULL DEFAULT 0,
   `sell_price_usd` int NOT NULL,
   `img` text NOT NULL,
+  `url` varchar(255) NOT NULL,
   `type` enum('unknown', 'background', 'booster', 'card', 'emoticon', 'item') NOT NULL,
   `rarity` enum('normal', 'uncommon', 'foil', 'rare'),
   `timestamp` int unsigned NOT NULL,
