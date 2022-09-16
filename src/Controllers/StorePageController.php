@@ -107,8 +107,8 @@ class StorePageController extends Controller
                 "main_story" => $hltb->getMainString(),
                 "main_extras" => $hltb->getExtraString(),
                 "comp" => $hltb->getCompleteString(),
-                "url" => "https://howlongtobeat.com/game.php?id={$hltb->getId()}",
-                "submit_url" => "https://howlongtobeat.com/submit.php?s=add&gid={$hltb->getId()}",
+                "url" => "https://howlongtobeat.com/game/{$hltb->getId()}",
+                "submit_url" => "https://howlongtobeat.com/submit/game/{$hltb->getId()}",
             ];
         } else {
             $result['hltb']['success'] = false;

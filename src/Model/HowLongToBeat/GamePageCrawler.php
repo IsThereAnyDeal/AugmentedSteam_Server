@@ -43,7 +43,7 @@ class GamePageCrawler extends Crawler
     }
 
     private function makeRequest(int $id): void {
-        $item = (new Item("https://howlongtobeat.com/game.php?id=$id"))
+        $item = (new Item("https://howlongtobeat.com/game/$id"))
             ->setData(["id" => $id])
             ->setHeaders(["User-Agent" => "AugmentedSteam/1.0 (+bots@isthereanydeal.com)"])
             ->setCurlOptions($this->proxy->getCurlOptions());

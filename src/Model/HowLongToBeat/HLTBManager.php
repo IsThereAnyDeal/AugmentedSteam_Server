@@ -64,7 +64,7 @@ class HLTBManager {
 
     private function recheck(int $id, int $appid): ?DHLTB {
         $response = $this->loader->get(
-            "https://howlongtobeat.com/game.php?id=$id",
+            "https://howlongtobeat.com/game/$id",
             $this->proxy->getCurlOptions()
         );
 

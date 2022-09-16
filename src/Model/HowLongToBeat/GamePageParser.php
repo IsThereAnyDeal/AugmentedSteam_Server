@@ -25,7 +25,7 @@ class GamePageParser
         $xpath = new DOMXPath($dom);
 
         $platformNode = $xpath->query(
-            "//table[@class='game_main_table']//td[1]/text()[contains(., 'Platform')]/.."
+            "//table[contains(@class, 'GamePlatformTable_game_main_table')]//td[1]/text()[contains(., 'Platform')]/.."
         )[0];
 
         $headNodes = $xpath->query("ancestor::tr//td", $platformNode);
@@ -36,7 +36,7 @@ class GamePageParser
             $keys[$i++] = trim($node->textContent);
         }
 
-        $platformTable = $xpath->query("ancestor::table[@class='game_main_table']", $platformNode)[0];
+        $platformTable = $xpath->query("ancestor::table[contains(@class, 'GamePlatformTable_game_main_table')]", $platformNode)[0];
 
         $map = [];
         $pcRowNodes = $xpath->query("//td/text()[contains(., 'PC')]/ancestor::tr//td", $platformTable);
