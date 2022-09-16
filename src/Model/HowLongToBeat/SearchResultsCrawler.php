@@ -10,9 +10,7 @@ use AugmentedSteam\Server\Loader\Proxy\ProxyInterface;
 use AugmentedSteam\Server\Model\Crawler;
 use AugmentedSteam\Server\Model\DataObjects\DHLTB;
 use AugmentedSteam\Server\Model\Tables\THLTB;
-use DOMDocument;
 use DOMNodeList;
-use DOMXPath;
 use IsThereAnyDeal\Database\DbDriver;
 use IsThereAnyDeal\Database\Sql\SqlInsertQuery;
 use Psr\Http\Message\ResponseInterface;
@@ -47,25 +45,42 @@ class SearchResultsCrawler extends Crawler
 
     private function makeRequest(int $page=1): void {
 
-        $item = (new Item("https://howlongtobeat.com/search_results?page=$page"))
+        $item = (new Item("https://howlongtobeat.com/api/search"))
             ->setMethod("POST")
-            ->setFormData([
-                "queryString" => $this->queryString,
-                "t" => "games",
-                "sorthead" => "popular",
-                "sortd" => "0",
-                "plat" => "PC",
-                "length_type" => "main",
-                "length_min" => "",
-                "length_max" => "",
-                "v" => "",
-                "f" => "",
-                "g" => "",
-                "detail" => "",
-                "randomize" => "0",
-            ])
+            ->setBody(json_encode([
+                "searchType" => "games",
+                "searchTerms" => explode(" ", $this->queryString),
+                "searchPage" => $page,
+                "size" => 20,
+                "searchOptions"=> [
+                    "games" => [
+                        "userId" => 0,
+                        "platform" => "PC",
+                        "sortCategory" => "popular",
+                        "rangeCategory" => "main",
+                        "rangeTime" => [
+                            "min" => 0,
+                            "max" => 0
+                        ],
+                        "gameplay" => [
+                            "perspective" => "",
+                            "flow" => "",
+                            "genre" => ""
+                        ],
+                        "modifier" => ""
+                    ],
+                    "users" => [
+                        "sortCategory" => "postcount"
+                    ],
+                    "filter" => "",
+                    "sort" => 0,
+                    "randomizer" => 0
+                ]
+            ]))
             ->setHeaders([
-                "User-Agent" => "AugmentedSteam/1.0 (+bots@isthereanydeal.com)"
+                "Content-Type" => "application/json",
+                "User-Agent" => "AugmentedSteam/1.0 (+bots@isthereanydeal.com)",
+                "Referer" => "https://howlongtobeat.com/",
             ])
             ->setData(["page" => $page])
             ->setCurlOptions($this->proxy->getCurlOptions());
@@ -74,61 +89,32 @@ class SearchResultsCrawler extends Crawler
         $this->requestCounter++;
     }
 
-    private function getHours(string $hourString): ?int {
-        $hourString = str_replace("½", ".5", $hourString);
-        if (!preg_match("#\d+(\.5)?#", $hourString, $m)) {
-            return null;
-        }
-        return (int)(((float)$m[0])*60);
-    }
-
-    private function parseTimeNodes(DOMNodeList $nodes): array {
-        $result = [];
-        for ($i=0; $i < count($nodes); $i += 2) {
-            $result[trim($nodes[$i]->textContent)] = $this->getHours($nodes[$i+1]->textContent);
-        }
-        return $result;
-    }
-
     protected function successHandler(Item $request, ResponseInterface $response, string $effectiveUri): void {
         if (!$this->mayProcess($request, $response, self::MaxAttempts)) {
             return;
         }
 
-        $dom = new DOMDocument();
-        $dom->loadHTML($response->getBody()->getContents(), LIBXML_NOERROR);
-
-        $xpath = new DOMXPath($dom);
+        $json = json_decode($response->getBody()->getContents(), true);
 
         $requestData = $request->getData();
         $page = $requestData['page'];
         if ($page == 1) {
-            $pages = $xpath->query("//h2/span[contains(concat(' ', @class, ' '), 'search_list_page')][last()]")[0]->textContent;
+            $pages = $json['pageTotal'];
             for ($p=2; $p <= $pages; $p++) {
                 $this->makeRequest($p);
             }
         }
 
-        $details = $xpath->query("//div[@class='search_list_details']");
-        foreach($details as $detailNode) {
-            $a = $xpath->query(".//a[1]", $detailNode)[0];
-            $href = $xpath->query("./@href", $a)[0]->value;
-
-            if (!preg_match("#id=(\d+)#", $href, $m)) {
-                continue;
-            }
-
-            $id = $m[1];
-            $timeNodes = $xpath->query(".//*[contains(concat(' ', normalize-space(@class), ' '), ' search_list_tidbit ')]", $detailNode);
-            $times = $this->parseTimeNodes($timeNodes);
+        foreach($json['data'] as $item) {
+            $id = $item['game_id'];
 
             $this->insert
                 ->stack(
                     (new DHLTB())
                         ->setId((int)$id)
-                        ->setMain($times['Main Story'] ?? null)
-                        ->setExtra($times['Main + Extra'] ?? null)
-                        ->setComplete($times['Completionist'] ?? null)
+                        ->setMain(is_null($item['comp_main']) ? null : (int)floor($item['comp_main']/60))
+                        ->setExtra(is_null($item['comp_plus']) ? null : (int)floor($item['comp_plus']/60))
+                        ->setComplete(is_null($item['comp_100']) ? null : (int)floor($item['comp_100']/60))
                         ->setFoundTimestamp(time())
                 );
         }
