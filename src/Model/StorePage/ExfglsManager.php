@@ -104,7 +104,7 @@ class ExfglsManager
             $insert->stack(
                 (new DExfgls())
                     ->setAppid($appid)
-                    ->setChecked(isset($json[(string)$appid]))
+                    ->setChecked(true) // isset($json[(string)$appid])
                     ->setExcluded($json[(string)$appid] ?? false)
                     ->setTimestamp(time())
             );
