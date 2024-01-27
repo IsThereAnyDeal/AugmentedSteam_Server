@@ -6,3 +6,4 @@ logs/
 temp/
 .nginx*
 deployer.yaml
+node_modules/
