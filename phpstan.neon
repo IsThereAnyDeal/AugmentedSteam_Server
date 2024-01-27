@@ -1,4 +1,10 @@
+includes:
+  - vendor/phpstan/phpstan/conf/bleedingEdge.neon
+  - vendor/phpstan/phpstan-deprecation-rules/rules.neon
+
 parameters:
-	level: 5
-	paths:
-		- src
+    checkGenericClassInNonGenericObjectType: false
+    treatPhpDocTypesAsCertain: false
+    level: max
+    paths:
+        - src
