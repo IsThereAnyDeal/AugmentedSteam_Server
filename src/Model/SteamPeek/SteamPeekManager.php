@@ -3,10 +3,10 @@ namespace AugmentedSteam\Server\Model\SteamPeek;
 
 use AugmentedSteam\Server\Config\EndpointsConfig;
 use AugmentedSteam\Server\Config\KeysConfig;
+use AugmentedSteam\Server\Database\TSimilar;
 use AugmentedSteam\Server\Loader\SimpleLoader;
 use AugmentedSteam\Server\Logging\LoggerFactoryInterface;
 use AugmentedSteam\Server\Model\DataObjects\DSimilar;
-use AugmentedSteam\Server\Model\Tables\TSimilar;
 use IsThereAnyDeal\Database\DbDriver;
 use IsThereAnyDeal\Database\Sql\SqlInsertQuery;
 use IsThereAnyDeal\Database\Sql\SqlSelectQuery;
@@ -34,7 +34,7 @@ class SteamPeekManager {
         $this->loader = $loader;
         $this->config = $config;
         $this->keysConfig = $keysConfig;
-        $this->logger = $loggerFactory->createLogger("steampeek");
+        $this->logger = $loggerFactory->create("steampeek");
 
         $this->s = new TSimilar();
     }

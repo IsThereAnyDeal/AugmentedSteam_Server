@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace AugmentedSteam\Server\Model\Twitch;
 
+use AugmentedSteam\Server\Database\TTwitchToken;
 use AugmentedSteam\Server\Model\DataObjects\DTwitchToken;
-use AugmentedSteam\Server\Model\Tables\TTwitchToken;
 use IsThereAnyDeal\Database\DbDriver;
 use IsThereAnyDeal\Database\Sql\SqlDeleteQuery;
 use IsThereAnyDeal\Database\Sql\SqlInsertQuery;

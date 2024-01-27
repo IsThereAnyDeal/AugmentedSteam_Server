@@ -1,11 +1,13 @@
 <?php
 declare(strict_types=1);
 
-namespace AugmentedSteam\Server\Model\Tables;
+namespace AugmentedSteam\Server\Database;
 
-use IsThereAnyDeal\Database\Sql\Column;
-use IsThereAnyDeal\Database\Sql\Table;
+use IsThereAnyDeal\Database\Attributes\TableName;
+use IsThereAnyDeal\Database\Tables\Column;
+use IsThereAnyDeal\Database\Tables\Table;
 
+#[TableName("hltb")]
 class THLTB extends Table
 {
     public Column $id;
@@ -15,8 +17,4 @@ class THLTB extends Table
     public Column $complete;
     public Column $found_timestamp;
     public Column $checked_timestamp;
-
-    public function __construct(string $alias = "") {
-        parent::__construct("hltb", [], $alias);
-    }
 }

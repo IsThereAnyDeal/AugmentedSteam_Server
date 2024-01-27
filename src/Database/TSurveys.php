@@ -1,11 +1,13 @@
 <?php
 declare(strict_types=1);
 
-namespace AugmentedSteam\Server\Model\Tables;
+namespace AugmentedSteam\Server\Database;
 
-use IsThereAnyDeal\Database\Sql\Column;
-use IsThereAnyDeal\Database\Sql\Table;
+use IsThereAnyDeal\Database\Attributes\TableName;
+use IsThereAnyDeal\Database\Tables\Column;
+use IsThereAnyDeal\Database\Tables\Table;
 
+#[TableName("surveys")]
 class TSurveys extends Table
 {
     public Column $appid;
@@ -17,8 +19,4 @@ class TSurveys extends Table
     public Column $bg_sound_mute;
     public Column $good_controls;
     public Column $timestamp;
-
-    public function __construct(string $alias = "") {
-        parent::__construct("surveys", [], $alias);
-    }
 }

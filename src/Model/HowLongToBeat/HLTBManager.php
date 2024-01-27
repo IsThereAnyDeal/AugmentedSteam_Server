@@ -3,12 +3,12 @@ declare(strict_types=1);
 
 namespace AugmentedSteam\Server\Model\HowLongToBeat;
 
+use AugmentedSteam\Server\Database\THLTB;
 use AugmentedSteam\Server\Loader\Proxy\ProxyFactoryInterface;
 use AugmentedSteam\Server\Loader\Proxy\ProxyInterface;
 use AugmentedSteam\Server\Loader\SimpleLoader;
 use AugmentedSteam\Server\Logging\LoggerFactoryInterface;
 use AugmentedSteam\Server\Model\DataObjects\DHLTB;
-use AugmentedSteam\Server\Model\Tables\THLTB;
 use IsThereAnyDeal\Database\DbDriver;
 use IsThereAnyDeal\Database\Sql\SqlSelectQuery;
 use IsThereAnyDeal\Database\Sql\SqlUpdateObjectQuery;
@@ -32,7 +32,7 @@ class HLTBManager {
     ) {
         $this->db = $db;
         $this->loader = $loader;
-        $this->logger = $loggerFactory->createLogger("hltb");
+        $this->logger = $loggerFactory->create("hltb");
         $this->proxy = $proxyFactory->createProxy();
 
         $this->h = new THLTB();

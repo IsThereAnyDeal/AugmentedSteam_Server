@@ -7,7 +7,6 @@ use AugmentedSteam\Server\Config\CoreConfig;
 use AugmentedSteam\Server\Http\Param;
 use AugmentedSteam\Server\Model\Market\MarketManager;
 use AugmentedSteam\Server\Model\User\UserManager;
-use AugmentedSteam\Server\OpenId\OpenId;
 use AugmentedSteam\Server\OpenId\Session;
 use IsThereAnyDeal\Database\DbDriver;
 use Laminas\Diactoros\Response\RedirectResponse;

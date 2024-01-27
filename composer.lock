@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c75b0ffcf089e78fc36dfeb32c71e229",
+    "content-hash": "4fbfab413b2652238a161300618407e0",
     "packages": [
         {
             "name": "filp/whoops",
@@ -404,7 +404,7 @@
         },
         {
             "name": "itad/config",
-            "version": "v0.1",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/IsThereAnyDeal/Config.git",
@@ -419,6 +419,7 @@
             "require": {
                 "ext-json": "*"
             },
+            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -433,27 +434,31 @@
         },
         {
             "name": "itad/db",
-            "version": "v0.1.1",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/IsThereAnyDeal/Database.git",
-                "reference": "58fc8913b9462d14b0132114990cfdf897a1eb6c"
+                "reference": "1ad7c3b52dd0d7786ac70dcf0128a1722965e72a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/IsThereAnyDeal/Database/zipball/58fc8913b9462d14b0132114990cfdf897a1eb6c",
-                "reference": "58fc8913b9462d14b0132114990cfdf897a1eb6c",
+                "url": "https://api.github.com/repos/IsThereAnyDeal/Database/zipball/1ad7c3b52dd0d7786ac70dcf0128a1722965e72a",
+                "reference": "1ad7c3b52dd0d7786ac70dcf0128a1722965e72a",
                 "shasum": ""
             },
             "require": {
+                "ext-ds": "*",
                 "ext-pdo": "*",
                 "nette/schema": "^1.2",
-                "psr/log": "^1.1.4"
+                "php-ds/php-ds": "^1.4",
+                "psr/log": "^1 || ^2 || ^3"
             },
             "require-dev": {
-                "phpstan/phpstan": "^1.4",
+                "php-sage/sage": "^1.2",
+                "phpstan/phpstan": "^1.7",
                 "phpunit/phpunit": "^9.5"
             },
+            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -462,19 +467,22 @@
             },
             "autoload-dev": {
                 "psr-4": {
-                    "IsThereAnyDeal\\Database\\": "tests"
+                    "IsThereAnyDeal\\Database\\Tests\\": "tests"
                 }
             },
             "scripts": {
                 "phpstan": [
-                    "vendor/bin/phpstan analyse -c phpstan.neon"
+                    "vendor/bin/phpstan analyse -c phpstan.neon --ansi"
+                ],
+                "phpstan-cache": [
+                    "vendor/bin/phpstan clear-result-cache -c phpstan.neon"
                 ]
             },
             "support": {
-                "source": "https://github.com/IsThereAnyDeal/Database/tree/v0.1.1",
+                "source": "https://github.com/IsThereAnyDeal/Database/tree/master",
                 "issues": "https://github.com/IsThereAnyDeal/Database/issues"
             },
-            "time": "2022-02-10T02:58:37+00:00"
+            "time": "2024-01-02T22:56:33+00:00"
         },
         {
             "name": "itad/twitch-api",
@@ -1625,6 +1633,61 @@
             "time": "2023-11-02T10:04:50+00:00"
         },
         {
+            "name": "php-ds/php-ds",
+            "version": "v1.5.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-ds/polyfill.git",
+                "reference": "7b2c5f1843466d50769a0682ce6fa9ddaaa99cb4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-ds/polyfill/zipball/7b2c5f1843466d50769a0682ce6fa9ddaaa99cb4",
+                "reference": "7b2c5f1843466d50769a0682ce6fa9ddaaa99cb4",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "php": ">=7.0"
+            },
+            "provide": {
+                "ext-ds": "1.5.0"
+            },
+            "require-dev": {
+                "php-ds/tests": "^1.5"
+            },
+            "suggest": {
+                "ext-ds": "to improve performance and reduce memory usage"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Ds\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Rudi Theunissen",
+                    "email": "rudolf.theunissen@gmail.com"
+                }
+            ],
+            "keywords": [
+                "data structures",
+                "ds",
+                "php",
+                "polyfill"
+            ],
+            "support": {
+                "issues": "https://github.com/php-ds/polyfill/issues",
+                "source": "https://github.com/php-ds/polyfill/tree/v1.5.0"
+            },
+            "time": "2023-12-19T16:52:21+00:00"
+        },
+        {
             "name": "psr/container",
             "version": "2.0.2",
             "source": {
@@ -1952,30 +2015,30 @@
         },
         {
             "name": "psr/log",
-            "version": "1.1.4",
+            "version": "3.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-fig/log.git",
-                "reference": "d49695b909c3b7628b6289db5479a1c204601f11"
+                "reference": "fe5ea303b0887d5caefd3d431c3e61ad47037001"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-fig/log/zipball/d49695b909c3b7628b6289db5479a1c204601f11",
-                "reference": "d49695b909c3b7628b6289db5479a1c204601f11",
+                "url": "https://api.github.com/repos/php-fig/log/zipball/fe5ea303b0887d5caefd3d431c3e61ad47037001",
+                "reference": "fe5ea303b0887d5caefd3d431c3e61ad47037001",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.0"
+                "php": ">=8.0.0"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.1.x-dev"
+                    "dev-master": "3.x-dev"
                 }
             },
             "autoload": {
                 "psr-4": {
-                    "Psr\\Log\\": "Psr/Log/"
+                    "Psr\\Log\\": "src"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -1996,9 +2059,9 @@
                 "psr-3"
             ],
             "support": {
-                "source": "https://github.com/php-fig/log/tree/1.1.4"
+                "source": "https://github.com/php-fig/log/tree/3.0.0"
             },
-            "time": "2021-05-03T11:20:27+00:00"
+            "time": "2021-07-14T16:46:02+00:00"
         },
         {
             "name": "psr/simple-cache",
@@ -2488,7 +2551,10 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "itad/config": 20,
+        "itad/db": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {

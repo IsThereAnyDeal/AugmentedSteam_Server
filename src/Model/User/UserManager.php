@@ -3,11 +3,11 @@ declare(strict_types=1);
 
 namespace AugmentedSteam\Server\Model\User;
 
+use AugmentedSteam\Server\Database\TBadges;
+use AugmentedSteam\Server\Database\TUsersBadges;
+use AugmentedSteam\Server\Database\TUsersProfiles;
 use AugmentedSteam\Server\Model\DataObjects\DBadges;
 use AugmentedSteam\Server\Model\DataObjects\DUsersProfiles;
-use AugmentedSteam\Server\Model\Tables\TBadges;
-use AugmentedSteam\Server\Model\Tables\TUsersBadges;
-use AugmentedSteam\Server\Model\Tables\TUsersProfiles;
 use IsThereAnyDeal\Database\DbDriver;
 use IsThereAnyDeal\Database\Sql\SqlDeleteQuery;
 use IsThereAnyDeal\Database\Sql\SqlInsertQuery;

@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace AugmentedSteam\Server\Model\Money;
 
+use AugmentedSteam\Server\Database\TCurrency;
 use AugmentedSteam\Server\Model\DataObjects\DCurrency;
-use AugmentedSteam\Server\Model\Tables\TCurrency;
 use IsThereAnyDeal\Database\DbDriver;
 use IsThereAnyDeal\Database\Sql\SqlSelectQuery;
 

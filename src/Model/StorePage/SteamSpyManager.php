@@ -4,11 +4,11 @@ declare(strict_types=1);
 namespace AugmentedSteam\Server\Model\StorePage;
 
 use AugmentedSteam\Server\Config\EndpointsConfig;
+use AugmentedSteam\Server\Database\TSteamSpy;
 use AugmentedSteam\Server\Loader\Proxy\ProxyFactoryInterface;
 use AugmentedSteam\Server\Loader\SimpleLoader;
 use AugmentedSteam\Server\Logging\LoggerFactoryInterface;
 use AugmentedSteam\Server\Model\DataObjects\DSteamSpy;
-use AugmentedSteam\Server\Model\Tables\TSteamSpy;
 use IsThereAnyDeal\Database\DbDriver;
 use IsThereAnyDeal\Database\Sql\SqlInsertQuery;
 use IsThereAnyDeal\Database\Sql\SqlSelectQuery;
@@ -35,7 +35,7 @@ class SteamSpyManager
     ) {
         $this->db = $db;
         $this->loader = $loader;
-        $this->logger = $loggerFactory->createLogger("steamspy");
+        $this->logger = $loggerFactory->create("steamspy");
         $this->proxyFactory = $proxyFactory;
         $this->config = $config;
 

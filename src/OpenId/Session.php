@@ -1,8 +1,8 @@
 <?php
 namespace AugmentedSteam\Server\OpenId;
 
+use AugmentedSteam\Server\Database\TSessions;
 use AugmentedSteam\Server\Model\DataObjects\DSession;
-use AugmentedSteam\Server\Model\Tables\TSessions;
 use IsThereAnyDeal\Database\DbDriver;
 use IsThereAnyDeal\Database\Sql\SqlDeleteQuery;
 use IsThereAnyDeal\Database\Sql\SqlInsertQuery;

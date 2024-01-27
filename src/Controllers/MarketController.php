@@ -1,12 +1,12 @@
 <?php
 namespace AugmentedSteam\Server\Controllers;
 
+use AugmentedSteam\Server\Database\TMarketData;
 use AugmentedSteam\Server\Exceptions\MissingParameterException;
 use AugmentedSteam\Server\Http\Param;
 use AugmentedSteam\Server\Model\DataObjects\DMarketData;
 use AugmentedSteam\Server\Model\Market\MarketIndex;
 use AugmentedSteam\Server\Model\Money\CurrencyConverter;
-use AugmentedSteam\Server\Model\Tables\TMarketData;
 use IsThereAnyDeal\Database\DbDriver;
 use IsThereAnyDeal\Database\Sql\SqlSelectQuery;
 use League\Route\Http\Exception\BadRequestException;

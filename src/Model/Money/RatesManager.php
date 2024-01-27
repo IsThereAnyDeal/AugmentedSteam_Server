@@ -5,9 +5,9 @@ namespace AugmentedSteam\Server\Model\Money;
 
 use AugmentedSteam\Server\Config\EndpointsConfig;
 use AugmentedSteam\Server\Config\KeysConfig;
+use AugmentedSteam\Server\Database\TCurrency;
 use AugmentedSteam\Server\Loader\SimpleLoader;
 use AugmentedSteam\Server\Model\DataObjects\DCurrency;
-use AugmentedSteam\Server\Model\Tables\TCurrency;
 use IsThereAnyDeal\Database\DbDriver;
 use IsThereAnyDeal\Database\Sql\SqlDeleteQuery;
 use IsThereAnyDeal\Database\Sql\SqlInsertQuery;

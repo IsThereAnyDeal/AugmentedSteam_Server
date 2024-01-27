@@ -30,7 +30,7 @@ class ReviewsManager
     ) {
         $this->cache = $cache;
         $this->loader = $loader;
-        $this->logger = $loggerFactory->createLogger("reviews");
+        $this->logger = $loggerFactory->create("reviews");
         $this->config = $config;
         $this->keysConfig = $keysConfig;
     }

@@ -24,17 +24,13 @@ class ThrowableMiddleware implements MiddlewareInterface
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
-        if ($this->config->isShowErrors() && !$this->config->isProduction()) {
+        try {
             return $handler->handle($request);
-        } else {
-            try {
-                return $handler->handle($request);
-            } catch (InvalidValueException | MissingParameterException $e) {
-                return $this->responseFactory->createErrorResponse($e);
-            } catch (Throwable $e) {
-                \Sentry\captureException($e);
-                return $this->responseFactory->createErrorResponse($e);
-            }
+        } catch (InvalidValueException | MissingParameterException $e) {
+            return $this->responseFactory->createErrorResponse($e);
+        } catch (Throwable $e) {
+            \Sentry\captureException($e);
+            return $this->responseFactory->createErrorResponse($e);
         }
     }
 }

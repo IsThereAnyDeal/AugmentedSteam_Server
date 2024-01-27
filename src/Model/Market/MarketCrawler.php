@@ -3,15 +3,15 @@ declare(strict_types=1);
 
 namespace AugmentedSteam\Server\Model\Market;
 
-use AugmentedSteam\Server\Loader\Loader;
+use AugmentedSteam\Server\Database\TMarketData;
+use AugmentedSteam\Server\Database\TMarketIndex;
 use AugmentedSteam\Server\Loader\Item;
+use AugmentedSteam\Server\Loader\Loader;
 use AugmentedSteam\Server\Loader\Proxy\ProxyFactoryInterface;
 use AugmentedSteam\Server\Loader\Proxy\ProxyInterface;
 use AugmentedSteam\Server\Model\Crawler;
 use AugmentedSteam\Server\Model\DataObjects\DMarketData;
 use AugmentedSteam\Server\Model\DataObjects\DMarketIndex;
-use AugmentedSteam\Server\Model\Tables\TMarketData;
-use AugmentedSteam\Server\Model\Tables\TMarketIndex;
 use IsThereAnyDeal\Database\DbDriver;
 use IsThereAnyDeal\Database\Sql\SqlDeleteQuery;
 use IsThereAnyDeal\Database\Sql\SqlInsertQuery;

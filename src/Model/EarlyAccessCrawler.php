@@ -3,12 +3,12 @@ declare(strict_types=1);
 
 namespace AugmentedSteam\Server\Model;
 
+use AugmentedSteam\Server\Database\TEarlyAccess;
 use AugmentedSteam\Server\Loader\Item;
 use AugmentedSteam\Server\Loader\Loader;
 use AugmentedSteam\Server\Loader\Proxy\ProxyFactoryInterface;
 use AugmentedSteam\Server\Loader\Proxy\ProxyInterface;
 use AugmentedSteam\Server\Model\DataObjects\DEarlyAccess;
-use AugmentedSteam\Server\Model\Tables\TEarlyAccess;
 use IsThereAnyDeal\Database\DbDriver;
 use IsThereAnyDeal\Database\Sql\SqlDeleteQuery;
 use IsThereAnyDeal\Database\Sql\SqlInsertQuery;

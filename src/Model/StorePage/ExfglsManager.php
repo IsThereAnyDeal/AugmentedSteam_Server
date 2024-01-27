@@ -4,9 +4,9 @@ declare(strict_types=1);
 namespace AugmentedSteam\Server\Model\StorePage;
 
 use AugmentedSteam\Server\Config\ExfglsConfig;
+use AugmentedSteam\Server\Database\TExfgls;
 use AugmentedSteam\Server\Logging\LoggerFactoryInterface;
 use AugmentedSteam\Server\Model\DataObjects\DExfgls;
-use AugmentedSteam\Server\Model\Tables\TExfgls;
 use IsThereAnyDeal\Database\DbDriver;
 use IsThereAnyDeal\Database\Sql\SqlInsertQuery;
 use IsThereAnyDeal\Database\Sql\SqlSelectQuery;
@@ -29,7 +29,7 @@ class ExfglsManager
         ExfglsConfig $config
     ) {
         $this->db = $db;
-        $this->logger = $loggerFactory->createLogger("exfgls");
+        $this->logger = $loggerFactory->create("exfgls");
         $this->config = $config;
 
         $this->e = new TExfgls();

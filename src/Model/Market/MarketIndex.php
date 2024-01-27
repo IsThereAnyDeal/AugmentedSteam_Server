@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace AugmentedSteam\Server\Model\Market;
 
+use AugmentedSteam\Server\Database\TMarketIndex;
 use AugmentedSteam\Server\Model\DataObjects\DMarketIndex;
-use AugmentedSteam\Server\Model\Tables\TMarketIndex;
 use IsThereAnyDeal\Database\DbDriver;
 use IsThereAnyDeal\Database\Sql\SqlInsertQuery;
 

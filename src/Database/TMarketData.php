@@ -1,11 +1,13 @@
 <?php
 declare(strict_types=1);
 
-namespace AugmentedSteam\Server\Model\Tables;
+namespace AugmentedSteam\Server\Database;
 
-use IsThereAnyDeal\Database\Sql\Column;
-use IsThereAnyDeal\Database\Sql\Table;
+use IsThereAnyDeal\Database\Attributes\TableName;
+use IsThereAnyDeal\Database\Tables\Column;
+use IsThereAnyDeal\Database\Tables\Table;
 
+#[TableName("market_data")]
 class TMarketData extends Table
 {
     public Column $hash_name;
@@ -19,8 +21,4 @@ class TMarketData extends Table
     public Column $type;
     public Column $rarity;
     public Column $timestamp;
-
-    public function __construct(string $alias = "") {
-        parent::__construct("market_data", [], $alias);
-    }
 }

@@ -52,7 +52,7 @@ class CronJobFactory
         return (new CronJob())
             ->lock("market", 10)
             ->callable(function(){
-                $logger = $this->loggerFactory->createLogger("market");
+                $logger = $this->loggerFactory->create("market");
 
                 $loader = new Loader($logger, $this->guzzle);
                 $updater = new MarketCrawler($this->db, $loader, $logger, $this->proxyFactory);
@@ -64,7 +64,7 @@ class CronJobFactory
         return (new CronJob())
             ->lock("hltb.all", 5)
             ->callable(function(){
-                $logger = $this->loggerFactory->createLogger("hltb");
+                $logger = $this->loggerFactory->create("hltb");
 
                 $loader = new Loader($logger, $this->guzzle);
                 $updater = new SearchResultsCrawler($this->db, $loader, $logger, $this->proxyFactory);
@@ -76,7 +76,7 @@ class CronJobFactory
         return (new CronJob())
             ->lock("hltb.recent", 5)
             ->callable(function(){
-                $logger = $this->loggerFactory->createLogger("hltb");
+                $logger = $this->loggerFactory->create("hltb");
 
                 $loader = new Loader($logger, $this->guzzle);
                 $updater = new SearchResultsCrawler($this->db, $loader, $logger, $this->proxyFactory);
@@ -89,7 +89,7 @@ class CronJobFactory
         return (new CronJob())
             ->lock("hltb.games", 5)
             ->callable(function(){
-                $logger = $this->loggerFactory->createLogger("hltb");
+                $logger = $this->loggerFactory->create("hltb");
 
                 $loader = new Loader($logger, $this->guzzle);
                 $updater = new GamePageCrawler($this->db, $loader, $logger, $this->proxyFactory);
@@ -101,7 +101,7 @@ class CronJobFactory
         return (new CronJob())
             ->lock("earlyaccess", 5)
             ->callable(function(){
-                $logger = $this->loggerFactory->createLogger("earlyaccess");
+                $logger = $this->loggerFactory->create("earlyaccess");
 
                 $loader = new Loader($logger, $this->guzzle);
                 $updater = new EarlyAccessCrawler($this->db, $loader, $logger, $this->proxyFactory);
@@ -113,7 +113,7 @@ class CronJobFactory
         return (new CronJob())
             ->lock("rates", 5)
             ->callable(function(){
-                $logger = $this->loggerFactory->createLogger("rates");
+                $logger = $this->loggerFactory->create("rates");
 
                 $loader = new SimpleLoader($this->guzzle, $logger);
                 $updater = new RatesManager($this->db, $loader, $this->endpointsConfig, $this->keysConfig, $logger);

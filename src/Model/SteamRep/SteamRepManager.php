@@ -4,10 +4,10 @@ declare(strict_types=1);
 namespace AugmentedSteam\Server\Model\SteamRep;
 
 use AugmentedSteam\Server\Config\EndpointsConfig;
+use AugmentedSteam\Server\Database\TSteamRep;
 use AugmentedSteam\Server\Loader\SimpleLoader;
 use AugmentedSteam\Server\Logging\LoggerFactoryInterface;
 use AugmentedSteam\Server\Model\DataObjects\DSteamRep;
-use AugmentedSteam\Server\Model\Tables\TSteamRep;
 use IsThereAnyDeal\Database\DbDriver;
 use IsThereAnyDeal\Database\Sql\SqlDeleteQuery;
 use IsThereAnyDeal\Database\Sql\SqlInsertQuery;
@@ -29,7 +29,7 @@ class SteamRepManager {
         $this->db = $db;
         $this->loader = $loader;
         $this->config = $config;
-        $this->logger = $loggerFactory->createLogger("steamrep");
+        $this->logger = $loggerFactory->create("steamrep");
 
         $this->r = new TSteamRep();
     }

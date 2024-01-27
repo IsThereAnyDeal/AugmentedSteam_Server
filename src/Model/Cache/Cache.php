@@ -3,11 +3,10 @@ declare(strict_types=1);
 
 namespace AugmentedSteam\Server\Model\Cache;
 
+use AugmentedSteam\Server\Database\TCache;
 use AugmentedSteam\Server\Model\DataObjects\DCache;
-use AugmentedSteam\Server\Model\Tables\TCache;
 use IsThereAnyDeal\Database\DbDriver;
-use IsThereAnyDeal\Database\Sql\SqlInsertQuery;
-use IsThereAnyDeal\Database\Sql\SqlSelectQuery;
+use IsThereAnyDeal\Database\Sql\Create\SqlInsertQuery;
 
 class Cache
 {
@@ -21,7 +20,7 @@ class Cache
         $this->c = new TCache();
 
         $c = $this->c;
-        $this->insert = (new SqlInsertQuery($this->db, $c))
+        $this->insert = $this->db->insert($c)
             ->columns($c->appid, $c->key, $c->json, $c->timestamp)
             ->onDuplicateKeyUpdate($c->json, $c->timestamp);
     }

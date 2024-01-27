@@ -27,7 +27,7 @@ class WSGFManager
     ) {
         $this->cache = $cache;
         $this->loader = $loader;
-        $this->logger = $loggerFactory->createLogger("wsgf");
+        $this->logger = $loggerFactory->create("wsgf");
         $this->config = $config;
     }
 

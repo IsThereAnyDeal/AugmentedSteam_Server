@@ -3,13 +3,13 @@ declare(strict_types=1);
 
 namespace AugmentedSteam\Server\Model\HowLongToBeat;
 
-use AugmentedSteam\Server\Loader\Loader;
+use AugmentedSteam\Server\Database\THLTB;
 use AugmentedSteam\Server\Loader\Item;
+use AugmentedSteam\Server\Loader\Loader;
 use AugmentedSteam\Server\Loader\Proxy\ProxyFactoryInterface;
 use AugmentedSteam\Server\Loader\Proxy\ProxyInterface;
 use AugmentedSteam\Server\Model\Crawler;
 use AugmentedSteam\Server\Model\DataObjects\DHLTB;
-use AugmentedSteam\Server\Model\Tables\THLTB;
 use IsThereAnyDeal\Database\DbDriver;
 use IsThereAnyDeal\Database\Sql\SqlInsertQuery;
 use IsThereAnyDeal\Database\Sql\SqlSelectQuery;

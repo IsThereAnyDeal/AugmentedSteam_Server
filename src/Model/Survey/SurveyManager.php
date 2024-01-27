@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace AugmentedSteam\Server\Model\Survey;
 
+use AugmentedSteam\Server\Database\TSurveys;
 use AugmentedSteam\Server\Logging\LoggerFactoryInterface;
 use AugmentedSteam\Server\Model\DataObjects\DSurvey;
-use AugmentedSteam\Server\Model\Tables\TSurveys;
 use IsThereAnyDeal\Database\DbDriver;
 use IsThereAnyDeal\Database\Sql\SqlInsertQuery;
 use IsThereAnyDeal\Database\Sql\SqlSelectQuery;
@@ -21,7 +21,7 @@ class SurveyManager
         LoggerFactoryInterface $loggerFactory
     ) {
         $this->db = $db;
-        $this->logger = $loggerFactory->createLogger("survey");
+        $this->logger = $loggerFactory->create("survey");
     }
 
     public function submit(DSurvey $survey): void {

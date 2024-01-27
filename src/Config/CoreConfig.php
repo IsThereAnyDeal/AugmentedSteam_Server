@@ -4,16 +4,24 @@ declare(strict_types=1);
 namespace AugmentedSteam\Server\Config;
 
 use Nette\Schema\Expect;
-use Nette\Schema\Schema;
+use Nette\Schema\Processor;
 
-class CoreConfig extends AConfig
+class CoreConfig
 {
-    protected function getSchema(): Schema {
-        return Expect::structure([
+    private object $config;
+
+    /** @param array<string, mixed> $config */
+    public function __construct(array $config) {
+        $this->config = (new Processor())->process(Expect::structure([
             "host" => Expect::string()->required(),
-            "env" => Expect::anyOf("prod", "dev")->default("prod"),
-            "errors" => Expect::bool(false),
-        ]);
+            "dev" => Expect::bool(false),
+            "prettyErrors" => Expect::bool(false),
+            "sentry" => Expect::structure([
+                "enabled" => Expect::bool(false),
+                "dsn" => Expect::string(),
+                "environment" => Expect::string()
+            ])->default([])
+        ]), $config);
     }
 
     public function getHost(): string {
@@ -24,11 +32,27 @@ class CoreConfig extends AConfig
         return $this->config->env;
     }
 
-    public function isProduction(): bool {
-        return $this->config->env === "prod";
+    public function isDev(): bool {
+        return $this->config->dev;
     }
 
-    public function isShowErrors(): bool {
+    public function isProduction(): bool {
+        return !$this->isDev();
+    }
+
+    public function usePrettyErrors(): bool {
         return $this->config->errors;
+    }
+
+    public function isSentryEnabled(): bool {
+        return $this->config->sentry->enabled;
+    }
+
+    public function getSentryDsn(): ?string {
+        return $this->config->sentry->dsn;
+    }
+
+    public function getSentryEnvironment(): string {
+        return $this->config->sentry->environment;
     }
 }

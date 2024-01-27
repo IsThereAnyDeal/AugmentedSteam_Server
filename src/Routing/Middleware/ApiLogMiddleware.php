@@ -15,7 +15,7 @@ class ApiLogMiddleware implements MiddlewareInterface
     private LoggerInterface $logger;
 
     public function __construct(LoggerFactoryInterface $loggerFactory) {
-        $this->logger = $loggerFactory->createLogger("api");
+        $this->logger = $loggerFactory->create("api");
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {

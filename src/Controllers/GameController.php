@@ -3,10 +3,10 @@ declare(strict_types=1);
 
 namespace AugmentedSteam\Server\Controllers;
 
+use AugmentedSteam\Server\Database\TDlcCategories;
+use AugmentedSteam\Server\Database\TGameDlc;
 use AugmentedSteam\Server\Http\Param;
 use AugmentedSteam\Server\Model\DataObjects\DDlcCategories;
-use AugmentedSteam\Server\Model\Tables\TDlcCategories;
-use AugmentedSteam\Server\Model\Tables\TGameDlc;
 use IsThereAnyDeal\Database\Sql\SqlSelectQuery;
 use Psr\Http\Message\ServerRequestInterface;
 

@@ -4,10 +4,10 @@ declare(strict_types=1);
 namespace AugmentedSteam\Server\Model\StorePage;
 
 use AugmentedSteam\Server\Config\EndpointsConfig;
+use AugmentedSteam\Server\Database\TSteamCharts;
 use AugmentedSteam\Server\Loader\SimpleLoader;
 use AugmentedSteam\Server\Logging\LoggerFactoryInterface;
 use AugmentedSteam\Server\Model\DataObjects\DSteamCharts;
-use AugmentedSteam\Server\Model\Tables\TSteamCharts;
 use IsThereAnyDeal\Database\DbDriver;
 use IsThereAnyDeal\Database\Sql\SqlInsertQuery;
 use IsThereAnyDeal\Database\Sql\SqlSelectQuery;
@@ -33,7 +33,7 @@ class SteamChartsManager
     public function __construct(DbDriver $db, SimpleLoader $loader, LoggerFactoryInterface $loggerFactory, EndpointsConfig $config) {
         $this->db = $db;
         $this->loader = $loader;
-        $this->logger = $loggerFactory->createLogger("steamcharts");
+        $this->logger = $loggerFactory->create("steamcharts");
         $this->config = $config;
 
         $this->c = new TSteamCharts();

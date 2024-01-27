@@ -7,5 +7,5 @@ use Psr\Log\LoggerInterface;
 
 interface LoggerFactoryInterface
 {
-    public function createLogger(string $channel): LoggerInterface;
+    public function create(string $channel): LoggerInterface;
 }

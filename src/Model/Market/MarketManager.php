@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace AugmentedSteam\Server\Model\Market;
 
+use AugmentedSteam\Server\Database\TMarketData;
 use AugmentedSteam\Server\Model\DataObjects\DMarketData;
-use AugmentedSteam\Server\Model\Tables\TMarketData;
 use IsThereAnyDeal\Database\DbDriver;
 use IsThereAnyDeal\Database\Sql\SqlSelectQuery;
 

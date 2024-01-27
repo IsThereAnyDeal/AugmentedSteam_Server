@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace AugmentedSteam\Server\Model\EarlyAccess;
 
+use AugmentedSteam\Server\Database\TEarlyAccess;
 use AugmentedSteam\Server\Model\DataObjects\DEarlyAccess;
-use AugmentedSteam\Server\Model\Tables\TEarlyAccess;
 use IsThereAnyDeal\Database\DbDriver;
 use IsThereAnyDeal\Database\Sql\SqlSelectQuery;
 
