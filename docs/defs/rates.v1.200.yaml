@@ -1,0 +1,9 @@
+description: Success
+content:
+  application/json:
+    schema:
+      $ref: "../schemas/resp.rates.yaml"
+    examples:
+      success:
+        summary: "Rates response example"
+        $ref: "../examples/rates.v1.success.json"

@@ -29,6 +29,7 @@ use AugmentedSteam\Server\Model\Cache\Cache;
 use AugmentedSteam\Server\Model\EarlyAccess\EarlyAccessManager;
 use AugmentedSteam\Server\Model\HowLongToBeat\HLTBManager;
 use AugmentedSteam\Server\Model\Market\MarketManager;
+use AugmentedSteam\Server\Model\Money\CurrencyConverter;
 use AugmentedSteam\Server\Model\Prices\PricesManager;
 use AugmentedSteam\Server\Model\Reviews\ReviewsManager;
 use AugmentedSteam\Server\Model\SteamPeek\SteamPeekManager;
@@ -117,7 +118,6 @@ class Container implements ContainerInterface
                     get(GuzzleClient::class),
                     fn (ContainerInterface $c) => $c->get(LoggerFactoryInterface::class)->createLogger("guzzle")
             ),
-
 
             Cache::class => create()
                 ->constructor(get(DbDriver::class)),

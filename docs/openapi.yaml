@@ -1,0 +1,976 @@
+openapi: 3.1.0
+info:
+  title: Augmented Steam Server
+  description: Augmented Steam server for Augmented Steam browser extension
+  version: 2.0.0
+  license:
+    name: MIT
+    identifier: MIT
+servers:
+  - url: https://api.augmentedsteam.com
+paths:
+  /rates/v1:
+    get:
+      operationId: get-rates-v1
+      tags:
+        - currency
+      summary: Currency Conversion Rates
+      description: Get current conversion rates
+      parameters:
+        - name: to
+          in: query
+          description: List of currency codes
+          required: true
+          style: simple
+          schema:
+            type: array
+            items:
+              $ref: './schemas/obj.currency-code.yaml'
+      responses:
+        200:
+          $ref: "./defs/rates.v1.200.yaml"
+        default:
+          $ref: "./defs/default-error.yaml"
+
+  /v2/dlcinfo/:
+    get:
+      parameters:
+        - $ref: '#/components/parameters/AppId'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    $ref: '#/components/schemas/SuccessResult'
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        name:
+                          type: string
+                        description:
+                          type: string
+              examples:
+                successResponse:
+                  value:
+                    result: success
+                    data:
+                      - id: 3
+                        name: Cosmetic Content
+                        desc: This DLC adds cosmetic or costume changes to your game.
+                      - id: 4
+                        name: New In-Game Items
+                        desc: This DLC adds new in-game items, weapons, vehicles, or other usable equipment.
+        default:
+          $ref: '#/components/schemas/ErrorResponse'
+      operationId: get-v2-dlcinfo
+      summary: DLC Info
+    parameters: []
+  /v2/market/cards/:
+    get:
+      parameters:
+        - $ref: '#/components/parameters/Currency'
+        - $ref: '#/components/parameters/AppId'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    $ref: '#/components/schemas/SuccessResult'
+                  data:
+                    type: object
+                    propertyNames:
+                      type: string
+                    additionalProperties:
+                      type: object
+                      properties:
+                        img:
+                          type: string
+                        url:
+                          type: string
+                        price:
+                          type: number
+              examples:
+                successResponse:
+                  value:
+                    result: success
+                    data:
+                      Alyx Vance:
+                        img: IzMF03bk9WpSBq-S-ekoE33L-iLqGFHVaU25ZzQNQcXdA3g5gMEPvUZZEfSMJ6dESN8p_2SVTY7V2NsNxGVIwXpaL3_Z0W11LtNtNsjDhgz2oOWIQXDzMG-WKXeNHVs5HLBXNG6IqDCitO6TSjGbEukkQAoCfKMH-mFBaJyXf0xqwtVUuWG9hXt0Excvd5gXJFfjzndKN74gkHAUcchSynbwIMaPjQplahRtWbCxX72TOdPxmXwlQ1o5SLZcaYl9HTjTpg
+                        url: 220-Alyx%20Vance
+                        price: 0.09
+                      Alyx Vance (Foil):
+                        img: IzMF03bk9WpSBq-S-ekoE33L-iLqGFHVaU25ZzQNQcXdA3g5gMEPvUZZEfSMJ6dESN8p_2SVTY7V2NsNxGVIwXpaL3_Z0W11LtNtNsjDhgz2oOWIQXDzMG-WKXeNHVs5HLBXNG6IqDCitO6TSjGbEukkQAoCfKMH-mFBaJyXf0xqwtVUuWG9hXt0Excvd5gWKF-6kiwXab8kkHZAJpMGnCT3I5eIgllgbEI8XurmVryUa4P3wS11Q1o5SLZcaYlIj14tyA
+                        url: 220-Alyx%20Vance%20%28Foil%29
+                        price: 0.82
+        default:
+          $ref: '#/components/schemas/ErrorResponse'
+      summary: Cards
+      tags:
+        - market
+    parameters: []
+  /v2/market/cards/average-prices/:
+    get:
+      parameters:
+        - $ref: '#/components/parameters/Currency'
+        - name: appids
+          in: query
+          required: true
+          style: array
+          schema:
+            type: array
+            items:
+              type: integer
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              type: object
+              properties:
+                result:
+                  $ref: '#/components/schemas/SuccessResult'
+                data:
+                  type: object
+                  propertyNames:
+                    pattern: ^\d+$
+                  additionalProperties:
+                    type: object
+                    properties:
+                      regular:
+                        type: number
+                      foil:
+                        type: number
+              examples:
+                successResponse:
+                  value:
+                    result: success
+                    data:
+                      '220':
+                        regular: 0.087143
+                        foil: 0.707143
+                      '440':
+                        foil: 0.905714
+                        regular: 0.051429
+        default:
+          $ref: '#/components/schemas/ErrorResponse'
+      operationId: get-v2-market-averagecardprices
+      summary: Average Card Prices
+      tags:
+        - market
+    parameters: []
+  /v2/profile/{steamId}/:
+    get:
+      summary: Profile Info
+      operationId: get-v1-profile-profile
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    $ref: '#/components/schemas/SuccessResult'
+                  data:
+                    type: object
+                    properties:
+                      badges:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            link:
+                              type: string
+                            title:
+                              type: string
+                            img:
+                              type: string
+                      steamrep:
+                        type: array
+                        items:
+                          type: string
+                      style:
+                        type:
+                          - 'null'
+                          - string
+                      bg:
+                        type: object
+                        properties:
+                          img:
+                            type:
+                              - 'null'
+                              - string
+                          appid:
+                            type:
+                              - 'null'
+                              - integer
+              examples: {}
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                ErrorResponse:
+                  value:
+                    result: error
+                    error: missing_param
+                    error_description: string
+                    status_code: 0
+                    reason_phrase: string
+      parameters: []
+      tags:
+        - profile
+    parameters:
+      - schema:
+          type: integer
+        name: steamId
+        in: path
+        required: true
+  /v2/profile/background/list/:
+    get:
+      parameters:
+        - $ref: '#/components/parameters/AppId'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    $ref: '#/components/schemas/SuccessResult'
+                  data:
+                    type: array
+                    items:
+                      type: array
+                      minItems: 2
+                      maxItems: 2
+                      items:
+                        type: string
+              examples:
+                SuccessResponse:
+                  value:
+                    result: success
+                    data:
+                      - - '-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxH5rd9eDAjcFyv45SRYAFMIcKL_PArgVSL403ulRUWEndVKv_h5iFBg07cFRV5u2he1ZjhvWRIjhGtIjjx4LbkvSgYu2Ixz1XsZZ02bCV99zzihqkpRQDzXCjUg'
+                        - Four TOMs
+                      - - '-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxH5rd9eDAjcFyv45SRYAFMIcKL_PArgVSL403ulRUWEndVKv_h5iFBg07dVZS5ruhcgYyhKGYdW8Uv97kzYPfxKCtZLiCzj1V6pch27-Yrdqs2hq-uxTNuqVgqQ'
+                        - Globotron Smash
+                      - - '-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxH5rd9eDAjcFyv45SRYAFMIcKL_PArgVSL403ulRUWEndVKv_h5iFBg07JFBR7-7wLVNlhqCdImkXtd7vl4XdlKKiYuyCk28F7ZUh2LiT8Nzxihq-uxQ0JEHyMw'
+                        - Roll Over
+                      - - '-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxH5rd9eDAjcFyv45SRYAFMIcKL_PArgVSL403ulRUWEndVKv_h5iFBg07c1RVsOL0eF9lhabMKGkQut2zl9eOk_GkMrqJlDwJv8Ami-iY8I2gixq-uxQb695Neg'
+                        - TOM & Dr. X
+      summary: List of Available Backgrounds
+      tags:
+        - profile
+    parameters: []
+  /v1/profile/background/games/:
+    get:
+      summary: List of Games with Backgrounds
+      operationId: get-v1-profile-background-games
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    $ref: '#/components/schemas/SuccessResult'
+                  data:
+                    type: array
+                    items:
+                      type: array
+                      minItems: 2
+                      maxItems: 2
+                      items:
+                        type:
+                          - string
+                          - integer
+              examples:
+                SuccessResponse:
+                  value:
+                    result: success
+                    data:
+                      - - 209330
+                        - A Valley Without Wind
+                      - - 207650
+                        - A Virus Named TOM
+                      - - 222640
+                        - 'Aarklash: Legacy'
+                      - - 224420
+                        - Afterfall InSanity Extended Edition
+      parameters: []
+      tags:
+        - profile
+    parameters: []
+  /v2/profile/background/delete/:
+    get:
+      summary: Delete Background
+      operationId: get-v1-profile-background-edit-delete
+      responses:
+        '302':
+          description: Found
+      parameters:
+        - $ref: '#/components/parameters/SteamId'
+      tags:
+        - profile
+    parameters: []
+  /v2/profile/background/save/:
+    get:
+      summary: Save Background
+      operationId: get-v1-profile-background-edit-save
+      responses:
+        '302':
+          description: Found
+      parameters:
+        - $ref: '#/components/parameters/AppId'
+        - schema:
+            type: string
+          in: query
+          name: img
+          required: true
+        - $ref: '#/components/parameters/SteamId'
+      tags:
+        - profile
+    parameters: []
+  /v2/profile/style/delete/:
+    get:
+      summary: Delete Profile Style
+      operationId: get-v1-profile-style-edit-delete
+      responses:
+        '302':
+          description: Found
+      tags:
+        - profile
+    parameters: []
+  /v2/profile/style/save:
+    get:
+      summary: Save Profile Style
+      operationId: get-v1-profile-style-edit-save
+      responses:
+        '302':
+          description: Found
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: style
+          required: true
+      tags:
+        - profile
+    parameters: []
+  /v2/app/{appid}/:
+    parameters:
+      - schema:
+          type: integer
+        name: appid
+        in: path
+        required: true
+    get:
+      summary: App Info
+      tags:
+        - game
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    $ref: '#/components/schemas/SuccessResult'
+                  data:
+                    type: object
+                    required:
+                      - family_sharing
+                      - steamcharts
+                      - steamspy
+                      - wsgf
+                      - hltb
+                      - metacritic
+                      - opencritic
+                      - survey
+                    properties:
+                      family_sharing:
+                        type: boolean
+                      steamcharts:
+                        type: object
+                        properties:
+                          players:
+                            type: object
+                            properties:
+                              current:
+                                type:
+                                  - integer
+                                  - 'null'
+                              peak_today:
+                                type:
+                                  - integer
+                                  - 'null'
+                              peak_all:
+                                type:
+                                  - integer
+                                  - 'null'
+                      steamspy:
+                        type: object
+                        properties:
+                          owners:
+                            type: array
+                            maxItems: 2
+                            minItems: 0
+                            items:
+                              type: integer
+                          playtime:
+                            type: object
+                            description: Average playtime in minutes
+                            properties:
+                              2weeks:
+                                type: integer
+                              forever:
+                                type: integer
+                      wsgf:
+                        type:
+                          - object
+                          - 'null'
+                        properties:
+                          url:
+                            type: string
+                          wide:
+                            type: string
+                          ultrawide:
+                            type: string
+                          multi_monitor:
+                            type: string
+                          4k:
+                            type: string
+                      hltb:
+                        type:
+                          - object
+                          - 'null'
+                        properties:
+                          id:
+                            type: integer
+                          story:
+                            type:
+                              - integer
+                              - 'null'
+                          extras:
+                            type:
+                              - integer
+                              - 'null'
+                          complete:
+                            type:
+                              - integer
+                              - 'null'
+                      metacritic:
+                        type:
+                          - object
+                          - 'null'
+                        properties:
+                          userscore:
+                            type: integer
+                      opencritic:
+                        type:
+                          - object
+                          - 'null'
+                        properties:
+                          url:
+                            type: string
+                          score:
+                            type:
+                              - integer
+                              - 'null'
+                          award:
+                            type: string
+                          reviews:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                date:
+                                  type: string
+                                snippet:
+                                  type: string
+                                score:
+                                  type: string
+                                url:
+                                  type: string
+                                author:
+                                  type:
+                                    - string
+                                    - 'null'
+                                name:
+                                  type: string
+                      survey:
+                        type:
+                          - object
+                          - 'null'
+                        properties:
+                          framerate:
+                            type: object
+                            properties:
+                              '0':
+                                type: integer
+                              '30':
+                                type: integer
+                              '60':
+                                type: integer
+                          settings:
+                            type: object
+                            properties:
+                              none:
+                                type: integer
+                              basic:
+                                type: integer
+                              granular:
+                                type: integer
+                          optimized:
+                            type: array
+                            minItems: 2
+                            maxItems: 2
+                            items:
+                              type: integer
+                          lag:
+                            type: array
+                            minItems: 2
+                            maxItems: 2
+                            items:
+                              type: integer
+                          bg_sound:
+                            type: array
+                            minItems: 2
+                            maxItems: 2
+                            items:
+                              type: integer
+                          controls:
+                            type: array
+                            minItems: 2
+                            maxItems: 2
+                            items:
+                              type: integer
+                required:
+                  - result
+                  - data
+              examples: {}
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: get-v1-app-appid
+  /v2/similar/{appid}/:
+    parameters:
+      - schema:
+          type: integer
+        name: appid
+        in: path
+        required: true
+    get:
+      summary: Similar Games
+      tags:
+        - game
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                x-examples:
+                  example-1:
+                    result: success
+                    data:
+                      - title: 'Counter-Strike: Source'
+                        appid: 240
+                        sprating: 10.94
+                        score: 68.687
+                      - title: Insurgency
+                        appid: 222880
+                        sprating: 10.43
+                        score: 68.288
+                      - title: Tom Clancy's Rainbow Six® Siege
+                        appid: 359550
+                        sprating: 12
+                        score: 62.307
+                      - title: The Machines Arena
+                        appid: 1539860
+                        sprating: 0
+                        score: 59.542
+                      - title: Task Force
+                        appid: 611300
+                        sprating: 0
+                        score: 59.193
+                properties:
+                  result:
+                    $ref: '#/components/schemas/SuccessResult'
+                  data:
+                    type: array
+                    uniqueItems: false
+                    minItems: 1
+                    items:
+                      type: object
+                      additionalProperties: false
+                      properties:
+                        title:
+                          type: string
+                          minLength: 1
+                        appid:
+                          type: integer
+                        sprating:
+                          type: number
+                        score:
+                          type: number
+                      required:
+                        - title
+                        - appid
+                        - sprating
+                        - score
+                required:
+                  - result
+                  - data
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: get-v2-similar-appid
+      parameters:
+        - schema:
+            type: integer
+            example: 5
+          in: query
+          name: count
+        - schema:
+            type: boolean
+            example: '1'
+          in: query
+          name: shuffle
+  /v2/prices/:
+    get:
+      summary: Prices
+      tags:
+        - game
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                x-examples:
+                  example-1:
+                    result: success
+                    data:
+                      data:
+                        app/730:
+                          price:
+                            store: Steam
+                            cut: 0
+                            price: 0
+                            price_formatted: 0,00€
+                            url: https://store.steampowered.com/app/730/
+                            drm:
+                              - steam
+                          lowest:
+                            store: Steam
+                            cut: 0
+                            price: 0
+                            price_formatted: 0,00€
+                            url: https://store.steampowered.com/app/730/
+                            recorded: 1539217541
+                            recorded_formatted: 3 years ago
+                          bundles:
+                            count: 0
+                            live: []
+                          urls:
+                            info: https://isthereanydeal.com/game/counterstrikeglobaloffensive/info/
+                            history: https://isthereanydeal.com/game/counterstrikeglobaloffensive/history/
+                            bundles: https://isthereanydeal.com/specials/#/filter:search/counterstrikeglobaloffensive
+                      .meta:
+                        region: eu1
+                        country: IE
+                        currency: EUR
+                properties:
+                  result:
+                    $ref: '#/components/schemas/SuccessResult'
+                  data:
+                    type: object
+                required:
+                  - result
+                  - data
+              examples:
+                Success Example:
+                  value:
+                    result: success
+                    data:
+                      app/730:
+                        price:
+                          store: Steam
+                          cut: 0
+                          price: 0
+                          price_formatted: 0,00€
+                          url: https://store.steampowered.com/app/730/
+                          drm:
+                            - steam
+                        lowest:
+                          store: Steam
+                          cut: 0
+                          price: 0
+                          price_formatted: 0,00€
+                          url: https://store.steampowered.com/app/730/
+                          recorded: 1539217541
+                          recorded_formatted: 3 years ago
+                        bundles:
+                          count: 0
+                          live: []
+                        urls:
+                          info: https://isthereanydeal.com/game/counterstrikeglobaloffensive/info/
+                          history: https://isthereanydeal.com/game/counterstrikeglobaloffensive/history/
+                          bundles: https://isthereanydeal.com/specials/#/filter:search/counterstrikeglobaloffensive
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      operationId: get-v1-prices
+      parameters:
+        - schema:
+            type: array
+          in: query
+          name: stores
+        - in: query
+          name: cc
+          schema:
+            type: string
+            minLength: 2
+            maxLength: 2
+        - schema:
+            type: boolean
+          in: query
+          name: coupon
+        - schema:
+            type: array
+          in: query
+          name: appids
+        - schema:
+            type: array
+          in: query
+          name: subids
+        - schema:
+            type: array
+          in: query
+          name: bundleids
+    parameters: []
+  /v1/earlyaccess/:
+    get:
+      summary: Early Access Games
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+      operationId: get-v1-earlyaccess
+  /v1/survey/{appid}/submit/:
+    get:
+      summary: Submit Survey
+      tags: []
+      responses:
+        '302':
+          description: Found
+      operationId: get-v1-survey-submit
+      parameters:
+        - $ref: '#/components/parameters/SteamId'
+        - schema:
+            type: string
+            enum:
+              - th
+              - sx
+              - va
+          in: query
+          name: framerate
+        - schema:
+            type: string
+            enum:
+              - 'yes'
+              - 'no'
+          in: query
+          name: optimized
+        - schema:
+            type: string
+            enum:
+              - 'yes'
+              - 'no'
+          in: query
+          name: lag
+        - schema:
+            type: string
+            enum:
+              - 'no'
+              - bs
+              - gr
+          in: query
+          name: graphics_settings
+        - schema:
+            type: string
+            enum:
+              - 'yes'
+              - 'no'
+          in: query
+          name: bg_sound
+        - schema:
+            type: string
+            enum:
+              - 'yes'
+              - 'no'
+          in: query
+          name: good_controls
+    parameters:
+      - schema:
+          type: integer
+        name: appid
+        in: path
+        required: true
+  /v2/twitch/{channel}/stream/:
+    parameters:
+      - schema:
+          type: string
+        name: channel
+        in: path
+        required: true
+    get:
+      summary: Current Stream of Twitch Channel
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                x-examples:
+                  example-1:
+                    result: success
+                    data:
+                      user_name: Fextralife
+                      title: 🔥!DROPS !GIVEAWAY 🔥!CLASS !GUIDES !WIKI Lost Ark Playing Sorceress with YURIA
+                      thumbnail_url: https://static-cdn.jtvnw.net/previews-ttv/live_user_fextralife-{width}x{height}.jpg
+                      viewer_count: 29141
+                      game: LOST ARK
+                properties:
+                  result:
+                    type: string
+                    minLength: 1
+                  data:
+                    type:
+                      - object
+                      - 'null'
+                    required:
+                      - user_name
+                      - title
+                      - thumbnail_url
+                      - viewer_count
+                      - game
+                    properties:
+                      user_name:
+                        type: string
+                        minLength: 1
+                      title:
+                        type: string
+                        minLength: 1
+                      thumbnail_url:
+                        type: string
+                        minLength: 1
+                      viewer_count:
+                        type: number
+                      game:
+                        type: string
+                        minLength: 1
+                required:
+                  - result
+                  - data
+      operationId: get-v2-twitch-channel-stream
+components:
+  parameters:
+    AppId:
+      name: appid
+      in: query
+      required: true
+      schema:
+        type: integer
+    Currency:
+      name: currency
+      in: query
+      required: true
+      schema:
+        $ref: '#/components/schemas/CurrencyCode'
+    SteamId:
+      name: profile
+      in: query
+      required: false
+      schema:
+        type: integer
+      description: Steam profile ID
+  schemas:
+    ErrorResponse:
+      type: object
+      properties:
+        result:
+          type: string
+          enum:
+            - error
+        error:
+          type: string
+          enum:
+            - missing_param
+            - invalid_value
+        error_description:
+          type: string
+        status_code:
+          type: integer
+        reason_phrase:
+          type: string
+      examples:
+        - result: error
+          error: missing_param
+          error_description: string
+          status_code: 0
+          reason_phrase: string
+    SuccessResult:
+      type: string
+      enum:
+        - success
+      examples:
+        - success
+    CurrencyCode:
+      type: string
+      pattern: ^[A-Z]{3}$
+  securitySchemes: {}

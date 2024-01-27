@@ -18,19 +18,16 @@ use AugmentedSteam\Server\Environment\Container;
 use AugmentedSteam\Server\Logging\LoggerFactoryInterface;
 use AugmentedSteam\Server\Routing\Middleware\AccessLogMiddleware;
 use AugmentedSteam\Server\Routing\Strategy\ApiStrategy;
+use Laminas\Diactoros\Response\RedirectResponse;
 use Laminas\Diactoros\ServerRequestFactory;
 use Laminas\HttpHandlerRunner\Emitter\SapiEmitter;
 use Psr\Http\Message\ResponseFactoryInterface;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Server\MiddlewareInterface;
-use Psr\Http\Server\RequestHandlerInterface;
-use Psr\Log\LoggerInterface;
 
 class Router
 {
     private function defineRoutes(\League\Route\Router $router): void {
-        $router->get("/v1/rates/", [RatesController::class, "getRatesV1"]);
+        $router->get("/v1/rates/", fn() => new RedirectResponse("/rates/v1"));
+        $router->get("/rates/v1", [RatesController::class, "getRatesV1"]);
         $router->get("/v2/dlcinfo/", [GameController::class, "getDlcInfoV2"]);
 
         $router->get("/v2/market/cards/", [MarketController::class, "getCardsV2"]);

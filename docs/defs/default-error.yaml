@@ -1,0 +1,23 @@
+description: Error response
+content:
+  "application/json":
+    schema:
+      type: object
+      required: [status_code, reason_phrase]
+      properties:
+        result:
+          type: string
+          enum:
+            - error
+        error:
+          type: string
+          enum:
+            - missing_param
+            - invalid_value
+        error_description:
+          type: string
+          required: false
+        status_code:
+          type: integer
+        reason_phrase:
+          type: string

@@ -3,15 +3,12 @@ declare(strict_types=1);
 
 namespace AugmentedSteam\Server\Model\DataObjects;
 
-use IsThereAnyDeal\Database\Sql\AInsertableObject;
-use IsThereAnyDeal\Database\Sql\ISelectable;
-
-class DCurrency extends AInsertableObject implements ISelectable
+class DCurrency
 {
-    protected string $from;
-    protected string $to;
-    protected float $rate;
-    protected int $timestamp;
+    private string $from;
+    private string $to;
+    private float $rate;
+    private int $timestamp;
 
     public function getFrom(): string {
         return $this->from;
