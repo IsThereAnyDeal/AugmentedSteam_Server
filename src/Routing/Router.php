@@ -26,9 +26,11 @@ use Psr\Http\Message\ResponseFactoryInterface;
 class Router
 {
     private function defineRoutes(\League\Route\Router $router): void {
-        $router->get("/v1/rates/", fn() => new RedirectResponse("/rates/v1"));
+        $router->get("/v1/rates/", fn() => new RedirectResponse("/rates/v1", 301));
         $router->get("/rates/v1", [RatesController::class, "getRatesV1"]);
-        $router->get("/v2/dlcinfo/", [GameController::class, "getDlcInfoV2"]);
+
+        $router->get("/v2/dlcinfo/", fn() => new RedirectResponse("/dlcinfo/v2", 301));
+        $router->get("/dlcinfo/v2", [GameController::class, "getDlcInfoV2"]);
 
         $router->get("/v2/market/cards/", [MarketController::class, "getCardsV2"]);
         $router->get("/v2/market/cards/average-prices/", [MarketController::class, "getAverageCardPricesV2"]);

@@ -3,15 +3,12 @@ declare(strict_types=1);
 
 namespace AugmentedSteam\Server\Model\DataObjects;
 
-use IsThereAnyDeal\Database\Sql\AInsertableObject;
-use IsThereAnyDeal\Database\Sql\ISelectable;
-
-class DDlcCategories extends AInsertableObject implements ISelectable
+class DDlcCategories
 {
-    protected int $id;
-    protected string $name;
-    protected string $icon;
-    protected string $description;
+    private int $id;
+    private string $name;
+    private string $icon;
+    private string $description;
 
     public function getId(): int {
         return $this->id;

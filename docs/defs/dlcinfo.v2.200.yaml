@@ -1,0 +1,21 @@
+description: Success
+content:
+  application/json:
+    schema:
+      allOf:
+        - $ref: "../schemas/resp.success.yaml"
+        - type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+              name:
+                type: string
+              description:
+                type: string
+    examples:
+      success:
+        summary: "Example success response"
+        value:
+          $ref: "../examples/dlcinfo.v2.success.json"

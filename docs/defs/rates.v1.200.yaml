@@ -2,8 +2,22 @@ description: Success
 content:
   application/json:
     schema:
-      $ref: "../schemas/resp.rates.yaml"
+      allOf:
+        - $ref: "../schemas/resp.success.yaml"
+        - type: object
+          properties:
+            data:
+              type: object
+              propertyNames:
+                pattern: "^[A-Z]{3}$"
+              additionalProperties:
+                type: object
+                propertyNames:
+                  pattern: ^[A-Z]{3}$
+                additionalProperties:
+                  type: number
     examples:
       success:
         summary: "Rates response example"
-        $ref: "../examples/rates.v1.success.json"
+        value:
+          $ref: "../examples/rates.v1.success.json"

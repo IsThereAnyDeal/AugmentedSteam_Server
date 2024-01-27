@@ -1,0 +1,15 @@
+{
+  "result": "success",
+  "data": [
+    {
+      "id": 3,
+      "name": "Cosmetic Content",
+      "desc": "This DLC adds cosmetic or costume changes to your game."
+    },
+    {
+      "id": 4,
+      "name": "New In-Game Items",
+      "desc": "This DLC adds new in-game items, weapons, vehicles, or other usable equipment."
+    }
+  ]
+}
