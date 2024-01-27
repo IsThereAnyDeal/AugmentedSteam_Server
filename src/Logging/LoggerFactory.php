@@ -4,11 +4,13 @@ declare(strict_types=1);
 namespace AugmentedSteam\Server\Logging;
 
 use Monolog\Formatter\LineFormatter;
-use Monolog\Handler\Handler;
 use Monolog\Handler\NullHandler;
-use Monolog\Handler\RotatingFileHandler;
+use Monolog\Handler\StreamHandler;
+use Monolog\Level;
 use Monolog\Logger;
 use Monolog\Processor\UidProcessor;
+use Monolog\Processor\WebProcessor;
+use Psr\Log\LoggerInterface;
 
 class LoggerFactory implements LoggerFactoryInterface
 {
@@ -22,32 +24,45 @@ class LoggerFactory implements LoggerFactoryInterface
             ->ignoreEmptyContextAndExtra();
     }
 
-    private function getFileHandler(string $channel): Handler {
-        $handler = new RotatingFileHandler(
-            $this->logsPath."/{$channel}.log",
-            $this->config->getMaxFiles(),
-            Logger::DEBUG,
-            true,
-            0666
-        );
-        $handler->setFilenameFormat("{date}.{filename}", "Y-m-d");
-        $handler->setFormatter($this->getLineFormatter());
-        return $handler;
+    private function getFileHandler(string $channel): StreamHandler {
+        $date = date("Y-m-d");
+        $logPath = $this->logsPath."/{$date}.{$channel}.log";
+        return (new StreamHandler($logPath, Level::Debug, true, 0666));
     }
 
-    public function getNullLogger(): Logger {
+    public function getNullLogger(): LoggerInterface {
         return new Logger("null", [new NullHandler()]);
     }
 
-    public function create(string $channel): Logger {
+    public function logger(string $channel): LoggerInterface {
         if (!$this->config->isEnabled()) {
             return $this->getNullLogger();
         }
 
+        $lineFormatter = $this->getLineFormatter();
+
+        $fileHandler = $this->getFileHandler($channel);
+        $fileHandler->setFormatter($lineFormatter);
+
+        return (new Logger($channel))
+            ->pushHandler($this->getFileHandler($channel))
+            ->pushProcessor(new UidProcessor());
+    }
+
+    public function access(): LoggerInterface {
+        if (!$this->config->isEnabled()) {
+            return $this->getNullLogger();
+        }
+
+        $lineFormatter = $this->getLineFormatter();
+
+        $channel = "access";
+        $fileHandler = $this->getFileHandler($channel);
+        $fileHandler->setFormatter($lineFormatter);
+
         return (new Logger($channel))
             ->pushHandler($this->getFileHandler($channel))
             ->pushProcessor(new UidProcessor())
-            // TODO ->pushProcessor(new WebProcessor())
-            ;
+            ->pushProcessor(new WebProcessor(extraFields: ["ip", "server", "referrer"]));
     }
 }

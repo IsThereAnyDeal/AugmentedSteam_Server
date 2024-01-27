@@ -22,9 +22,9 @@ use AugmentedSteam\Server\Cron\CronJobFactory;
 use AugmentedSteam\Server\Loader\Proxy\ProxyFactory;
 use AugmentedSteam\Server\Loader\Proxy\ProxyFactoryInterface;
 use AugmentedSteam\Server\Loader\SimpleLoader;
+use AugmentedSteam\Server\Logging\LoggerFactory;
 use AugmentedSteam\Server\Logging\LoggerFactoryInterface;
 use AugmentedSteam\Server\Logging\LoggingConfig;
-use AugmentedSteam\Server\Logging\LoggerFactory;
 use AugmentedSteam\Server\Model\Cache\Cache;
 use AugmentedSteam\Server\Model\EarlyAccess\EarlyAccessManager;
 use AugmentedSteam\Server\Model\HowLongToBeat\HLTBManager;
@@ -41,8 +41,6 @@ use AugmentedSteam\Server\Model\Survey\SurveyManager;
 use AugmentedSteam\Server\Model\Twitch\TokenStorage;
 use AugmentedSteam\Server\Model\Twitch\TwitchManager;
 use AugmentedSteam\Server\Model\User\UserManager;
-use AugmentedSteam\Server\Routing\Response\ApiResponseFactory;
-use AugmentedSteam\Server\Routing\Response\ApiResponseFactoryInterface;
 use GuzzleHttp\Client as GuzzleClient;
 use IsThereAnyDeal\Config\Config;
 use IsThereAnyDeal\Database\DbConfig;
@@ -127,9 +125,6 @@ class Container implements ContainerInterface
             // factories
 
             ResponseFactoryInterface::class => create(ResponseFactory::class),
-
-            ApiResponseFactoryInterface::class => create(ApiResponseFactory::class)
-                ->constructor(get(ResponseFactoryInterface::class)),
 
             LoggerFactoryInterface::class => create(LoggerFactory::class)
                 ->constructor(

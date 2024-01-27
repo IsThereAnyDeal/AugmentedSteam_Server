@@ -4,24 +4,35 @@ declare(strict_types=1);
 namespace AugmentedSteam\Server\Exceptions;
 
 use League\Route\Http\Exception\BadRequestException;
+use Psr\Http\Message\ResponseInterface;
 
-class ApiException extends BadRequestException {
+abstract class ApiException extends BadRequestException {
 
-    private string $errorCode;
-    private string $errorMessage;
-
-    public function __construct(string $errorCode, string $errorMessage) {
+    public function __construct(
+        private readonly string $errorCode,
+        private readonly string $errorMessage
+    ) {
         parent::__construct();
-
-        $this->errorCode = $errorCode;
-        $this->errorMessage = $errorMessage;
     }
 
-    function getErrorCode(): string {
-        return $this->errorCode;
-    }
+    public function buildJsonResponse(ResponseInterface $response): ResponseInterface {
+        $this->headers['content-type'] = 'application/json';
 
-    function getErrorMessage(): string {
-        return $this->errorMessage;
+        foreach ($this->headers as $key => $value) {
+            /** @var ResponseInterface $response */
+            $response = $response->withAddedHeader($key, $value);
+        }
+
+        if ($response->getBody()->isWritable()) {
+            $response->getBody()->write(json_encode([
+                "result" => "error",
+                "error" => $this->errorCode,
+                "error_description" => $this->errorMessage,
+                "status_code"   => $this->status,
+                "reason_phrase" => $this->message
+            ]));
+        }
+
+        return $response->withStatus($this->status, $this->message);
     }
 }

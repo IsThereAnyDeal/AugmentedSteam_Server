@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace AugmentedSteam\Server\Routing;
 
-use AugmentedSteam\Server\Config\CoreConfig;
 use AugmentedSteam\Server\Controllers\EarlyAccessController;
 use AugmentedSteam\Server\Controllers\GameController;
 use AugmentedSteam\Server\Controllers\MarketController;
@@ -15,53 +14,22 @@ use AugmentedSteam\Server\Controllers\SimilarController;
 use AugmentedSteam\Server\Controllers\StorePageController;
 use AugmentedSteam\Server\Controllers\SurveyController;
 use AugmentedSteam\Server\Controllers\TwitchController;
+use AugmentedSteam\Server\Environment\Container;
 use AugmentedSteam\Server\Logging\LoggerFactoryInterface;
-use AugmentedSteam\Server\Routing\Middleware\ApiLogMiddleware;
-use AugmentedSteam\Server\Routing\Response\ApiResponseFactoryInterface;
+use AugmentedSteam\Server\Routing\Middleware\AccessLogMiddleware;
 use AugmentedSteam\Server\Routing\Strategy\ApiStrategy;
 use Laminas\Diactoros\ServerRequestFactory;
 use Laminas\HttpHandlerRunner\Emitter\SapiEmitter;
-use Psr\Container\ContainerInterface;
+use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
+use Psr\Log\LoggerInterface;
 
 class Router
 {
-    private ContainerInterface $container;
-
-    public function __construct(ContainerInterface $container) {
-        $this->container = $container;
-    }
-
-    public function route() {
-        $responseFactory = $this->container->get(ApiResponseFactoryInterface::class);
-
-        $strategy = new ApiStrategy(
-            $this->container->get(CoreConfig::class),
-            $responseFactory
-        );
-        $strategy->addResponseDecorator(function (ResponseInterface $response): ResponseInterface {
-            return $response->withAddedHeader("Access-Control-Allow-Origin", "*");
-        });
-        $strategy->setContainer($this->container);
-
-        $router = new \League\Route\Router();
-        $router->middleware(new ApiLogMiddleware($this->container->get(LoggerFactoryInterface::class)));
-        $router->setStrategy($strategy);
-
-        /** @deprecated */ $router->get("/v1/dlcinfo/", [GameController::class, "getDlcInfoV1"]);
-        /** @deprecated */ $router->get("/v1/market/averagecardprices/", [MarketController::class, "getAverageCardPricesV1"]);
-        /** @deprecated */ $router->get("/v1/market/cardprices/", [MarketController::class, "getCardsV2"]);
-        /** @deprecated */ $router->get("/v1/profile/profile/", [ProfileController::class, "getProfileLegacyV1"]);
-        /** @deprecated */ $router->get("/v1/profile/background/background/", [ProfileManagementController::class, "getBackgroundsV2"]);
-        /** @deprecated */ $router->get("/v1/profile/background/edit/delete/", [ProfileManagementController::class, "deleteBackgroundV2"]);
-        /** @deprecated */ $router->get("/v1/profile/background/edit/save/", [ProfileManagementController::class, "saveBackgroundV2"]);
-        /** @deprecated */ $router->get("/v1/profile/style/edit/delete/", [ProfileManagementController::class, "deleteStyleV2"]);
-        /** @deprecated */ $router->get("/v1/profile/style/edit/save/", [ProfileManagementController::class, "saveStyleV2"]);
-        /** @deprecated */ $router->get("/v1/storepagedata/", [StorePageController::class, "getStorePageDataV1"]);
-        /** @deprecated */ $router->get("/v1/similar/", [SimilarController::class, "getSimilarV1"]);
-        /** @deprecated */ $router->get("/v1/prices/", [PricesController::class, "getPricesV1"]);
-        /** @deprecated */ $router->get("/v1/twitch/stream/", [TwitchController::class, "getStreamV1"]);
-
+    private function defineRoutes(\League\Route\Router $router): void {
         $router->get("/v1/rates/", [RatesController::class, "getRatesV1"]);
         $router->get("/v2/dlcinfo/", [GameController::class, "getDlcInfoV2"]);
 
@@ -84,17 +52,24 @@ class Router
         $router->get("/v1/survey/{appid:\d+}/submit/", [SurveyController::class, "getSubmitV1"]);
 
         $router->get("/v2/twitch/{channel}/stream/", [TwitchController::class, "getStreamV2"]);
+    }
+
+    public function route(Container $container): void {
+
+        $strategy = new ApiStrategy(
+            $container->get(ResponseFactoryInterface::class)
+        );
+        $strategy->setContainer($container);
+
+        $router = new \League\Route\Router();
+
+        $logger = $container->get(LoggerFactoryInterface::class)->access();
+        $router->middleware(new AccessLogMiddleware($logger));
+        $router->setStrategy($strategy);
+
+        $this->defineRoutes($router);
 
         $request = ServerRequestFactory::fromGlobals();
-
-        // backwards compatibility to allow versions prefix with 0
-        $path = $request->getUri()->getPath();
-        if (preg_match("#/v0+\d/#", $path)) {
-            $uri = $request->getUri()
-                ->withPath(preg_replace("#/v0+(\d)/#", "/v$1/", $path));
-            $request = $request->withUri($uri);
-        }
-
         $response = $router->dispatch($request);
 
         (new SapiEmitter)->emit($response);
