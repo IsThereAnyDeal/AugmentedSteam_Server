@@ -234,11 +234,6 @@ class Container implements ContainerInterface
                 ->constructor(
                     get(DbDriver::class)
                 ),
-            SurveyManager::class => create()
-                ->constructor(
-                    get(DbDriver::class),
-                    get(LoggerFactoryInterface::class)
-                ),
             TwitchManager::class => create()
                 ->constructor(
                     get(TwitchConfig::class),
@@ -289,8 +284,7 @@ class Container implements ContainerInterface
                     get(WSGFManager::class),
                     get(ExfglsManager::class),
                     get(HLTBManager::class),
-                    get(ReviewsManager::class),
-                    get(SurveyManager::class)
+                    get(ReviewsManager::class)
                 ),
 
             SimilarController::class => create()
@@ -312,14 +306,6 @@ class Container implements ContainerInterface
                     get(ResponseFactoryInterface::class),
                     get(DbDriver::class),
                     get(EarlyAccessManager::class)
-                ),
-
-            SurveyController::class => create()
-                ->constructor(
-                    get(ResponseFactoryInterface::class),
-                    get(DbDriver::class),
-                    get(CoreConfig::class),
-                    get(SurveyManager::class),
                 ),
 
             TwitchController::class => create()
