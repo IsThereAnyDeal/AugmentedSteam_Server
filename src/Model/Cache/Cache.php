@@ -4,10 +4,8 @@ declare(strict_types=1);
 namespace AugmentedSteam\Server\Model\Cache;
 
 use AugmentedSteam\Server\Database\TCache;
-use AugmentedSteam\Server\Model\DataObjects\DCache;
 use IsThereAnyDeal\Database\DbDriver;
 use IsThereAnyDeal\Database\Sql\Create\SqlInsertQuery;
-use JsonSerializable;
 
 class Cache
 {
@@ -27,9 +25,9 @@ class Cache
     }
 
     /**
-     * @return array|false  TODO this return type is _too_ PHP
+     * @return array|null|false  TODO this return type is _too_ PHP
      */
-    public function getValue(int $appid, ECacheKey $key, int $expireSeconds): array|false {
+    public function get(int $appid, ECacheKey $key, int $expireSeconds): array|null|false {
         $c = $this->c;
 
         /** @var DCache $cached */
@@ -50,7 +48,13 @@ class Cache
         if (is_null($cached)) {
             return false;
         }
-        $data = json_decode($cached->getJson(), true, flags: JSON_THROW_ON_ERROR);
+
+        $value = $cached->getJson();
+        if (is_null($value)) {
+            return null;
+        }
+
+        $data = json_decode($value, true, flags: JSON_THROW_ON_ERROR);
         if (!is_array($data)) {
             return false;
         }
@@ -58,9 +62,9 @@ class Cache
     }
 
     /**
-     * @param array<mixed> $data
+     * @param ?array<mixed> $data
      */
-    public function setValue(int $appid, ECacheKey $key, array $data): void {
+    public function set(int $appid, ECacheKey $key, ?array $data): void {
 
         $this->insert->persist(
             (new DCache())

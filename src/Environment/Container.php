@@ -15,15 +15,17 @@ use AugmentedSteam\Server\Controllers\ProfileManagementController;
 use AugmentedSteam\Server\Controllers\RatesController;
 use AugmentedSteam\Server\Controllers\SimilarController;
 use AugmentedSteam\Server\Controllers\StorePageController;
-use AugmentedSteam\Server\Controllers\SurveyController;
 use AugmentedSteam\Server\Controllers\TwitchController;
 use AugmentedSteam\Server\Cron\CronJobFactory;
+use AugmentedSteam\Server\Data\Interfaces\SteamPeekProviderInterface;
 use AugmentedSteam\Server\Data\Interfaces\SteamRepProviderInterface;
 use AugmentedSteam\Server\Data\Interfaces\WSGFProviderInterface;
 use AugmentedSteam\Server\Data\Managers\ExfglsManager;
 use AugmentedSteam\Server\Data\Managers\HLTBManager;
+use AugmentedSteam\Server\Data\Managers\SteamPeekManager;
 use AugmentedSteam\Server\Data\Managers\SteamRepManager;
 use AugmentedSteam\Server\Data\Managers\WSGFManager;
+use AugmentedSteam\Server\Data\Providers\SteamPeekProvider;
 use AugmentedSteam\Server\Data\Providers\SteamRepProvider;
 use AugmentedSteam\Server\Data\Providers\WSGFProvider;
 use AugmentedSteam\Server\Data\Updaters\Exfgls\ExfglsConfig;
@@ -38,10 +40,8 @@ use AugmentedSteam\Server\Model\EarlyAccess\EarlyAccessManager;
 use AugmentedSteam\Server\Model\Market\MarketManager;
 use AugmentedSteam\Server\Model\Prices\PricesManager;
 use AugmentedSteam\Server\Model\Reviews\ReviewsManager;
-use AugmentedSteam\Server\Model\SteamPeek\SteamPeekManager;
 use AugmentedSteam\Server\Model\StorePage\SteamChartsManager;
 use AugmentedSteam\Server\Model\StorePage\SteamSpyManager;
-use AugmentedSteam\Server\Model\Survey\SurveyManager;
 use AugmentedSteam\Server\Model\Twitch\TokenStorage;
 use AugmentedSteam\Server\Model\Twitch\TwitchManager;
 use AugmentedSteam\Server\Model\User\UserManager;
@@ -169,6 +169,13 @@ class Container implements ContainerInterface
                     $c->get(LoggerFactoryInterface::class)->logger("wsgf")
                 ),
 
+            SteampeekProviderInterface::class => fn(ContainerInterface $c) => new SteamPeekProvider(
+                $c->get(SimpleLoader::class),
+                $c->get(EndpointsConfig::class),
+                $c->get(KeysConfig::class),
+                $c->get(LoggerFactoryInterface::class)->logger("steampeek")
+            ),
+
             // managers
 
             MarketManager::class => create()
@@ -218,11 +225,8 @@ class Container implements ContainerInterface
                 ),
             SteamPeekManager::class => create()
                 ->constructor(
-                    get(DbDriver::class),
-                    get(SimpleLoader::class),
-                    get(EndpointsConfig::class),
-                    get(KeysConfig::class),
-                    get(LoggerFactoryInterface::class)
+                    get(Cache::class),
+                    get(SteamRepProviderInterface::class)
                 ),
             PricesManager::class => create()
                 ->constructor(

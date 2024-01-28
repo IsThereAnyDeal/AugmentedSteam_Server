@@ -1,41 +1,37 @@
 <?php
 namespace AugmentedSteam\Server\Controllers;
 
-use AugmentedSteam\Server\Http\Param;
-use AugmentedSteam\Server\Model\SteamPeek\SteamPeekManager;
+use AugmentedSteam\Server\Data\Managers\SteamPeekManager;
+use AugmentedSteam\Server\Data\Objects\SteamPeekGame;
+use AugmentedSteam\Server\Http\BoolParam;
+use AugmentedSteam\Server\Http\IntParam;
 use IsThereAnyDeal\Database\DbDriver;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 class SimilarController extends Controller {
 
-    private SteamPeekManager $steamPeekManager;
-
-    public function __construct(ResponseFactoryInterface $responseFactory, DbDriver $db, SteamPeekManager $steamPeekManager) {
+    public function __construct(
+        ResponseFactoryInterface $responseFactory,
+        DbDriver $db,
+        private readonly SteamPeekManager $steamPeekManager
+    ) {
         parent::__construct($responseFactory, $db);
-        $this->steamPeekManager = $steamPeekManager;
     }
 
-    public function getSimilarV1(ServerRequestInterface $request): array {
-        $appid = (new Param($request, "appid"))->int();
-        return $this->getSimilarV2($request, ["appid" => $appid]);
-    }
-
-    public function getSimilarV2(ServerRequestInterface $request, array $params): array {
+    public function getSimilar_v2(ServerRequestInterface $request, array $params): array {
         $appid = (int)$params['appid'];
-        $count = (new Param($request, "count"))->default(5)->int();
-        $shuffle = (new Param($request, "shuffle"))->default(false)->bool();
+        $count = (new IntParam($request, "count", 5))->value();
+        $shuffle = (new BoolParam($request, "shuffle", false))->value();
 
-        $games = $this->steamPeekManager->getSimilar($appid, $count, $shuffle);
-        $data = [];
-        foreach($games as $game) {
-            $data[] = [
-                "title" => $game->getTitle(),
-                "appid" => $game->getAppid(),
-                "sprating" => $game->getSPRating(),
-                "score" => $game->getScore()
-            ];
-        }
-        return $data;
+        return array_map(
+            fn(SteamPeekGame $game) => [
+                "title" => $game->title,
+                "appid" => $game->appid,
+                "sprating" => $game->rating,
+                "score" => $game->score
+            ],
+            $this->steamPeekManager->getSimilar($appid, $count, $shuffle)
+        );
     }
 }

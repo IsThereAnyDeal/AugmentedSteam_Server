@@ -7,4 +7,5 @@ enum ECacheKey: int
 {
     case WSGF = 1;
     case Reviews = 2;
+    case SteamPeek = 3;
 }

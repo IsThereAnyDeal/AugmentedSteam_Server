@@ -64,6 +64,8 @@ class Router
         }
         $router->get("/v2/profile/{steamId:\d+}/",
             fn(ServerRequestInterface $request, array $params) => new RedirectResponse("/profile/{$params['steamId']}/v2", 301));
+        $router->get("/v2/similar/{appid:\d+}/",
+            fn(ServerRequestInterface $request, array $params) => new RedirectResponse("/similar/{$params['appid']}/v2", 301));
 
         // new urls
         $router->get("/rates/v1", [RatesController::class, "getRates_v1"]);
@@ -85,12 +87,11 @@ class Router
             $g->get("/style/save/v2", [ProfileManagementController::class, "saveStyle_v2"]);
         });
 
-        $router->get("/v2/app/{appid:\d+}/", [StorePageController::class, "getGameInfoV2"]);
-        $router->get("/v2/similar/{appid:\d+}/", [SimilarController::class, "getSimilarV2"]);
+        $router->get("/app/{appid:\d+}/v2", [StorePageController::class, "getAppInfo_v2"]);
+
+        $router->get("/similar/{appid:\d+}/v2", [SimilarController::class, "getSimilar_v2"]);
         $router->get("/v2/prices/", [PricesController::class, "getPricesV2"]);
         $router->get("/v1/earlyaccess/", [EarlyAccessController::class, "getAppidsV1"]);
-
-        $router->get("/v1/survey/{appid:\d+}/submit/", [SurveyController::class, "getSubmitV1"]);
 
         $router->get("/v2/twitch/{channel}/stream/", [TwitchController::class, "getStreamV2"]);
     }
