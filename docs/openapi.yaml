@@ -87,213 +87,116 @@ paths:
         default:
           $ref: "./defs/default-error.yaml"
 
-  /v2/profile/{steamId}/:
+  /profile/{steamId}/v2:
     get:
+      operationId: profile-v2
+      tags:
+        - profile
       summary: Profile Info
-      operationId: get-v1-profile-profile
+      security: []
+      parameters:
+        - schema:
+            type: integer
+          name: steamId
+          in: path
+          required: true
       responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  result:
-                    $ref: '#/components/schemas/SuccessResult'
-                  data:
-                    type: object
-                    properties:
-                      badges:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            link:
-                              type: string
-                            title:
-                              type: string
-                            img:
-                              type: string
-                      steamrep:
-                        type: array
-                        items:
-                          type: string
-                      style:
-                        type:
-                          - 'null'
-                          - string
-                      bg:
-                        type: object
-                        properties:
-                          img:
-                            type:
-                              - 'null'
-                              - string
-                          appid:
-                            type:
-                              - 'null'
-                              - integer
-              examples: {}
+        200:
+          $ref: "./defs/profile.v2.200.yaml"
         default:
-          description: ''
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-              examples:
-                ErrorResponse:
-                  value:
-                    result: error
-                    error: missing_param
-                    error_description: string
-                    status_code: 0
-                    reason_phrase: string
-      parameters: []
+          $ref: "./defs/default-error.yaml"
+
+  /profile/background/list/v2:
+    get:
+      operationId: background-list-v2
       tags:
         - profile
-    parameters:
-      - schema:
-          type: integer
-        name: steamId
-        in: path
-        required: true
-  /v2/profile/background/list/:
-    get:
-      parameters:
-        - $ref: '#/components/parameters/AppId'
-      responses:
-        '200':
-          description: Success
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  result:
-                    $ref: '#/components/schemas/SuccessResult'
-                  data:
-                    type: array
-                    items:
-                      type: array
-                      minItems: 2
-                      maxItems: 2
-                      items:
-                        type: string
-              examples:
-                SuccessResponse:
-                  value:
-                    result: success
-                    data:
-                      - - '-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxH5rd9eDAjcFyv45SRYAFMIcKL_PArgVSL403ulRUWEndVKv_h5iFBg07cFRV5u2he1ZjhvWRIjhGtIjjx4LbkvSgYu2Ixz1XsZZ02bCV99zzihqkpRQDzXCjUg'
-                        - Four TOMs
-                      - - '-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxH5rd9eDAjcFyv45SRYAFMIcKL_PArgVSL403ulRUWEndVKv_h5iFBg07dVZS5ruhcgYyhKGYdW8Uv97kzYPfxKCtZLiCzj1V6pch27-Yrdqs2hq-uxTNuqVgqQ'
-                        - Globotron Smash
-                      - - '-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxH5rd9eDAjcFyv45SRYAFMIcKL_PArgVSL403ulRUWEndVKv_h5iFBg07JFBR7-7wLVNlhqCdImkXtd7vl4XdlKKiYuyCk28F7ZUh2LiT8Nzxihq-uxQ0JEHyMw'
-                        - Roll Over
-                      - - '-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxH5rd9eDAjcFyv45SRYAFMIcKL_PArgVSL403ulRUWEndVKv_h5iFBg07c1RVsOL0eF9lhabMKGkQut2zl9eOk_GkMrqJlDwJv8Ami-iY8I2gixq-uxQb695Neg'
-                        - TOM & Dr. X
       summary: List of Available Backgrounds
+      security: []
+      parameters:
+        - $ref: '#/components/parameters/AppId'
+      responses:
+        200:
+          $ref: "./defs/profile.background.list.v2.200.yaml"
+        default:
+          $ref: "./defs/default-error.yaml"
+
+  /profile/background/games/v1:
+    get:
+      operationId: background-games-v1
       tags:
         - profile
-    parameters: []
-  /v1/profile/background/games/:
-    get:
       summary: List of Games with Backgrounds
-      operationId: get-v1-profile-background-games
+      security: []
       responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  result:
-                    $ref: '#/components/schemas/SuccessResult'
-                  data:
-                    type: array
-                    items:
-                      type: array
-                      minItems: 2
-                      maxItems: 2
-                      items:
-                        type:
-                          - string
-                          - integer
-              examples:
-                SuccessResponse:
-                  value:
-                    result: success
-                    data:
-                      - - 209330
-                        - A Valley Without Wind
-                      - - 207650
-                        - A Virus Named TOM
-                      - - 222640
-                        - 'Aarklash: Legacy'
-                      - - 224420
-                        - Afterfall InSanity Extended Edition
-      parameters: []
+        200:
+          $ref: "./defs/profile.background.games.v2.200.yaml"
+        default:
+          $ref: "./defs/default-error.yaml"
+
+  /profile/background/delete/v2:
+    get:
+      operationId: delete-background-v2
       tags:
         - profile
-    parameters: []
-  /v2/profile/background/delete/:
-    get:
       summary: Delete Background
-      operationId: get-v1-profile-background-edit-delete
-      responses:
-        '302':
-          description: Found
+      security: []
       parameters:
         - $ref: '#/components/parameters/SteamId'
+      responses:
+        302:
+          description: Found
+
+  /profile/background/save/v2:
+    get:
+      operationId: save-background-v2
       tags:
         - profile
-    parameters: []
-  /v2/profile/background/save/:
-    get:
       summary: Save Background
-      operationId: get-v1-profile-background-edit-save
-      responses:
-        '302':
-          description: Found
+      security: []
       parameters:
         - $ref: '#/components/parameters/AppId'
         - schema:
             type: string
-          in: query
-          name: img
-          required: true
+            in: query
+            name: img
+            required: true
         - $ref: '#/components/parameters/SteamId'
+      responses:
+        302:
+          description: Found
+
+  /profile/style/delete/v2:
+    get:
+      operationId: delete-style-v2
       tags:
         - profile
-    parameters: []
-  /v2/profile/style/delete/:
-    get:
       summary: Delete Profile Style
-      operationId: get-v1-profile-style-edit-delete
+      security: []
+      parameters:
+        - $ref: '#/components/parameters/SteamId'
       responses:
-        '302':
+        302:
           description: Found
+
+  /profile/style/save/v2:
+    get:
+      operationId: save-style-v2
       tags:
         - profile
-    parameters: []
-  /v2/profile/style/save:
-    get:
       summary: Save Profile Style
-      operationId: get-v1-profile-style-edit-save
-      responses:
-        '302':
-          description: Found
+      security: []
       parameters:
         - schema:
             type: string
-          in: query
-          name: style
-          required: true
-      tags:
-        - profile
-    parameters: []
+            in: query
+            name: style
+            required: true
+        - $ref: '#/components/parameters/SteamId'
+      responses:
+        302:
+          description: Found
+
   /v2/app/{appid}/:
     parameters:
       - schema:

@@ -32,7 +32,7 @@ $config->map([
 ]);
 $config->loadJsonFile(PROJECT_ROOT."/.config.json");
 
-/** @var CoreConfig $coreConfig */
+/** @var AugmentedSteam\Server\Config\CoreConfig $coreConfig */
 $coreConfig = $config->getConfig(CoreConfig::class);
 
 Container::init($config);

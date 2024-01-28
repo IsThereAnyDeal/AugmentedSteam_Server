@@ -3,16 +3,12 @@ declare(strict_types=1);
 
 namespace AugmentedSteam\Server\Model\DataObjects;
 
-use IsThereAnyDeal\Database\Sql\AInsertableObject;
-use IsThereAnyDeal\Database\Sql\ISelectable;
-
-class DUsersProfiles extends AInsertableObject implements ISelectable
+class DUsersProfiles
 {
-    protected int $steam64;
-    protected ?string $bg_img;
-    protected ?int $bg_appid;
-    protected ?string $style;
-    protected string $update_time;
+    private int $steam64;
+    private ?string $bg_img;
+    private ?int $bg_appid;
+    private ?string $style;
 
     public function getSteam64(): int {
         return $this->steam64;
@@ -47,15 +43,6 @@ class DUsersProfiles extends AInsertableObject implements ISelectable
 
     public function setStyle(?string $style): self {
         $this->style = $style;
-        return $this;
-    }
-
-    public function getUpdateTime(): string {
-        return $this->update_time;
-    }
-
-    public function setUpdateTime(string $update_time): self {
-        $this->update_time = $update_time;
         return $this;
     }
 }

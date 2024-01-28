@@ -3,7 +3,8 @@ declare(strict_types=1);
 
 namespace AugmentedSteam\Server\Controllers;
 
-use AugmentedSteam\Server\Http\Param;
+use AugmentedSteam\Server\Http\IntParam;
+use AugmentedSteam\Server\Model\DataObjects\DBadges;
 use AugmentedSteam\Server\Model\User\UserManager;
 use AugmentedSteam\Server\Model\SteamRep\SteamRepManager;
 use IsThereAnyDeal\Database\DbDriver;
@@ -26,43 +27,28 @@ class ProfileController extends Controller
         $this->steamRepManager = $steamRepManager;
     }
 
-    public function getProfileLegacyV1(ServerRequestInterface $request): array {
-        $steamId = (new Param($request, "profile"))->int();
-        return $this->getProfileV2($request, ["steamId" => $steamId]);
-    }
-
-    public function getProfileV2(ServerRequestInterface $request, array $params): array {
-        $steamId = (int)$params['steamId'];
-
-        $result = [
-            "badges" => [],
-            "steamrep" => [],
-            "style" => null,
-            "bg" => [
-                "img" => null,
-                "appid" => null,
-            ],
-        ];
-
-        $result['steamrep'] = $this->steamRepManager->getRep($steamId);
-
-        $badges = $this->userManager->getBadges($steamId);
-        foreach($badges as $badge) {
-            $result['badges'][] = [
-                "link" => "", // @deprecated
-                "title" => $badge->getTitle(),
-                "img" => "https://augmentedsteam.com/img/badges/{$badge->getImg()}"
-            ];
-        }
+    /**
+     * @return array<string, mixed>
+     */
+    public function getProfile_v2(ServerRequestInterface $request, array $params): array {
+        $steamId = (new IntParam($request, "steamId"))->value();
 
         $info = $this->userManager->getProfileInfo($steamId);
-        if (!is_null($info)) {
-            $result['style'] = $info->getStyle();
-            $result['bg']['img'] = $info->getBgImg();
-            $result['bg']['appid'] = $info->getBgAppid();
-        }
+        $badges = $this->userManager->getBadges($steamId)
+            ->toArray(fn(DBadges $badge) => [
+                "title" => $badge->getTitle(),
+                "img" => "https://augmentedsteam.com/public/external/badges/{$badge->getImg()}"
+            ]);
 
-        return $result;
+        return [
+            "badges" => $badges,
+            "steamrep" => $this->steamRepManager->getReputation($steamId),
+            "style" => $info?->getStyle(),
+            "bg" => [
+                "img" => $info?->getBgImg(),
+                "appid" => $info?->getBgAppid(),
+            ],
+        ];
     }
 
 }

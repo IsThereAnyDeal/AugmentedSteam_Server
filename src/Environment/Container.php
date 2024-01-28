@@ -42,6 +42,7 @@ use AugmentedSteam\Server\Model\Survey\SurveyManager;
 use AugmentedSteam\Server\Model\Twitch\TokenStorage;
 use AugmentedSteam\Server\Model\Twitch\TwitchManager;
 use AugmentedSteam\Server\Model\User\UserManager;
+use AugmentedSteam\Server\OpenId\Session;
 use GuzzleHttp\Client as GuzzleClient;
 use IsThereAnyDeal\Config\Config;
 use IsThereAnyDeal\Database\DbConfig;
@@ -114,13 +115,15 @@ class Container implements ContainerInterface
             GuzzleClient::class => create(GuzzleClient::class),
 
             SimpleLoader::class => create()
-                ->constructor(
-                    get(GuzzleClient::class),
-                    fn (ContainerInterface $c) => $c->get(LoggerFactoryInterface::class)->createLogger("guzzle")
-            ),
+                ->constructor(get(GuzzleClient::class)),
 
             Cache::class => create()
                 ->constructor(get(DbDriver::class)),
+
+            Session::class => fn(ContainerInterface $c) => new Session(
+                $c->get(DbDriver::class),
+                $c->get(CoreConfig::class)->getHost()
+            ),
 
             // factories
 
@@ -159,8 +162,7 @@ class Container implements ContainerInterface
                 ->constructor(
                     get(DbDriver::class),
                     get(SimpleLoader::class),
-                    get(EndpointsConfig::class),
-                    get(LoggerFactoryInterface::class)
+                    get(EndpointsConfig::class)
                 ),
             SteamChartsManager::class => create()
                 ->constructor(
@@ -256,7 +258,7 @@ class Container implements ContainerInterface
                 ->constructor(
                     get(ResponseFactoryInterface::class),
                     get(DbDriver::class),
-                    get(CoreConfig::class),
+                    get(Session::class),
                     get(MarketManager::class),
                     get(UserManager::class),
                 ),

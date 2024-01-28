@@ -6,59 +6,55 @@ namespace AugmentedSteam\Server\Model\SteamRep;
 use AugmentedSteam\Server\Config\EndpointsConfig;
 use AugmentedSteam\Server\Database\TSteamRep;
 use AugmentedSteam\Server\Loader\SimpleLoader;
-use AugmentedSteam\Server\Logging\LoggerFactoryInterface;
 use AugmentedSteam\Server\Model\DataObjects\DSteamRep;
 use IsThereAnyDeal\Database\DbDriver;
-use IsThereAnyDeal\Database\Sql\SqlDeleteQuery;
-use IsThereAnyDeal\Database\Sql\SqlInsertQuery;
-use IsThereAnyDeal\Database\Sql\SqlSelectQuery;
-use Psr\Log\LoggerInterface;
 
 class SteamRepManager {
-    private const SuccessCacheLimit = 7*86400;
-    private const FailureCacheLimit = 86400;
+    private const int SuccessCacheLimit = 7*86400;
+    private const int FailureCacheLimit = 86400;
 
-    private DbDriver $db;
-    private SimpleLoader $loader;
-    private EndpointsConfig $config;
-    private LoggerInterface $logger;
+    private readonly TSteamRep $r;
 
-    private TSteamRep $r;
-
-    public function __construct(DbDriver $db, SimpleLoader $loader, EndpointsConfig $config, LoggerFactoryInterface $loggerFactory) {
-        $this->db = $db;
-        $this->loader = $loader;
-        $this->config = $config;
-        $this->logger = $loggerFactory->create("steamrep");
-
+    public function __construct(
+        private readonly DbDriver $db,
+        private readonly SimpleLoader $loader,
+        private readonly EndpointsConfig $config
+    ) {
         $this->r = new TSteamRep();
     }
 
-    public function getRep(int $steamId): array {
+    /**
+     * @return list<string>
+     */
+    public function getReputation(int $steamId): array {
         $r = $this->r;
 
-        /** @var ?DSteamRep rep */
-        $rep = (new SqlSelectQuery($this->db,
-            "SELECT $r->rep
+        /** @var ?string $reputation */
+        $reputation = $this->db->select(<<<SQL
+            SELECT $r->rep
             FROM $r
             WHERE $r->steam64=:steamId
               AND (($r->checked=1 AND $r->timestamp >= :successTimestamp)
-                OR ($r->checked=0 AND $r->timestamp >= :failureTimestamp))"
-        ))->params([
+                OR ($r->checked=0 AND $r->timestamp >= :failureTimestamp))
+            SQL
+        )->params([
             ":steamId" => $steamId,
             ":successTimestamp" => time() - self::SuccessCacheLimit,
             ":failureTimestamp" => time() - self::FailureCacheLimit
-        ])->fetch(DSteamRep::class)
-          ->getOne();
+        ])->fetchValue();
 
-        if (is_null($rep)) {
-            $rep = $this->getNewRep($steamId);
+        if (is_null($reputation)) {
+            $reputation = $this->getNewReputation($steamId);
         }
 
-        return explode(",", $rep->getRep() ?? "");
+        if (empty($reputation)) {
+            return [];
+        }
+
+        return explode(",", $reputation);
     }
 
-    private function getNewRep(int $steamId): DSteamRep {
+    private function getNewReputation(int $steamId): ?string {
         $url = $this->config->getSteamRepEndpoint($steamId);
 
         $reputation = null;
@@ -67,48 +63,28 @@ class SteamRepManager {
         $response = $this->loader->get($url);
         if (!is_null($response)) {
             $body = $response->getBody()->getContents();
-            $json = json_decode($body, true);
+            $json = json_decode($body, true, flags: JSON_THROW_ON_ERROR);
 
             if (isset($json['steamrep']['reputation']['full'])) {
-                $reputation = $json['steamrep']['reputation']['full'];
                 $checked = true;
+                $reputation = $json['steamrep']['reputation']['full'];
+                if (empty($reputation)) {
+                    $reputation = null;
+                }
             }
         }
 
-        $data = (new DSteamRep())
-            ->setSteam64($steamId)
-            ->setRep($reputation)
-            ->setTimestamp(time())
-            ->setChecked($checked);
-
         $r = $this->r;
-        (new SqlInsertQuery($this->db, $r))
+        $this->db->insert($r)
             ->columns($r->steam64, $r->rep, $r->timestamp, $r->checked)
             ->onDuplicateKeyUpdate($r->rep, $r->timestamp, $r->checked)
-            ->persist($data);
+            ->persist((new DSteamRep())
+                ->setSteam64($steamId)
+                ->setRep($reputation)
+                ->setTimestamp(time())
+                ->setChecked($checked)
+            );
 
-        $this->cleanup(); // should be done in cron but shouldn't really cause any trouble here anyway
-
-        if ($checked) {
-            $this->logger->info((string)$steamId);
-        } else {
-            $this->logger->error((string)$steamId);
-        }
-
-        return $data;
+        return $reputation;
     }
-
-    private function cleanup(): void {
-        $r = $this->r;
-
-        (new SqlDeleteQuery($this->db,
-            "DELETE FROM $r
-            WHERE ($r->checked=1 AND $r->timestamp < :successTimestamp)
-               OR ($r->checked=0 AND $r->timestamp < :failureTimestamp)"
-        ))->delete([
-            ":successTimestamp" => time() - self::SuccessCacheLimit,
-            ":failureTimestamp" => time() - self::FailureCacheLimit
-        ]);
-    }
-
 }

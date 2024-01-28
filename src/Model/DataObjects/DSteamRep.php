@@ -3,15 +3,12 @@ declare(strict_types=1);
 
 namespace AugmentedSteam\Server\Model\DataObjects;
 
-use IsThereAnyDeal\Database\Sql\AInsertableObject;
-use IsThereAnyDeal\Database\Sql\ISelectable;
-
-class DSteamRep extends AInsertableObject implements ISelectable
+class DSteamRep
 {
-    protected int $steam64;
-    protected ?string $rep;
-    protected int $timestamp;
-    protected int $checked;
+    private int $steam64;
+    private ?string $rep;
+    private int $timestamp;
+    private bool $checked;
 
     public function getSteam64(): int {
         return $this->steam64;
@@ -41,11 +38,11 @@ class DSteamRep extends AInsertableObject implements ISelectable
     }
 
     public function isChecked(): bool {
-        return $this->checked == 1;
+        return $this->checked;
     }
 
     public function setChecked(bool $checked): self {
-        $this->checked = $checked ? 1 : 0;
+        $this->checked = $checked;
         return $this;
     }
 }

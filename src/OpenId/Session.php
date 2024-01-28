@@ -4,32 +4,20 @@ namespace AugmentedSteam\Server\OpenId;
 use AugmentedSteam\Server\Database\TSessions;
 use AugmentedSteam\Server\Model\DataObjects\DSession;
 use IsThereAnyDeal\Database\DbDriver;
-use IsThereAnyDeal\Database\Sql\SqlDeleteQuery;
-use IsThereAnyDeal\Database\Sql\SqlInsertQuery;
-use IsThereAnyDeal\Database\Sql\SqlSelectQuery;
+use Laminas\Diactoros\Response\RedirectResponse;
 use Psr\Http\Message\ServerRequestInterface;
 
-class Session extends OpenId {
-    private const CookieName = "session";
-    private const CookieExpiry = 30*86400;
-    private const HashAlgorithm = "sha256";
+class Session {
+    private const string CookieName = "session";
+    private const int CookieExpiry = 30*86400;
+    private const string HashAlgorithm = "sha256";
 
-    private DbDriver $db;
+    public function __construct(
+        private readonly DbDriver $db,
+        private readonly string $host
+    ) {}
 
-    public function __construct(DbDriver $db, string $host, string $returnUrl) {
-        parent::__construct($host, $returnUrl);
-        $this->db = $db;
-    }
-
-    public function isAuthenticated(ServerRequestInterface $request, ?int $steamId): bool {
-        if ($this->isAuthenticationStarted()) {
-            return false;
-        }
-
-        if (is_null($steamId)) {
-            return false;
-        }
-
+    private function hasSession(ServerRequestInterface $request, int $steamId): bool {
         $cookie = $request->getCookieParams();
         if (!isset($cookie[self::CookieName])) {
             return false;
@@ -43,55 +31,66 @@ class Session extends OpenId {
 
         $s = new TSessions();
         /** @var ?DSession $session */
-        $session = (new SqlSelectQuery($this->db,
-            "SELECT $s->hash, $s->steam_id
+        $session = $this->db->select(<<<SQL
+            SELECT $s->hash, $s->steam_id
             FROM $s
             WHERE $s->token = :token
-              AND $s->expiry >= :timestamp"
-        ))->params([
+              AND $s->expiry >= :timestamp
+            SQL
+        )->params([
             ":token" => $parts[0],
             ":timestamp" => time()
         ])->fetch(DSession::class)
           ->getOne();
 
-        if (!is_null($session)
+        return !is_null($session)
             && $session->getSteamId() === $steamId
-            && hash_equals($session->getHash(), hash(self::HashAlgorithm, $parts[1]))
-        ) {
-            $this->steamId = (string)$steamId;
-            return true;
-        }
-        return false;
+            && hash_equals($session->getHash(), hash(self::HashAlgorithm, $parts[1]));
     }
 
-    public function authenticate(): bool {
-        $result = parent::authenticate();
+    private function saveSession(int $steamId): void {
+        $token = bin2hex(openssl_random_pseudo_bytes(5));
+        $validator = bin2hex(openssl_random_pseudo_bytes(20));
+        $expiry = time() + self::CookieExpiry;
 
-        if ($result) {
-            $token = bin2hex(openssl_random_pseudo_bytes(5));
-            $validator = bin2hex(openssl_random_pseudo_bytes(20));
-            $expiry = time() + self::CookieExpiry;
+        setcookie(self::CookieName, "{$token}:{$validator}", $expiry, "/");
 
-            setcookie(self::CookieName, "{$token}:{$validator}", $expiry, "/");
+        $s = new TSessions();
 
-            $s = new TSessions();
+        $this->db->delete(<<<SQL
+            DELETE FROM $s
+            WHERE $s->expiry < :timestamp
+            SQL
+        )->delete([
+            ":timestamp" => time()
+        ]);
 
-            (new SqlDeleteQuery($this->db,
-                "DELETE FROM $s WHERE $s->expiry < :timestamp"
-            ))->delete([
-                ":timestamp" => time()
-            ]);
+        $this->db->insert($s)
+            ->columns($s->token, $s->hash, $s->steam_id, $s->expiry)
+            ->persist((new DSession())
+                ->setToken($token)
+                ->setHash(hash(self::HashAlgorithm, $validator))
+                ->setSteamId($steamId)
+                ->setExpiry($expiry)
+            );
+    }
 
-            (new SqlInsertQuery($this->db, $s))
-                ->columns($s->token, $s->hash, $s->steam_id, $s->expiry)
-                ->persist((new DSession())
-                    ->setToken($token)
-                    ->setHash(hash(self::HashAlgorithm, $validator))
-                    ->setSteamId((int)$this->getSteamId())
-                    ->setExpiry($expiry)
-                );
+    public function authorize(ServerRequestInterface $request, string $selfPath, string $errorUrl, ?int $steamId): int|RedirectResponse {
+        if (is_null($steamId) || !$this->hasSession($request, $steamId)) {
+            $openId = new OpenId($this->host, $selfPath);
+
+            if (!$openId->isAuthenticationStarted()) {
+                return new RedirectResponse($openId->getAuthUrl());
+            }
+
+            if (!$openId->authenticate()) {
+                return new RedirectResponse($errorUrl);
+            } else {
+                $steamId = (int)($openId->getSteamId());
+                $this->saveSession($steamId);
+            }
         }
 
-        return $result;
+        return $steamId;
     }
 }

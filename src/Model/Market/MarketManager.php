@@ -97,7 +97,7 @@ class MarketManager
 
     /**
      * @param int $appid
-     * @return iterable<DMarketData>
+     * @return list<array{string, string}>
      */
     public function getBackgrounds(int $appid): iterable {
 

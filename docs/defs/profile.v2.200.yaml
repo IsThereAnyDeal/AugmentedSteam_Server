@@ -1,0 +1,41 @@
+description: Success
+content:
+  application/json:
+    schema:
+      allOf:
+        - $ref: "../schemas/resp.success.yaml"
+        - type: object
+          properties:
+            data:
+              type: object
+              properties:
+                badges:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      link:
+                        type: string
+                      title:
+                        type: string
+                      img:
+                        type: string
+                steamrep:
+                  type: array
+                  items:
+                    type: string
+                style:
+                  type:
+                    - 'null'
+                    - string
+                bg:
+                  type: object
+                  properties:
+                    img:
+                      type:
+                        - 'null'
+                        - string
+                    appid:
+                      type:
+                        - 'null'
+                        - integer

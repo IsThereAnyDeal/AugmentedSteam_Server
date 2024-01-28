@@ -3,15 +3,12 @@ declare(strict_types=1);
 
 namespace AugmentedSteam\Server\Model\DataObjects;
 
-use IsThereAnyDeal\Database\Sql\AInsertableObject;
-use IsThereAnyDeal\Database\Sql\ISelectable;
-
-class DSession extends AInsertableObject implements ISelectable
+class DSession
 {
-    protected string $token;
-    protected string $hash;
-    protected int $steam_id;
-    protected int $expiry;
+    private string $token;
+    private string $hash;
+    private int $steam_id;
+    private int $expiry;
 
     public function getToken(): string {
         return $this->token;

@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace AugmentedSteam\Server\Controllers;
 
-use AugmentedSteam\Server\Config\CoreConfig;
-use AugmentedSteam\Server\Http\Param;
+use AugmentedSteam\Server\Http\IntParam;
+use AugmentedSteam\Server\Http\StringParam;
 use AugmentedSteam\Server\Model\Market\MarketManager;
 use AugmentedSteam\Server\Model\User\UserManager;
 use AugmentedSteam\Server\OpenId\Session;
@@ -12,140 +12,137 @@ use IsThereAnyDeal\Database\DbDriver;
 use Laminas\Diactoros\Response\RedirectResponse;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Throwable;
 
 class ProfileManagementController extends Controller
 {
-    private CoreConfig $config;
-    private MarketManager $marketManager;
-    private UserManager $userManager;
+    private const string ReturnUrl = "https://steamcommunity.com/my/profile";
+
+    private const string Error_BadRequest = "#as-error:badrequest";
+    private const string Error_NotFound = "#as-error:notfound";
+    private const string Success = "#as-success";
+    private const string Failure = "#as-failure";
 
     public function __construct(
         ResponseFactoryInterface $responseFactory,
         DbDriver $db,
-        CoreConfig $config,
-        MarketManager $marketManager,
-        UserManager $userManager
+        private readonly Session $session,
+        private readonly MarketManager $marketManager,
+        private readonly UserManager $userManager
     ) {
         parent::__construct($responseFactory, $db);
-        $this->config = $config;
-        $this->marketManager = $marketManager;
-        $this->userManager = $userManager;
     }
 
-    public function getBackgroundsV2(ServerRequestInterface $request): array {
-        $appid = (new Param($request, "appid"))->int();
+    /**
+     * @return list<array{string, string}>
+     */
+    public function getBackgrounds_v2(ServerRequestInterface $request): array {
+        $appid = (new IntParam($request, "appid"))->value();
 
         return $this->marketManager
             ->getBackgrounds($appid);
     }
 
-    public function getGamesV1(ServerRequestInterface $request): array {
+    /**
+     * @return list<array{int, string}>
+     */
+    public function getGames_v1(ServerRequestInterface $request): array {
         return $this->marketManager
             ->getGamesWithBackgrounds();
     }
 
-    private function authorize(ServerRequestInterface $request, string $selfUrl, string $returnUrl, ?int $profile) {
-        $session = new Session($this->db, $this->config->getHost(), $selfUrl);
-        if (!$session->isAuthenticated($request, $profile)) {
-            if (!$session->isAuthenticationStarted()) {
-                return new RedirectResponse($session->getAuthUrl()->toString());
-            }
+    public function deleteBackground_v2(ServerRequestInterface $request): RedirectResponse {
+        $profile = (new IntParam($request, "profile", default: null, nullable: true))->value();
 
-            if (!$session->authenticate()) {
-                return new RedirectResponse($returnUrl."#as-failure");
-            }
-        }
-
-        return (int)$session->getSteamId();
-    }
-
-    public function deleteBackgroundV2(ServerRequestInterface $request): RedirectResponse {
-        $returnUrl = "https://steamcommunity.com/my/profile";
-
-        $profile = (new Param($request, "profile"))->default(null)->int();
-
-        $authResponse = $this->authorize($request, "/v1/profile/background/edit/delete/", $returnUrl, $profile);
+        $authResponse = $this->session->authorize(
+            $request,
+            "/profile/background/delete/v2",
+            self::ReturnUrl.self::Failure,
+            $profile
+        );
         if ($authResponse instanceof RedirectResponse) {
             return $authResponse;
-        } else {
-            $steamId = $authResponse;
         }
 
+        $steamId = $authResponse;
         $this->userManager
             ->deleteBackground($steamId);
 
-        return new RedirectResponse($returnUrl."#as-success");
+        return new RedirectResponse(self::ReturnUrl.self::Success);
     }
 
-    public function saveBackgroundV2(ServerRequestInterface $request): RedirectResponse {
-        $returnUrl = "https://steamcommunity.com/my/profile";
-
+    public function saveBackground_v2(ServerRequestInterface $request): RedirectResponse {
         try {
-            $appid = (new Param($request, "appid"))->int();
-            $img = (new Param($request, "img"))->string();
-        } catch(\Exception $e) {
-            return new RedirectResponse($returnUrl."#as-error:badrequest");
+            $appid = (new IntParam($request, "appid"))->value();
+            $img = (new StringParam($request, "img"))->value();
+            $profile = (new IntParam($request, "profile", default: null, nullable: true))->value();
+        } catch(Throwable) {
+            return new RedirectResponse(self::ReturnUrl.self::Error_BadRequest);
         }
 
         if (!$this->marketManager->doesBackgroundExist($appid, $img)) {
-            return new RedirectResponse($returnUrl."#as-error:notfound");
+            return new RedirectResponse(self::ReturnUrl.self::Error_NotFound);
         }
 
-        $profile = (new Param($request, "profile"))->default(null)->int();
-
-        $authResponse = $this->authorize($request, "/v1/profile/background/edit/save/?appid=$appid&img=$img", $returnUrl, $profile);
+        $authResponse = $this->session->authorize(
+            $request,
+            "/profile/background/save/v2?appid=$appid&img=$img",
+            self::ReturnUrl.self::Failure,
+            $profile
+        );
         if ($authResponse instanceof RedirectResponse) {
             return $authResponse;
-        } else {
-            $steamId = $authResponse;
         }
 
+        $steamId = $authResponse;
         $this->userManager
             ->saveBackground($steamId, $appid, $img);
 
-        return new RedirectResponse($returnUrl."#as-success");
+        return new RedirectResponse(self::ReturnUrl.self::Success);
     }
 
-    public function deleteStyleV2(ServerRequestInterface $request): RedirectResponse {
-        $returnUrl = "https://steamcommunity.com/my/profile";
+    public function deleteStyle_v2(ServerRequestInterface $request): RedirectResponse {
+        $profile = (new IntParam($request, "profile", default: null, nullable: true))->value();
 
-        $profile = (new Param($request, "profile"))->default(null)->int();
-
-        $authResponse = $this->authorize($request, "/v1/profile/style/edit/delete/", $returnUrl, $profile);
+        $authResponse = $this->session->authorize(
+            $request,
+            "/v1/profile/style/edit/delete/",
+            self::ReturnUrl.self::Failure,
+            $profile
+        );
         if ($authResponse instanceof RedirectResponse) {
             return $authResponse;
-        } else {
-            $steamId = $authResponse;
         }
 
+        $steamId = $authResponse;
         $this->userManager
             ->deleteStyle($steamId);
 
-        return new RedirectResponse($returnUrl."#as-success");
+        return new RedirectResponse(self::ReturnUrl.self::Success);
     }
 
-    public function saveStyleV2(ServerRequestInterface $request): RedirectResponse {
-        $returnUrl = "https://steamcommunity.com/my/profile";
-
+    public function saveStyle_v2(ServerRequestInterface $request): RedirectResponse {
         try {
-            $style = (new Param($request, "style"))->string();
-        } catch(\Exception $e) {
-            return new RedirectResponse($returnUrl."#as-error:badrequest");
+            $style = (new StringParam($request, "style"))->value();
+            $profile = (new IntParam($request, "profile", default: null, nullable: true))->value();
+        } catch(Throwable) {
+            return new RedirectResponse(self::ReturnUrl.self::Error_BadRequest);
         }
 
-        $profile = (new Param($request, "profile"))->default(null)->int();
-
-        $authResponse = $this->authorize($request, "/v1/profile/style/edit/save/?style=$style", $returnUrl, $profile);
+        $authResponse = $this->session->authorize(
+            $request,
+            "/profile/style/save/v2?style=$style",
+            self::ReturnUrl.self::Failure,
+            $profile
+        );
         if ($authResponse instanceof RedirectResponse) {
             return $authResponse;
-        } else {
-            $steamId = $authResponse;
         }
 
+        $steamId = $authResponse;
         $this->userManager
             ->saveStyle($steamId, $style);
 
-        return new RedirectResponse($returnUrl."#as-success");
+        return new RedirectResponse(self::ReturnUrl.self::Success);
     }
-
 }

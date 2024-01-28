@@ -1,0 +1,23 @@
+description: Success
+content:
+  application/json:
+    schema:
+      allOf:
+        - $ref: "../schemas/resp.success.yaml"
+        - type: object
+          properties:
+            data:
+              type: object
+              properties:
+                data:
+                  type: array
+                  items:
+                    type: array
+                    minItems: 2
+                    maxItems: 2
+                    items:
+                      type: string
+    examples:
+      success:
+        value:
+          $ref: "../examples/profile.background.list.v2.success.json"

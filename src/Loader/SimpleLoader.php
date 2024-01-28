@@ -6,17 +6,12 @@ namespace AugmentedSteam\Server\Loader;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Psr\Http\Message\ResponseInterface;
-use Psr\Log\LoggerInterface;
 
 class SimpleLoader
 {
-    private Client $guzzle;
-    private LoggerInterface $logger;
-
-    public function __construct(Client $guzzle, LoggerInterface $logger) {
-        $this->guzzle = $guzzle;
-        $this->logger = $logger;
-    }
+    public function __construct(
+        private readonly Client $guzzle
+    ) {}
 
     public function get(string $url, array $curlOptions = []): ?ResponseInterface {
         try {
@@ -27,7 +22,7 @@ class SimpleLoader
                 "curl" => $curlOptions
             ]);
         } catch (GuzzleException $e) {
-            $this->logger->error($e->getTraceAsString());
+            \Sentry\captureException($e);
         }
         return null;
     }
