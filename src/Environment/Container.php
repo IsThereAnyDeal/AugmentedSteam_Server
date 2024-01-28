@@ -20,8 +20,11 @@ use AugmentedSteam\Server\Controllers\SurveyController;
 use AugmentedSteam\Server\Controllers\TwitchController;
 use AugmentedSteam\Server\Cron\CronJobFactory;
 use AugmentedSteam\Server\Data\Interfaces\SteamRepProviderInterface;
+use AugmentedSteam\Server\Data\Interfaces\WSGFProviderInterface;
 use AugmentedSteam\Server\Data\Managers\SteamRepManager;
+use AugmentedSteam\Server\Data\Managers\WSGFManager;
 use AugmentedSteam\Server\Data\Providers\SteamRepProvider;
+use AugmentedSteam\Server\Data\Providers\WSGFProvider;
 use AugmentedSteam\Server\Loader\Proxy\ProxyFactory;
 use AugmentedSteam\Server\Loader\Proxy\ProxyFactoryInterface;
 use AugmentedSteam\Server\Loader\SimpleLoader;
@@ -38,7 +41,6 @@ use AugmentedSteam\Server\Model\SteamPeek\SteamPeekManager;
 use AugmentedSteam\Server\Model\StorePage\ExfglsManager;
 use AugmentedSteam\Server\Model\StorePage\SteamChartsManager;
 use AugmentedSteam\Server\Model\StorePage\SteamSpyManager;
-use AugmentedSteam\Server\Model\StorePage\WSGFManager;
 use AugmentedSteam\Server\Model\Survey\SurveyManager;
 use AugmentedSteam\Server\Model\Twitch\TokenStorage;
 use AugmentedSteam\Server\Model\Twitch\TwitchManager;
@@ -161,6 +163,12 @@ class Container implements ContainerInterface
                     get(EndpointsConfig::class)
                 ),
 
+            WSGFProviderInterface::class => fn(ContainerInterface $c) => new WSGFProvider(
+                    $c->get(SimpleLoader::class),
+                    $c->get(EndpointsConfig::class),
+                    $c->get(LoggerFactoryInterface::class)->logger("wsgf")
+                ),
+
             // managers
 
             MarketManager::class => create()
@@ -190,9 +198,7 @@ class Container implements ContainerInterface
             WSGFManager::class => create()
                 ->constructor(
                     get(Cache::class),
-                    get(SimpleLoader::class),
-                    get(LoggerFactoryInterface::class),
-                    get(EndpointsConfig::class)
+                    get(WSGFProviderInterface::class)
                 ),
             ExfglsManager::class => create()
                 ->constructor(

@@ -3,15 +3,14 @@ declare(strict_types=1);
 
 namespace AugmentedSteam\Server\Model\DataObjects;
 
-use IsThereAnyDeal\Database\Sql\AInsertableObject;
-use IsThereAnyDeal\Database\Sql\ISelectable;
+use AugmentedSteam\Server\Model\Cache\ECacheKey;
 
-class DCache extends AInsertableObject implements ISelectable
+class DCache
 {
-    protected int $appid;
-    protected int $key;
-    protected string $json;
-    protected int $timestamp;
+    private int $appid;
+    private ECacheKey $key;
+    private string $json;
+    private int $timestamp;
 
     public function getAppid(): int {
         return $this->appid;
@@ -22,11 +21,11 @@ class DCache extends AInsertableObject implements ISelectable
         return $this;
     }
 
-    public function getKey(): int {
+    public function getKey(): ECacheKey {
         return $this->key;
     }
 
-    public function setKey(int $key): self {
+    public function setKey(ECacheKey $key): self {
         $this->key = $key;
         return $this;
     }

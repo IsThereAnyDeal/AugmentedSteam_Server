@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace AugmentedSteam\Server\Model\Cache;
 
-class ECacheKey
+enum ECacheKey: int
 {
-    public const WSGF = 1;
-    public const Reviews = 2;
+    case WSGF = 1;
+    case Reviews = 2;
 }

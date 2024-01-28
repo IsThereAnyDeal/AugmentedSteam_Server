@@ -7,6 +7,7 @@ use AugmentedSteam\Server\Database\TCache;
 use AugmentedSteam\Server\Model\DataObjects\DCache;
 use IsThereAnyDeal\Database\DbDriver;
 use IsThereAnyDeal\Database\Sql\Create\SqlInsertQuery;
+use JsonSerializable;
 
 class Cache
 {
@@ -25,34 +26,47 @@ class Cache
             ->onDuplicateKeyUpdate($c->json, $c->timestamp);
     }
 
-    public function getValue(int $appid, int $key, int $expireSeconds) {
+    /**
+     * @return array|false  TODO this return type is _too_ PHP
+     */
+    public function getValue(int $appid, ECacheKey $key, int $expireSeconds): array|false {
         $c = $this->c;
 
-        $value = (new SqlSelectQuery($this->db,
-            "SELECT $c->json
+        /** @var DCache $cached */
+        $cached = $this->db->select(<<<SQL
+            SELECT $c->json
             FROM $c
             WHERE $c->appid=:appid
               AND $c->key=:key
-              AND $c->timestamp >= :timestamp"
-        ))->params([
+              AND $c->timestamp >= :timestamp
+            SQL
+        )->params([
             ":appid" => $appid,
             ":key" => $key,
             ":timestamp" => time() - $expireSeconds
-        ])->fetchValue();
+        ])->fetch(DCache::class)
+          ->getOne();
 
-        if (is_null($value)) {
-            return null;
+        if (is_null($cached)) {
+            return false;
         }
-        return json_decode($value, true);
+        $data = json_decode($cached->getJson(), true, flags: JSON_THROW_ON_ERROR);
+        if (!is_array($data)) {
+            return false;
+        }
+        return $data;
     }
 
-    public function setValue(int $appid, int $key, string $json): void {
+    /**
+     * @param array<mixed> $data
+     */
+    public function setValue(int $appid, ECacheKey $key, array $data): void {
 
         $this->insert->persist(
             (new DCache())
                 ->setAppid($appid)
                 ->setKey($key)
-                ->setJson($json)
+                ->setJson(json_encode($data, flags: JSON_THROW_ON_ERROR))
                 ->setTimestamp(time())
         );
     }

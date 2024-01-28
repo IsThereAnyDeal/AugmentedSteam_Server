@@ -9,13 +9,11 @@ use AugmentedSteam\Server\Loader\SimpleLoader;
 use AugmentedSteam\Server\Logging\LoggerFactoryInterface;
 use AugmentedSteam\Server\Model\DataObjects\DSteamCharts;
 use IsThereAnyDeal\Database\DbDriver;
-use IsThereAnyDeal\Database\Sql\SqlInsertQuery;
-use IsThereAnyDeal\Database\Sql\SqlSelectQuery;
 use Psr\Log\LoggerInterface;
 
 class SteamChartsManager
 {
-    private const CacheLimit = 900;
+    private const int CacheLimit = 900;
 
     private DbDriver $db;
     private SimpleLoader $loader;
