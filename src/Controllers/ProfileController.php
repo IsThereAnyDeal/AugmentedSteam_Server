@@ -3,10 +3,9 @@ declare(strict_types=1);
 
 namespace AugmentedSteam\Server\Controllers;
 
-use AugmentedSteam\Server\Http\IntParam;
+use AugmentedSteam\Server\Data\Managers\SteamRepManager;
 use AugmentedSteam\Server\Model\DataObjects\DBadges;
 use AugmentedSteam\Server\Model\User\UserManager;
-use AugmentedSteam\Server\Model\SteamRep\SteamRepManager;
 use IsThereAnyDeal\Database\DbDriver;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -28,10 +27,11 @@ class ProfileController extends Controller
     }
 
     /**
+     * @param array{steamId: int} $params
      * @return array<string, mixed>
      */
     public function getProfile_v2(ServerRequestInterface $request, array $params): array {
-        $steamId = (new IntParam($request, "steamId"))->value();
+        $steamId = (int)$params['steamId'];
 
         $info = $this->userManager->getProfileInfo($steamId);
         $badges = $this->userManager->getBadges($steamId)

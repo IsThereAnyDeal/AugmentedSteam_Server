@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace AugmentedSteam\Server\Model\DataObjects;
+namespace AugmentedSteam\Server\Data\Objects;
 
 class DSteamRep
 {
@@ -19,12 +19,19 @@ class DSteamRep
         return $this;
     }
 
-    public function getRep(): ?string {
-        return $this->rep;
+    /**
+     * @return list<string>
+     */
+    public function getReputation(): array {
+        return empty($this->rep) ? [] : explode(",", $this->rep);
     }
 
-    public function setRep(?string $rep): self {
-        $this->rep = $rep;
+    /**
+     * @param ?list<string> $reputation
+     */
+    public function setReputation(?array $reputation): self {
+        $this->rep = empty($reputation) ? null : implode(",", $reputation);
+        $this->checked = !is_null($reputation);
         return $this;
     }
 
@@ -39,10 +46,5 @@ class DSteamRep
 
     public function isChecked(): bool {
         return $this->checked;
-    }
-
-    public function setChecked(bool $checked): self {
-        $this->checked = $checked;
-        return $this;
     }
 }

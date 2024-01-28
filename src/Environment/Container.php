@@ -19,6 +19,9 @@ use AugmentedSteam\Server\Controllers\StorePageController;
 use AugmentedSteam\Server\Controllers\SurveyController;
 use AugmentedSteam\Server\Controllers\TwitchController;
 use AugmentedSteam\Server\Cron\CronJobFactory;
+use AugmentedSteam\Server\Data\Interfaces\SteamRepProviderInterface;
+use AugmentedSteam\Server\Data\Managers\SteamRepManager;
+use AugmentedSteam\Server\Data\Providers\SteamRepProvider;
 use AugmentedSteam\Server\Loader\Proxy\ProxyFactory;
 use AugmentedSteam\Server\Loader\Proxy\ProxyFactoryInterface;
 use AugmentedSteam\Server\Loader\SimpleLoader;
@@ -29,11 +32,9 @@ use AugmentedSteam\Server\Model\Cache\Cache;
 use AugmentedSteam\Server\Model\EarlyAccess\EarlyAccessManager;
 use AugmentedSteam\Server\Model\HowLongToBeat\HLTBManager;
 use AugmentedSteam\Server\Model\Market\MarketManager;
-use AugmentedSteam\Server\Model\Money\CurrencyConverter;
 use AugmentedSteam\Server\Model\Prices\PricesManager;
 use AugmentedSteam\Server\Model\Reviews\ReviewsManager;
 use AugmentedSteam\Server\Model\SteamPeek\SteamPeekManager;
-use AugmentedSteam\Server\Model\SteamRep\SteamRepManager;
 use AugmentedSteam\Server\Model\StorePage\ExfglsManager;
 use AugmentedSteam\Server\Model\StorePage\SteamChartsManager;
 use AugmentedSteam\Server\Model\StorePage\SteamSpyManager;
@@ -152,6 +153,14 @@ class Container implements ContainerInterface
                     get(ExfglsConfig::class)
                 ),
 
+            // providers
+
+            SteamRepProviderInterface::class => create(SteamRepProvider::class)
+                ->constructor(
+                    get(SimpleLoader::class),
+                    get(EndpointsConfig::class)
+                ),
+
             // managers
 
             MarketManager::class => create()
@@ -161,8 +170,7 @@ class Container implements ContainerInterface
             SteamRepManager::class => create()
                 ->constructor(
                     get(DbDriver::class),
-                    get(SimpleLoader::class),
-                    get(EndpointsConfig::class)
+                    get(SteamRepProviderInterface::class)
                 ),
             SteamChartsManager::class => create()
                 ->constructor(
