@@ -4,7 +4,6 @@ namespace AugmentedSteam\Server\Environment;
 use AugmentedSteam\Server\Config\BrightDataConfig;
 use AugmentedSteam\Server\Config\CoreConfig;
 use AugmentedSteam\Server\Config\EndpointsConfig;
-use AugmentedSteam\Server\Config\ExfglsConfig;
 use AugmentedSteam\Server\Config\KeysConfig;
 use AugmentedSteam\Server\Config\TwitchConfig;
 use AugmentedSteam\Server\Controllers\EarlyAccessController;
@@ -21,10 +20,12 @@ use AugmentedSteam\Server\Controllers\TwitchController;
 use AugmentedSteam\Server\Cron\CronJobFactory;
 use AugmentedSteam\Server\Data\Interfaces\SteamRepProviderInterface;
 use AugmentedSteam\Server\Data\Interfaces\WSGFProviderInterface;
+use AugmentedSteam\Server\Data\Managers\ExfglsManager;
 use AugmentedSteam\Server\Data\Managers\SteamRepManager;
 use AugmentedSteam\Server\Data\Managers\WSGFManager;
 use AugmentedSteam\Server\Data\Providers\SteamRepProvider;
 use AugmentedSteam\Server\Data\Providers\WSGFProvider;
+use AugmentedSteam\Server\Data\Updaters\ExfglsConfig;
 use AugmentedSteam\Server\Loader\Proxy\ProxyFactory;
 use AugmentedSteam\Server\Loader\Proxy\ProxyFactoryInterface;
 use AugmentedSteam\Server\Loader\SimpleLoader;
@@ -38,7 +39,6 @@ use AugmentedSteam\Server\Model\Market\MarketManager;
 use AugmentedSteam\Server\Model\Prices\PricesManager;
 use AugmentedSteam\Server\Model\Reviews\ReviewsManager;
 use AugmentedSteam\Server\Model\SteamPeek\SteamPeekManager;
-use AugmentedSteam\Server\Model\StorePage\ExfglsManager;
 use AugmentedSteam\Server\Model\StorePage\SteamChartsManager;
 use AugmentedSteam\Server\Model\StorePage\SteamSpyManager;
 use AugmentedSteam\Server\Model\Survey\SurveyManager;
@@ -202,9 +202,7 @@ class Container implements ContainerInterface
                 ),
             ExfglsManager::class => create()
                 ->constructor(
-                    get(DbDriver::class),
-                    get(LoggerFactoryInterface::class),
-                    get(ExfglsConfig::class)
+                    get(DbDriver::class)
                 ),
             HLTBManager::class => create()
                 ->constructor(

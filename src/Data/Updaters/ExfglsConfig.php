@@ -1,20 +1,22 @@
 <?php
 declare(strict_types=1);
 
-namespace AugmentedSteam\Server\Config;
+namespace AugmentedSteam\Server\Data\Updaters;
 
 use Nette\Schema\Expect;
-use Nette\Schema\Schema;
+use Nette\Schema\Processor;
 
-class ExfglsConfig extends AConfig
+class ExfglsConfig
 {
-    protected function getSchema(): Schema {
-        return Expect::structure([
+    private object $config;
+
+    protected function __construct(array $config) {
+        $this->config = (new Processor())->process(Expect::structure([
             "enabled" => Expect::bool(false),
             "bin" => Expect::string(),
             "user" => Expect::string(),
             "password" => Expect::string(),
-        ]);
+        ]), $config);
     }
 
     public function isEnabled(): bool {

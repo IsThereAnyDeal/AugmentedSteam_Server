@@ -4,8 +4,10 @@ declare(strict_types=1);
 namespace AugmentedSteam\Server\Cron;
 
 use AugmentedSteam\Server\Config\EndpointsConfig;
-use AugmentedSteam\Server\Config\ExfglsConfig;
 use AugmentedSteam\Server\Config\KeysConfig;
+use AugmentedSteam\Server\Data\Managers\ExfglsManager;
+use AugmentedSteam\Server\Data\Updaters\ExfglsConfig;
+use AugmentedSteam\Server\Data\Updaters\ExfglsUpdater;
 use AugmentedSteam\Server\Loader\Loader;
 use AugmentedSteam\Server\Loader\Proxy\ProxyFactoryInterface;
 use AugmentedSteam\Server\Loader\SimpleLoader;
@@ -15,7 +17,6 @@ use AugmentedSteam\Server\Model\HowLongToBeat\GamePageCrawler;
 use AugmentedSteam\Server\Model\HowLongToBeat\SearchResultsCrawler;
 use AugmentedSteam\Server\Model\Market\MarketCrawler;
 use AugmentedSteam\Server\Model\Money\RatesManager;
-use AugmentedSteam\Server\Model\StorePage\ExfglsManager;
 use GuzzleHttp\Client;
 use IsThereAnyDeal\Database\DbDriver;
 
@@ -125,7 +126,11 @@ class CronJobFactory
         return (new CronJob())
             ->lock("exfgls", 5)
             ->callable(function(){
-                $updater = new ExfglsManager($this->db, $this->loggerFactory, $this->exfglsConfig);
+                $updater = new ExfglsUpdater(
+                    $this->db,
+                    $this->loggerFactory->logger("exfgls"),
+                    $this->exfglsConfig
+                );
                 $updater->update();
             });
     }

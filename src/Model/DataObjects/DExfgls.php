@@ -3,15 +3,12 @@ declare(strict_types=1);
 
 namespace AugmentedSteam\Server\Model\DataObjects;
 
-use IsThereAnyDeal\Database\Sql\AInsertableObject;
-use IsThereAnyDeal\Database\Sql\ISelectable;
-
-class DExfgls extends AInsertableObject implements ISelectable
+class DExfgls
 {
-    protected int $appid;
-    protected int $excluded;
-    protected int $checked;
-    protected int $timestamp;
+    private int $appid;
+    private bool $excluded;
+    private bool $checked;
+    private int $timestamp;
 
     public function getAppid(): int {
         return $this->appid;
@@ -23,20 +20,20 @@ class DExfgls extends AInsertableObject implements ISelectable
     }
 
     public function isExcluded(): bool {
-        return $this->excluded === 1;
+        return $this->excluded;
     }
 
     public function setExcluded(bool $excluded): self {
-        $this->excluded = $excluded ? 1 : 0;
+        $this->excluded = $excluded;
         return $this;
     }
 
     public function isChecked(): bool {
-        return $this->checked == 1;
+        return $this->checked;
     }
 
     public function setChecked(bool $checked): self {
-        $this->checked = $checked ? 1 : 0;
+        $this->checked = $checked;
         return $this;
     }
 
