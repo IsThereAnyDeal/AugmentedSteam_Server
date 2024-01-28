@@ -13,11 +13,11 @@ use Throwable;
 
 class Loader
 {
-    private const ConnectTimeout = 5;
-    private const Timeout = 15;
+    private const int ConnectTimeout = 5;
+    private const int Timeout = 15;
 
-    private LoggerInterface $logger;
-    private Client $guzzle;
+    private readonly LoggerInterface $logger;
+    private readonly Client $guzzle;
 
     private int $concurrency = 5;
     private ?ProxyInterface $proxy = null;

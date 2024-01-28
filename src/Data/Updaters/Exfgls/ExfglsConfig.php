@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace AugmentedSteam\Server\Data\Updaters;
+namespace AugmentedSteam\Server\Data\Updaters\Exfgls;
 
 use Nette\Schema\Expect;
 use Nette\Schema\Processor;

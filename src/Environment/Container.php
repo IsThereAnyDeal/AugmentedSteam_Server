@@ -21,11 +21,12 @@ use AugmentedSteam\Server\Cron\CronJobFactory;
 use AugmentedSteam\Server\Data\Interfaces\SteamRepProviderInterface;
 use AugmentedSteam\Server\Data\Interfaces\WSGFProviderInterface;
 use AugmentedSteam\Server\Data\Managers\ExfglsManager;
+use AugmentedSteam\Server\Data\Managers\HLTBManager;
 use AugmentedSteam\Server\Data\Managers\SteamRepManager;
 use AugmentedSteam\Server\Data\Managers\WSGFManager;
 use AugmentedSteam\Server\Data\Providers\SteamRepProvider;
 use AugmentedSteam\Server\Data\Providers\WSGFProvider;
-use AugmentedSteam\Server\Data\Updaters\ExfglsConfig;
+use AugmentedSteam\Server\Data\Updaters\Exfgls\ExfglsConfig;
 use AugmentedSteam\Server\Loader\Proxy\ProxyFactory;
 use AugmentedSteam\Server\Loader\Proxy\ProxyFactoryInterface;
 use AugmentedSteam\Server\Loader\SimpleLoader;
@@ -34,7 +35,6 @@ use AugmentedSteam\Server\Logging\LoggerFactoryInterface;
 use AugmentedSteam\Server\Logging\LoggingConfig;
 use AugmentedSteam\Server\Model\Cache\Cache;
 use AugmentedSteam\Server\Model\EarlyAccess\EarlyAccessManager;
-use AugmentedSteam\Server\Model\HowLongToBeat\HLTBManager;
 use AugmentedSteam\Server\Model\Market\MarketManager;
 use AugmentedSteam\Server\Model\Prices\PricesManager;
 use AugmentedSteam\Server\Model\Reviews\ReviewsManager;
@@ -206,10 +206,7 @@ class Container implements ContainerInterface
                 ),
             HLTBManager::class => create()
                 ->constructor(
-                    get(DbDriver::class),
-                    get(SimpleLoader::class),
-                    get(LoggerFactoryInterface::class),
-                    get(ProxyFactoryInterface::class)
+                    get(DbDriver::class)
                 ),
             ReviewsManager::class => create()
                 ->constructor(

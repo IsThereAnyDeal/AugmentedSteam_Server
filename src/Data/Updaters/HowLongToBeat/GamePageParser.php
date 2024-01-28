@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace AugmentedSteam\Server\Model\HowLongToBeat;
+namespace AugmentedSteam\Server\Data\Updaters\HowLongToBeat;
 
 use DOMDocument;
 use DOMXPath;

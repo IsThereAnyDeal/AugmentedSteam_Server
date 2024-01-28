@@ -5,11 +5,11 @@ namespace AugmentedSteam\Server\Model\Market;
 
 use AugmentedSteam\Server\Database\TMarketData;
 use AugmentedSteam\Server\Database\TMarketIndex;
+use AugmentedSteam\Server\Loader\Crawler;
 use AugmentedSteam\Server\Loader\Item;
 use AugmentedSteam\Server\Loader\Loader;
 use AugmentedSteam\Server\Loader\Proxy\ProxyFactoryInterface;
 use AugmentedSteam\Server\Loader\Proxy\ProxyInterface;
-use AugmentedSteam\Server\Model\Crawler;
 use AugmentedSteam\Server\Model\DataObjects\DMarketData;
 use AugmentedSteam\Server\Model\DataObjects\DMarketIndex;
 use IsThereAnyDeal\Database\DbDriver;

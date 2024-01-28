@@ -1,20 +1,17 @@
 <?php
 declare(strict_types=1);
 
-namespace AugmentedSteam\Server\Model\DataObjects;
+namespace AugmentedSteam\Server\Data\Objects;
 
-use IsThereAnyDeal\Database\Sql\AInsertableObject;
-use IsThereAnyDeal\Database\Sql\ISelectable;
-
-class DHLTB extends AInsertableObject implements ISelectable
+class DHLTB
 {
-    protected int $id;
-    protected ?int $appid;
-    protected ?int $main;
-    protected ?int $extra;
-    protected ?int $complete;
-    protected int $found_timestamp;
-    protected ?int $checked_timestamp;
+    private int $id;
+    private ?int $appid;
+    private ?int $main;
+    private ?int $extra;
+    private ?int $complete;
+    private int $found_timestamp;
+    private ?int $checked_timestamp;
 
     public function getId(): int {
         return $this->id;

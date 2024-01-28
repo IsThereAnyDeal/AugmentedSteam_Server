@@ -1,43 +1,47 @@
 <?php
 declare(strict_types=1);
 
-namespace AugmentedSteam\Server\Model\HowLongToBeat;
+namespace AugmentedSteam\Server\Data\Updaters\HowLongToBeat;
 
+use AugmentedSteam\Server\Data\Objects\DHLTB;
 use AugmentedSteam\Server\Database\THLTB;
+use AugmentedSteam\Server\Loader\Crawler;
 use AugmentedSteam\Server\Loader\Item;
 use AugmentedSteam\Server\Loader\Loader;
 use AugmentedSteam\Server\Loader\Proxy\ProxyFactoryInterface;
 use AugmentedSteam\Server\Loader\Proxy\ProxyInterface;
-use AugmentedSteam\Server\Model\Crawler;
-use AugmentedSteam\Server\Model\DataObjects\DHLTB;
 use IsThereAnyDeal\Database\DbDriver;
-use IsThereAnyDeal\Database\Sql\SqlInsertQuery;
-use IsThereAnyDeal\Database\Sql\SqlSelectQuery;
+use IsThereAnyDeal\Database\Sql\Create\SqlInsertQuery;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
 
 class GamePageCrawler extends Crawler
 {
-    private const BatchSize = 250;
-    private const RecheckTimestamp = 31*86400;
-    private const MaxAttempts = 3;
+    private const int BatchSize = 250;
+    private const int RecheckTimestamp = 14*86400;
+    private const int MaxAttempts = 3;
 
-    private DbDriver $db;
-    private ProxyInterface $proxy;
+    private readonly DbDriver $db;
+    private readonly ProxyInterface $proxy;
 
     private int $requestCounter = 0;
 
     private GamePageParser $parser;
     private SqlInsertQuery $insert;
 
-    public function __construct(DbDriver $db, Loader $loader, LoggerInterface $logger, ProxyFactoryInterface $proxyFactory) {
+    public function __construct(
+        DbDriver $db,
+        Loader $loader,
+        LoggerInterface $logger,
+        ProxyFactoryInterface $proxyFactory
+    ) {
         parent::__construct($loader, $logger);
         $this->db = $db;
         $this->proxy = $proxyFactory->createProxy();
         $this->parser = new GamePageParser();
 
         $h = new THLTB();
-        $this->insert = (new SqlInsertQuery($this->db, $h))
+        $this->insert = $this->db->insert($h)
             ->columns($h->id, $h->appid, $h->main, $h->extra, $h->complete, $h->checked_timestamp)
             ->onDuplicateKeyUpdate($h->appid, $h->main, $h->extra, $h->complete, $h->checked_timestamp);
     }
@@ -60,35 +64,36 @@ class GamePageCrawler extends Crawler
         $data = $this->parser->parse($response->getBody()->getContents());
 
         $id = $request->getData()['id'];
-        $this->insert
-            ->stack(
-                (new DHLTB())
-                    ->setId($id)
-                    ->setAppid($data['appid'] ?? null)
-                    ->setMain($data['times']['main'] ?? null)
-                    ->setExtra($data['times']['extra'] ?? null)
-                    ->setComplete($data['times']['complete'] ?? null)
-                    ->setCheckedTimestamp(time())
-            );
+        $this->insert->stack(
+            (new DHLTB())
+                ->setId($id)
+                ->setAppid($data['appid'] ?? null)
+                ->setMain($data['times']['main'] ?? null)
+                ->setExtra($data['times']['extra'] ?? null)
+                ->setComplete($data['times']['complete'] ?? null)
+                ->setCheckedTimestamp(time())
+        );
 
         --$this->requestCounter;
 
         $this->logger->info("$id");
     }
 
-    public function update() {
+    public function update(): void {
         $this->logger->info("Update start");
 
         $h = new THLTB();
-        $ids = (new SqlSelectQuery($this->db,
-            "SELECT $h->id
+        $ids = $this->db->select(<<<SQL
+            SELECT $h->id
             FROM $h
             WHERE $h->appid IS NULL
               AND ($h->checked_timestamp IS NULL OR $h->checked_timestamp < :timestamp)
             ORDER BY $h->checked_timestamp, $h->found_timestamp DESC
-            LIMIT ".self::BatchSize
-        ))->params([
-            ":timestamp" => time() - self::RecheckTimestamp
+            LIMIT :limit
+            SQL
+        )->params([
+            ":timestamp" => time() - self::RecheckTimestamp,
+            ":limit" => self::BatchSize
         ])->fetchValueArray();
 
         foreach($ids as $id) {

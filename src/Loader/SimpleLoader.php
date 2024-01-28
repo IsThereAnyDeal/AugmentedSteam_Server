@@ -7,10 +7,10 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Psr\Http\Message\ResponseInterface;
 
-class SimpleLoader
+readonly class SimpleLoader
 {
     public function __construct(
-        private readonly Client $guzzle
+        private Client $guzzle
     ) {}
 
     public function get(string $url, array $curlOptions = []): ?ResponseInterface {

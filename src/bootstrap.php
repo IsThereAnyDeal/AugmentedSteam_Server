@@ -14,7 +14,7 @@ use AugmentedSteam\Server\Config\CoreConfig;
 use AugmentedSteam\Server\Config\EndpointsConfig;
 use AugmentedSteam\Server\Config\KeysConfig;
 use AugmentedSteam\Server\Config\TwitchConfig;
-use AugmentedSteam\Server\Data\Updaters\ExfglsConfig;
+use AugmentedSteam\Server\Data\Updaters\Exfgls\ExfglsConfig;
 use AugmentedSteam\Server\Environment\Container;
 use AugmentedSteam\Server\Logging\LoggingConfig;
 use IsThereAnyDeal\Config\Config;

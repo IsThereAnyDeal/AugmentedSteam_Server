@@ -1,10 +1,8 @@
 <?php
 declare(strict_types=1);
 
-namespace AugmentedSteam\Server\Model;
+namespace AugmentedSteam\Server\Loader;
 
-use AugmentedSteam\Server\Loader\Item;
-use AugmentedSteam\Server\Loader\Loader;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
 use SplQueue;
@@ -12,8 +10,8 @@ use Throwable;
 
 abstract class Crawler
 {
-    private Loader $loader;
-    protected LoggerInterface $logger;
+    private readonly Loader $loader;
+    protected readonly LoggerInterface $logger;
 
     private SplQueue $requestQueue;
 
@@ -45,7 +43,7 @@ abstract class Crawler
                 // replay request
                 $request->incrementAttempt();
                 $this->enqueueRequest($request);
-                $this->logger->info("Retrying");
+                $this->logger->info("Retrying", ["url" => $request->getUrl()]);
             } else {
                 $this->logger->error($request->getUrl());
             }

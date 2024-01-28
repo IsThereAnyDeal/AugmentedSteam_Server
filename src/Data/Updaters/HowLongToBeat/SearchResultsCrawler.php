@@ -1,23 +1,23 @@
 <?php
 declare(strict_types=1);
 
-namespace AugmentedSteam\Server\Model\HowLongToBeat;
+namespace AugmentedSteam\Server\Data\Updaters\HowLongToBeat;
 
+use AugmentedSteam\Server\Data\Objects\DHLTB;
 use AugmentedSteam\Server\Database\THLTB;
+use AugmentedSteam\Server\Loader\Crawler;
 use AugmentedSteam\Server\Loader\Item;
 use AugmentedSteam\Server\Loader\Loader;
 use AugmentedSteam\Server\Loader\Proxy\ProxyFactoryInterface;
 use AugmentedSteam\Server\Loader\Proxy\ProxyInterface;
-use AugmentedSteam\Server\Model\Crawler;
-use AugmentedSteam\Server\Model\DataObjects\DHLTB;
 use IsThereAnyDeal\Database\DbDriver;
-use IsThereAnyDeal\Database\Sql\SqlInsertQuery;
+use IsThereAnyDeal\Database\Sql\Create\SqlInsertQuery;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
 
 class SearchResultsCrawler extends Crawler
 {
-    private const MaxAttempts = 3;
+    private const int MaxAttempts = 3;
 
     private DbDriver $db;
     private ProxyInterface $proxy;
@@ -33,12 +33,12 @@ class SearchResultsCrawler extends Crawler
         $this->proxy = $proxyFactory->createProxy();
 
         $h = new THLTB();
-        $this->insert = (new SqlInsertQuery($this->db, $h))
+        $this->insert = $this->db->insert($h)
             ->columns($h->id, $h->main, $h->extra, $h->complete, $h->found_timestamp)
             ->onDuplicateKeyUpdate($h->main, $h->extra, $h->complete, $h->found_timestamp);
     }
 
-    public function setQueryString(string $queryString) {
+    public function setQueryString(string $queryString): void {
         $this->queryString = $queryString;
     }
 
