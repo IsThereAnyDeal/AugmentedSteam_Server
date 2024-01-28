@@ -26,14 +26,19 @@ use Psr\Http\Message\ResponseFactoryInterface;
 class Router
 {
     private function defineRoutes(\League\Route\Router $router): void {
+        // old, redirects
         $router->get("/v1/rates/", fn() => new RedirectResponse("/rates/v1", 301));
-        $router->get("/rates/v1", [RatesController::class, "getRatesV1"]);
-
         $router->get("/v2/dlcinfo/", fn() => new RedirectResponse("/dlcinfo/v2", 301));
-        $router->get("/dlcinfo/v2", [GameController::class, "getDlcInfoV2"]);
+        $router->get("/v2/market/cards/", fn() => new RedirectResponse("/market/cards/v2"));
+        $router->get("/v2/market/cards/average-prices/", fn() => new RedirectResponse("/market/cards/average-prices/v2"));
 
-        $router->get("/v2/market/cards/", [MarketController::class, "getCardsV2"]);
-        $router->get("/v2/market/cards/average-prices/", [MarketController::class, "getAverageCardPricesV2"]);
+        // new urls
+        $router->get("/rates/v1", [RatesController::class, "getRates_v1"]);
+
+        $router->get("/dlcinfo/v2", [GameController::class, "getDlcInfo_v2"]);
+
+        $router->get("/market/cards/v2", [MarketController::class, "getCards_v2"]);
+        $router->get("/market/cards/average-prices/v2", [MarketController::class, "getAverageCardPrices_v2"]);
 
         $router->get("/v2/profile/{steamId:\d+}/", [ProfileController::class, "getProfileV2"]);
         $router->get("/v2/profile/background/list/", [ProfileManagementController::class, "getBackgroundsV2"]);

@@ -6,21 +6,18 @@ namespace AugmentedSteam\Server\Model\Market;
 use AugmentedSteam\Server\Database\TMarketIndex;
 use AugmentedSteam\Server\Model\DataObjects\DMarketIndex;
 use IsThereAnyDeal\Database\DbDriver;
-use IsThereAnyDeal\Database\Sql\SqlInsertQuery;
 
-class MarketIndex
+readonly class MarketIndex
 {
-    private DbDriver $db;
-
-    public function __construct(DbDriver $db) {
-        $this->db = $db;
-    }
+    public function __construct(
+        private DbDriver $db
+    ) {}
 
     public function recordRequest(int ...$appids): void {
         $appids = array_unique($appids);
 
         $i = new TMarketIndex();
-        $insert = (new SqlInsertQuery($this->db, $i))
+        $insert = $this->db->insert($i)
             ->columns($i->appid, $i->last_request)
             ->onDuplicateKeyUpdate($i->last_request)
             ->onDuplicateKeyExpression($i->request_counter, "$i->request_counter+1");

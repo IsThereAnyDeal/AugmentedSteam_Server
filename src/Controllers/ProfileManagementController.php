@@ -35,23 +35,13 @@ class ProfileManagementController extends Controller
     public function getBackgroundsV2(ServerRequestInterface $request): array {
         $appid = (new Param($request, "appid"))->int();
 
-        $backgrounds = $this->marketManager
+        return $this->marketManager
             ->getBackgrounds($appid);
-
-        $result = [];
-        foreach($backgrounds as $o) {
-            $result[] = [
-                $o->getImg(),
-                preg_replace("#\s*\(Profile Background\)#", "", $o->getName()),
-            ];
-        }
-
-        return $result;
     }
 
     public function getGamesV1(ServerRequestInterface $request): array {
         return $this->marketManager
-            ->getGames();
+            ->getGamesWithBackgrounds();
     }
 
     private function authorize(ServerRequestInterface $request, string $selfUrl, string $returnUrl, ?int $profile) {

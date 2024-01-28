@@ -1,0 +1,25 @@
+description: Success
+content:
+  application/json:
+    schema:
+      allOf:
+        - $ref: "../schemas/resp.success.yaml"
+        - type: object
+          properties:
+            data:
+              type: object
+              propertyNames:
+                type: string
+              additionalProperties:
+                type: object
+                properties:
+                  img:
+                    type: string
+                  url:
+                    type: string
+                  price:
+                    type: number
+    examples:
+      success:
+        value:
+          $ref: "../examples/market.cards.v2.success.json"

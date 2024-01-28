@@ -8,7 +8,7 @@ use Psr\Http\Message\ServerRequestInterface;
 
 class RatesController extends Controller {
 
-    public function getRatesV1(ServerRequestInterface $request): array {
+    public function getRates_v1(ServerRequestInterface $request): array {
         $currencies = (new ListParam($request, "to"))->value();
 
         if (count($currencies) == 0) {

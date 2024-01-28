@@ -14,7 +14,7 @@ class GameController extends Controller
     /**
      * return list<array{id: number, name: string, description: string}>
      */
-    public function getDlcInfoV2(ServerRequestInterface $request): array {
+    public function getDlcInfo_v2(ServerRequestInterface $request): array {
         $appid = (new IntParam($request, "appid"))->value();
 
         $g = new TGameDlc();
