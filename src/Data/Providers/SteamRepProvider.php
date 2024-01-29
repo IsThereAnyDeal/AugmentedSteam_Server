@@ -3,22 +3,22 @@ declare(strict_types=1);
 
 namespace AugmentedSteam\Server\Data\Providers;
 
-use AugmentedSteam\Server\Config\EndpointsConfig;
 use AugmentedSteam\Server\Data\Interfaces\SteamRepProviderInterface;
+use AugmentedSteam\Server\Endpoints\EndpointBuilder;
 use AugmentedSteam\Server\Loader\SimpleLoader;
 
 class SteamRepProvider implements SteamRepProviderInterface {
 
     public function __construct(
         private readonly SimpleLoader $loader,
-        private readonly EndpointsConfig $config
+        private readonly EndpointBuilder $endpoints
     ) {}
 
     /**
      * @return ?list<string>
      */
     public function getReputation(int $steamId): ?array {
-        $url = $this->config->getSteamRepEndpoint($steamId);
+        $url = $this->endpoints->getSteamRep($steamId);
 
         $response = $this->loader->get($url);
         if (is_null($response)) {

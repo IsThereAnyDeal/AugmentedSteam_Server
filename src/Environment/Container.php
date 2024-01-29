@@ -168,19 +168,18 @@ class Container implements ContainerInterface
             SteamRepProviderInterface::class => create(SteamRepProvider::class)
                 ->constructor(
                     get(SimpleLoader::class),
-                    get(EndpointsConfig::class)
+                    get(EndpointBuilder::class)
                 ),
 
             WSGFProviderInterface::class => fn(ContainerInterface $c) => new WSGFProvider(
                     $c->get(SimpleLoader::class),
-                    $c->get(EndpointsConfig::class),
+                    $c->get(EndpointBuilder::class),
                     $c->get(LoggerFactoryInterface::class)->logger("wsgf")
                 ),
 
             SteampeekProviderInterface::class => fn(ContainerInterface $c) => new SteamPeekProvider(
                 $c->get(SimpleLoader::class),
-                $c->get(EndpointsConfig::class),
-                $c->get(KeysConfig::class),
+                $c->get(EndpointBuilder::class),
                 $c->get(LoggerFactoryInterface::class)->logger("steampeek")
             ),
 

@@ -1,11 +1,10 @@
 <?php
 namespace AugmentedSteam\Server\Data\Providers;
 
-use AugmentedSteam\Server\Config\EndpointsConfig;
-use AugmentedSteam\Server\Config\KeysConfig;
 use AugmentedSteam\Server\Data\Interfaces\SteamPeekProviderInterface;
 use AugmentedSteam\Server\Data\Objects\SteamPeekGame;
 use AugmentedSteam\Server\Data\Objects\SteamPeekResults;
+use AugmentedSteam\Server\Endpoints\EndpointBuilder;
 use AugmentedSteam\Server\Loader\SimpleLoader;
 use Psr\Log\LoggerInterface;
 
@@ -13,14 +12,12 @@ class SteamPeekProvider implements SteamPeekProviderInterface {
 
     public function __construct(
         private readonly SimpleLoader $loader,
-        private readonly EndpointsConfig $config,
-        private readonly KeysConfig $keysConfig,
+        private readonly EndpointBuilder $endpoints,
         private readonly LoggerInterface $logger
     ) {}
 
     public function fetch(int $appid): ?SteamPeekResults {
-        $endpoint = $this->config->getSteamPeekEndpoint($appid, $this->keysConfig->getSteamPeekApiKey());
-
+        $endpoint = $this->endpoints->getSteamPeek($appid);
         $response = $this->loader->get($endpoint);
 
         if (!is_null($response)) {
@@ -51,5 +48,4 @@ class SteamPeekProvider implements SteamPeekProviderInterface {
         $this->logger->error((string)$appid);
         return null;
     }
-
 }

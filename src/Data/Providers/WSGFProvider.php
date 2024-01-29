@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace AugmentedSteam\Server\Data\Providers;
 
-use AugmentedSteam\Server\Config\EndpointsConfig;
 use AugmentedSteam\Server\Data\Interfaces\WSGFProviderInterface;
 use AugmentedSteam\Server\Data\Objects\WSGF;
+use AugmentedSteam\Server\Endpoints\EndpointBuilder;
 use AugmentedSteam\Server\Loader\SimpleLoader;
 use Psr\Log\LoggerInterface;
 
@@ -13,12 +13,12 @@ class WSGFProvider implements WSGFProviderInterface
 {
     public function __construct(
         private readonly SimpleLoader $loader,
-        private readonly EndpointsConfig $config,
+        private readonly EndpointBuilder $endpoints,
         private readonly LoggerInterface $logger
     ) {}
 
     public function fetch(int $appid): ?WSGF {
-        $url = $this->config->getWSGFEndpoint($appid);
+        $url = $this->endpoints->getWSGF($appid);
         $response = $this->loader->get($url);
 
         $data = null;

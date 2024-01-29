@@ -20,8 +20,8 @@ class EndpointsConfig extends AConfig
         ]);
     }
 
-    public function getWSGFEndpoint(int $appid): string {
-        return sprintf($this->config->wsgf, $appid);
+    public function getWSGFEndpoint(): string {
+        return $this->config->wsgf;
     }
 
     public function getSteamSpyEndpoint(int $appid): string {
@@ -32,12 +32,12 @@ class EndpointsConfig extends AConfig
         return sprintf($this->config->steamcharts, $appid);
     }
 
-    public function getSteamRepEndpoint(int $steamId): string {
-        return sprintf($this->config->steamrep, $steamId);
+    public function getSteamRepEndpoint(): string {
+        return $this->config->steamrep;
     }
 
-    public function getSteamPeekEndpoint(int $appid, string $key): string {
-        return sprintf($this->config->steampeek, $appid, $key);
+    public function getSteamPeekEndpoint(): string {
+        return $this->config->steampeek;
     }
 
     public function getIsThereAnyDealApiHost(): string {
