@@ -8,14 +8,17 @@ use Psr\Http\Message\ServerRequestInterface;
 
 class RatesController extends Controller {
 
+    public function __construct(
+        private readonly CurrencyConverter $converter
+    ) {}
+
     public function getRates_v1(ServerRequestInterface $request): array {
         $currencies = (new ListParam($request, "to"))->value();
 
-        if (count($currencies) == 0) {
+        if (count($currencies) == 0 || count($currencies) > 2) {
             throw new InvalidValueException("to");
         }
 
-        $converter = new CurrencyConverter($this->db);
-        return $converter->getAllConversionsTo($currencies);
+        return $this->converter->getAllConversionsTo($currencies);
     }
 }

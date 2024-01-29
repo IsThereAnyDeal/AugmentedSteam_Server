@@ -55,7 +55,7 @@ use AugmentedSteam\Server\Logging\LoggerFactoryInterface;
 use AugmentedSteam\Server\Logging\LoggingConfig;
 use AugmentedSteam\Server\Model\Cache\Cache;
 use AugmentedSteam\Server\Model\Market\MarketManager;
-use AugmentedSteam\Server\Model\Reviews\ReviewsManager;
+use AugmentedSteam\Server\Model\Money\CurrencyConverter;
 use AugmentedSteam\Server\Model\StorePage\SteamSpyManager;
 use AugmentedSteam\Server\Model\User\UserManager;
 use AugmentedSteam\Server\OpenId\Session;
@@ -127,7 +127,7 @@ class Container implements ContainerInterface
             // db
             DbDriver::class => fn(ContainerInterface $c) => DbFactory::getDatabase($c->get(DbConfig::class)),
             RedisClient::class => create(RedisClient::class)
-                ->constructor(RedisConfig::class),
+                ->constructor(get(RedisConfig::class)),
 
             // libraries
             GuzzleClient::class => create(GuzzleClient::class),
@@ -145,6 +145,15 @@ class Container implements ContainerInterface
                 $c->get(DbDriver::class),
                 $c->get(CoreConfig::class)->getHost()
             ),
+
+            EndpointBuilder::class => create(EndpointBuilder::class)
+                ->constructor(
+                    get(EndpointsConfig::class),
+                    get(KeysConfig::class)
+                ),
+
+            CurrencyConverter::class => create(CurrencyConverter::class)
+                ->constructor(get(DbDriver::class)),
 
             // factories
 
@@ -277,11 +286,6 @@ class Container implements ContainerInterface
                     get(RedisClient::class),
                     get(GameIdsProviderInterface::class)
                 ),
-            EarlyAccessManager::class => create()
-                ->constructor(
-                    get(RedisClient::class),
-                    get(EarlyAccessProviderInterface::class)
-                ),
             TwitchManager::class => create()
                 ->constructor(
                     get(RedisCache::class),
@@ -292,9 +296,16 @@ class Container implements ContainerInterface
 
             RatesController::class => create()
                 ->constructor(
-                    get(ResponseFactoryInterface::class),
-                    get(DbDriver::class)
+                    get(CurrencyConverter::class)
                 ),
+
+            EarlyAccessController::class => create()
+                ->constructor(
+                    get(RedisClient::class),
+                    get(EarlyAccessProviderInterface::class)
+                ),
+
+
             GameController::class => create()
                 ->constructor(
                     get(ResponseFactoryInterface::class),
@@ -346,13 +357,6 @@ class Container implements ContainerInterface
                     get(DbDriver::class),
                     get(GameIdsProviderInterface::class),
                     get(PricesProviderInterface::class)
-                ),
-
-            EarlyAccessController::class => create()
-                ->constructor(
-                    get(ResponseFactoryInterface::class),
-                    get(DbDriver::class),
-                    get(EarlyAccessManager::class)
                 ),
 
             TwitchController::class => create()
