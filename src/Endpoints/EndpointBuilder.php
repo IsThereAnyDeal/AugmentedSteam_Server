@@ -56,4 +56,10 @@ class EndpointBuilder
         $key = $this->keys->getIsThereAnyDealApiKey();
         return $host."/internal/players/{$appid}/v1?key={$key}";
     }
+
+    public function getRates(): string {
+        $host = $this->endpoints->getIsThereAnyDealApiHost();
+        $key = $this->keys->getIsThereAnyDealApiKey();
+        return $host."/internal/rates/v1?key={$key}";
+    }
 }

@@ -18,6 +18,7 @@ use AugmentedSteam\Server\Data\Interfaces\EarlyAccessProviderInterface;
 use AugmentedSteam\Server\Data\Interfaces\GameIdsProviderInterface;
 use AugmentedSteam\Server\Data\Interfaces\PlayersProviderInterface;
 use AugmentedSteam\Server\Data\Interfaces\PricesProviderInterface;
+use AugmentedSteam\Server\Data\Interfaces\RatesProviderInterface;
 use AugmentedSteam\Server\Data\Interfaces\SteamPeekProviderInterface;
 use AugmentedSteam\Server\Data\Interfaces\SteamRepProviderInterface;
 use AugmentedSteam\Server\Data\Interfaces\TwitchProviderInterface;
@@ -34,6 +35,7 @@ use AugmentedSteam\Server\Data\Providers\EarlyAccessProvider;
 use AugmentedSteam\Server\Data\Providers\GameIdsProvider;
 use AugmentedSteam\Server\Data\Providers\PlayersProvider;
 use AugmentedSteam\Server\Data\Providers\PricesProvider;
+use AugmentedSteam\Server\Data\Providers\RatesProvider;
 use AugmentedSteam\Server\Data\Providers\SteamPeekProvider;
 use AugmentedSteam\Server\Data\Providers\SteamRepProvider;
 use AugmentedSteam\Server\Data\Providers\TwitchProvider;
@@ -212,6 +214,13 @@ class Container implements ContainerInterface
                 ),
 
             PlayersProviderInterface::class => create(PlayersProvider::class)
+                ->constructor(
+                    get(SimpleLoader::class),
+                    get(EndpointBuilder::class)
+                ),
+
+
+            RatesProviderInterface::class => create(RatesProvider::class)
                 ->constructor(
                     get(SimpleLoader::class),
                     get(EndpointBuilder::class)

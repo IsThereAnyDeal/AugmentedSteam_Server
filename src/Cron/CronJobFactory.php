@@ -3,18 +3,20 @@ declare(strict_types=1);
 
 namespace AugmentedSteam\Server\Cron;
 
+use AugmentedSteam\Server\Data\Interfaces\RatesProviderInterface;
 use AugmentedSteam\Server\Data\Updaters\Exfgls\ExfglsConfig;
 use AugmentedSteam\Server\Data\Updaters\Exfgls\ExfglsUpdater;
 use AugmentedSteam\Server\Data\Updaters\HowLongToBeat\GamePageCrawler;
 use AugmentedSteam\Server\Data\Updaters\HowLongToBeat\SearchResultsCrawler;
+use AugmentedSteam\Server\Data\Updaters\Rates\RatesUpdater;
 use AugmentedSteam\Server\Endpoints\EndpointsConfig;
 use AugmentedSteam\Server\Endpoints\KeysConfig;
+use AugmentedSteam\Server\Environment\Container;
 use AugmentedSteam\Server\Loader\Loader;
 use AugmentedSteam\Server\Loader\Proxy\ProxyFactoryInterface;
 use AugmentedSteam\Server\Loader\SimpleLoader;
 use AugmentedSteam\Server\Logging\LoggerFactoryInterface;
 use AugmentedSteam\Server\Model\Market\MarketCrawler;
-use AugmentedSteam\Server\Model\Money\RatesManager;
 use GuzzleHttp\Client;
 use IsThereAnyDeal\Database\DbDriver;
 
@@ -100,11 +102,12 @@ class CronJobFactory
         return (new CronJob())
             ->lock("rates", 5)
             ->callable(function(){
-                $logger = $this->loggerFactory->create("rates");
+                $container = Container::getInstance();
+                $logger = $this->loggerFactory->logger("rates");
 
-                $loader = new SimpleLoader($this->guzzle, $logger);
-                $updater = new RatesManager($this->db, $loader, $this->endpointsConfig, $this->keysConfig, $logger);
-                $updater->updateRates();
+                $provider = $container->get(RatesProviderInterface::class);
+                $updater = new RatesUpdater($this->db, $provider, $logger);
+                $updater->update();
             });
     }
 
