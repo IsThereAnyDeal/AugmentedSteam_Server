@@ -93,7 +93,7 @@ class Router
         $router->get("/prices/v2", [PricesController::class, "getPrices_v2"]);
         $router->get("/earlyaccess/v1", [EarlyAccessController::class, "getAppids_v1"]);
 
-        $router->get("/v2/twitch/{channel}/stream/", [TwitchController::class, "getStreamV2"]);
+        $router->get("/v2/twitch/{channel}/stream/", [TwitchController::class, "getStream_v2"]);
     }
 
     public function route(Container $container): void {

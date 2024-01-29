@@ -44,4 +44,10 @@ class EndpointBuilder
             "shops" => implode(",", $shops)
         ]);
     }
+
+    public function getTwitchStream(string $channel): string {
+        $host = $this->endpoints->getIsThereAnyDealApiHost();
+        $key = $this->keys->getIsThereAnyDealApiKey();
+        return $host."/internal/twitch/{$channel}/stream/v2?key={$key}";
+    }
 }

@@ -3,7 +3,6 @@ namespace AugmentedSteam\Server\Environment;
 
 use AugmentedSteam\Server\Config\BrightDataConfig;
 use AugmentedSteam\Server\Config\CoreConfig;
-use AugmentedSteam\Server\Config\TwitchConfig;
 use AugmentedSteam\Server\Controllers\EarlyAccessController;
 use AugmentedSteam\Server\Controllers\GameController;
 use AugmentedSteam\Server\Controllers\MarketController;
@@ -20,25 +19,28 @@ use AugmentedSteam\Server\Data\Interfaces\GameIdsProviderInterface;
 use AugmentedSteam\Server\Data\Interfaces\PricesProviderInterface;
 use AugmentedSteam\Server\Data\Interfaces\SteamPeekProviderInterface;
 use AugmentedSteam\Server\Data\Interfaces\SteamRepProviderInterface;
+use AugmentedSteam\Server\Data\Interfaces\TwitchProviderInterface;
 use AugmentedSteam\Server\Data\Interfaces\WSGFProviderInterface;
 use AugmentedSteam\Server\Data\Managers\EarlyAccessManager;
 use AugmentedSteam\Server\Data\Managers\ExfglsManager;
 use AugmentedSteam\Server\Data\Managers\GameIdsManager;
 use AugmentedSteam\Server\Data\Managers\HLTBManager;
-use AugmentedSteam\Server\Data\Managers\PricesManager;
 use AugmentedSteam\Server\Data\Managers\SteamPeekManager;
 use AugmentedSteam\Server\Data\Managers\SteamRepManager;
+use AugmentedSteam\Server\Data\Managers\TwitchManager;
 use AugmentedSteam\Server\Data\Managers\WSGFManager;
 use AugmentedSteam\Server\Data\Providers\EarlyAccessProvider;
 use AugmentedSteam\Server\Data\Providers\GameIdsProvider;
 use AugmentedSteam\Server\Data\Providers\PricesProvider;
 use AugmentedSteam\Server\Data\Providers\SteamPeekProvider;
 use AugmentedSteam\Server\Data\Providers\SteamRepProvider;
+use AugmentedSteam\Server\Data\Providers\TwitchProvider;
 use AugmentedSteam\Server\Data\Providers\WSGFProvider;
 use AugmentedSteam\Server\Data\Updaters\Exfgls\ExfglsConfig;
 use AugmentedSteam\Server\Endpoints\EndpointBuilder;
 use AugmentedSteam\Server\Endpoints\EndpointsConfig;
 use AugmentedSteam\Server\Endpoints\KeysConfig;
+use AugmentedSteam\Server\Lib\Redis\RedisCache;
 use AugmentedSteam\Server\Lib\Redis\RedisClient;
 use AugmentedSteam\Server\Lib\Redis\RedisConfig;
 use AugmentedSteam\Server\Loader\Proxy\ProxyFactory;
@@ -52,8 +54,6 @@ use AugmentedSteam\Server\Model\Market\MarketManager;
 use AugmentedSteam\Server\Model\Reviews\ReviewsManager;
 use AugmentedSteam\Server\Model\StorePage\SteamChartsManager;
 use AugmentedSteam\Server\Model\StorePage\SteamSpyManager;
-use AugmentedSteam\Server\Model\Twitch\TokenStorage;
-use AugmentedSteam\Server\Model\Twitch\TwitchManager;
 use AugmentedSteam\Server\Model\User\UserManager;
 use AugmentedSteam\Server\OpenId\Session;
 use GuzzleHttp\Client as GuzzleClient;
@@ -61,7 +61,6 @@ use IsThereAnyDeal\Config\Config;
 use IsThereAnyDeal\Database\DbConfig;
 use IsThereAnyDeal\Database\DbDriver;
 use IsThereAnyDeal\Database\DbFactory;
-use IsThereAnyDeal\Twitch\Api\TokenStorageInterface;
 use Laminas\Diactoros\ResponseFactory;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
@@ -120,7 +119,6 @@ class Container implements ContainerInterface
             EndpointsConfig::class => fn(ContainerInterface $c) => $this->config->getConfig(EndpointsConfig::class),
             BrightDataConfig::class => fn(ContainerInterface $c) => $this->config->getConfig(BrightDataConfig::class),
             ExfglsConfig::class => fn(ContainerInterface $c) => $this->config->getConfig(ExfglsConfig::class),
-            TwitchConfig::class => fn(ContainerInterface $c) => $this->config->getConfig(TwitchConfig::class),
 
             // db
             DbDriver::class => fn(ContainerInterface $c) => DbFactory::getDatabase($c->get(DbConfig::class)),
@@ -135,6 +133,9 @@ class Container implements ContainerInterface
 
             Cache::class => create()
                 ->constructor(get(DbDriver::class)),
+
+            RedisCache::class => create()
+                ->constructor(get(RedisClient::class)),
 
             Session::class => fn(ContainerInterface $c) => new Session(
                 $c->get(DbDriver::class),
@@ -153,9 +154,6 @@ class Container implements ContainerInterface
 
             ProxyFactoryInterface::class => create(ProxyFactory::class)
                 ->constructor(get(BrightDataConfig::class)),
-
-            TokenStorageInterface::class => create(TokenStorage::class)
-                ->constructor(get(DbDriver::class)),
 
             CronJobFactory::class => create()
                 ->constructor(
@@ -203,6 +201,12 @@ class Container implements ContainerInterface
             PricesProviderInterface::class => create(PricesProvider::class)
                 ->constructor(
                     get(GuzzleClient::class),
+                    get(EndpointBuilder::class)
+                ),
+
+            TwitchProviderInterface::class => create(TwitchProvider::class)
+                ->constructor(
+                    get(SimpleLoader::class),
                     get(EndpointBuilder::class)
                 ),
 
@@ -270,9 +274,8 @@ class Container implements ContainerInterface
                 ),
             TwitchManager::class => create()
                 ->constructor(
-                    get(TwitchConfig::class),
-                    get(TokenStorageInterface::class),
-                    get(GuzzleClient::class)
+                    get(RedisCache::class),
+                    get(TwitchProviderInterface::class)
                 ),
 
             // controllers

@@ -3,8 +3,7 @@ declare(strict_types=1);
 
 namespace AugmentedSteam\Server\Controllers;
 
-use AugmentedSteam\Server\Http\Param;
-use AugmentedSteam\Server\Model\Twitch\TwitchManager;
+use AugmentedSteam\Server\Data\Managers\TwitchManager;
 use IsThereAnyDeal\Database\DbDriver;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -22,14 +21,7 @@ class TwitchController extends Controller
         $this->twitchManager = $twitchManager;
     }
 
-    public function getStreamV1(ServerRequestInterface $request): ?array {
-        $channel = (new Param($request, "channel"))->string();
-
-        return $this->twitchManager
-            ->getStream($channel);
-    }
-
-    public function getStreamV2(ServerRequestInterface $request, array $params): ?array {
+    public function getStream_v2(ServerRequestInterface $request, array $params): ?array {
         return $this->twitchManager
             ->getStream($params['channel']);
     }
