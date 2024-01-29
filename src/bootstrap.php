@@ -11,11 +11,12 @@ const BIN_DIR = RELEASE_ROOT."/bin";
 
 use AugmentedSteam\Server\Config\BrightDataConfig;
 use AugmentedSteam\Server\Config\CoreConfig;
-use AugmentedSteam\Server\Config\EndpointsConfig;
-use AugmentedSteam\Server\Config\KeysConfig;
 use AugmentedSteam\Server\Config\TwitchConfig;
 use AugmentedSteam\Server\Data\Updaters\Exfgls\ExfglsConfig;
+use AugmentedSteam\Server\Endpoints\EndpointsConfig;
+use AugmentedSteam\Server\Endpoints\KeysConfig;
 use AugmentedSteam\Server\Environment\Container;
+use AugmentedSteam\Server\Lib\Redis\RedisConfig;
 use AugmentedSteam\Server\Logging\LoggingConfig;
 use IsThereAnyDeal\Config\Config;
 use IsThereAnyDeal\Database\DbConfig;
@@ -24,6 +25,7 @@ $config = new Config();
 $config->map([
     CoreConfig::class => "core",
     DbConfig::class => "db",
+    RedisConfig::class => "redis",
     LoggingConfig::class => "logging",
     KeysConfig::class => "keys",
     EndpointsConfig::class => "endpoints",

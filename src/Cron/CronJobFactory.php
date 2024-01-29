@@ -3,17 +3,16 @@ declare(strict_types=1);
 
 namespace AugmentedSteam\Server\Cron;
 
-use AugmentedSteam\Server\Config\EndpointsConfig;
-use AugmentedSteam\Server\Config\KeysConfig;
 use AugmentedSteam\Server\Data\Updaters\Exfgls\ExfglsConfig;
 use AugmentedSteam\Server\Data\Updaters\Exfgls\ExfglsUpdater;
 use AugmentedSteam\Server\Data\Updaters\HowLongToBeat\GamePageCrawler;
 use AugmentedSteam\Server\Data\Updaters\HowLongToBeat\SearchResultsCrawler;
+use AugmentedSteam\Server\Endpoints\EndpointsConfig;
+use AugmentedSteam\Server\Endpoints\KeysConfig;
 use AugmentedSteam\Server\Loader\Loader;
 use AugmentedSteam\Server\Loader\Proxy\ProxyFactoryInterface;
 use AugmentedSteam\Server\Loader\SimpleLoader;
 use AugmentedSteam\Server\Logging\LoggerFactoryInterface;
-use AugmentedSteam\Server\Model\EarlyAccessCrawler;
 use AugmentedSteam\Server\Model\Market\MarketCrawler;
 use AugmentedSteam\Server\Model\Money\RatesManager;
 use GuzzleHttp\Client;
@@ -93,18 +92,6 @@ class CronJobFactory
 
                 $loader = new Loader($logger, $this->guzzle);
                 $updater = new GamePageCrawler($this->db, $loader, $logger, $this->proxyFactory);
-                $updater->update();
-            });
-    }
-
-    public function createEarlyAccessJob(): CronJob {
-        return (new CronJob())
-            ->lock("earlyaccess", 5)
-            ->callable(function(){
-                $logger = $this->loggerFactory->create("earlyaccess");
-
-                $loader = new Loader($logger, $this->guzzle);
-                $updater = new EarlyAccessCrawler($this->db, $loader, $logger, $this->proxyFactory);
                 $updater->update();
             });
     }

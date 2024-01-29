@@ -1,8 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace AugmentedSteam\Server\Config;
+namespace AugmentedSteam\Server\Endpoints;
 
+use AugmentedSteam\Server\Config\AConfig;
 use Nette\Schema\Expect;
 use Nette\Schema\Schema;
 

@@ -3,8 +3,6 @@ namespace AugmentedSteam\Server\Environment;
 
 use AugmentedSteam\Server\Config\BrightDataConfig;
 use AugmentedSteam\Server\Config\CoreConfig;
-use AugmentedSteam\Server\Config\EndpointsConfig;
-use AugmentedSteam\Server\Config\KeysConfig;
 use AugmentedSteam\Server\Config\TwitchConfig;
 use AugmentedSteam\Server\Controllers\EarlyAccessController;
 use AugmentedSteam\Server\Controllers\GameController;
@@ -17,18 +15,26 @@ use AugmentedSteam\Server\Controllers\SimilarController;
 use AugmentedSteam\Server\Controllers\StorePageController;
 use AugmentedSteam\Server\Controllers\TwitchController;
 use AugmentedSteam\Server\Cron\CronJobFactory;
+use AugmentedSteam\Server\Data\Interfaces\EarlyAccessProviderInterface;
 use AugmentedSteam\Server\Data\Interfaces\SteamPeekProviderInterface;
 use AugmentedSteam\Server\Data\Interfaces\SteamRepProviderInterface;
 use AugmentedSteam\Server\Data\Interfaces\WSGFProviderInterface;
+use AugmentedSteam\Server\Data\Managers\EarlyAccessManager;
 use AugmentedSteam\Server\Data\Managers\ExfglsManager;
 use AugmentedSteam\Server\Data\Managers\HLTBManager;
 use AugmentedSteam\Server\Data\Managers\SteamPeekManager;
 use AugmentedSteam\Server\Data\Managers\SteamRepManager;
 use AugmentedSteam\Server\Data\Managers\WSGFManager;
+use AugmentedSteam\Server\Data\Providers\EarlyAccessProvider;
 use AugmentedSteam\Server\Data\Providers\SteamPeekProvider;
 use AugmentedSteam\Server\Data\Providers\SteamRepProvider;
 use AugmentedSteam\Server\Data\Providers\WSGFProvider;
 use AugmentedSteam\Server\Data\Updaters\Exfgls\ExfglsConfig;
+use AugmentedSteam\Server\Endpoints\EndpointBuilder;
+use AugmentedSteam\Server\Endpoints\EndpointsConfig;
+use AugmentedSteam\Server\Endpoints\KeysConfig;
+use AugmentedSteam\Server\Lib\Redis\RedisClient;
+use AugmentedSteam\Server\Lib\Redis\RedisConfig;
 use AugmentedSteam\Server\Loader\Proxy\ProxyFactory;
 use AugmentedSteam\Server\Loader\Proxy\ProxyFactoryInterface;
 use AugmentedSteam\Server\Loader\SimpleLoader;
@@ -36,7 +42,6 @@ use AugmentedSteam\Server\Logging\LoggerFactory;
 use AugmentedSteam\Server\Logging\LoggerFactoryInterface;
 use AugmentedSteam\Server\Logging\LoggingConfig;
 use AugmentedSteam\Server\Model\Cache\Cache;
-use AugmentedSteam\Server\Model\EarlyAccess\EarlyAccessManager;
 use AugmentedSteam\Server\Model\Market\MarketManager;
 use AugmentedSteam\Server\Model\Prices\PricesManager;
 use AugmentedSteam\Server\Model\Reviews\ReviewsManager;
@@ -104,6 +109,7 @@ class Container implements ContainerInterface
             // config
             CoreConfig::class => fn(ContainerInterface $c) => $this->config->getConfig(CoreConfig::class),
             DbConfig::class => fn(ContainerInterface $c) => $this->config->getConfig(DbConfig::class),
+            RedisConfig::class => fn(ContainerInterface $c) => $this->config->getConfig(RedisConfig::class),
             LoggingConfig::class => fn(ContainerInterface $c) => $this->config->getConfig(LoggingConfig::class),
             KeysConfig::class => fn(ContainerInterface $c) => $this->config->getConfig(KeysConfig::class),
             EndpointsConfig::class => fn(ContainerInterface $c) => $this->config->getConfig(EndpointsConfig::class),
@@ -113,6 +119,8 @@ class Container implements ContainerInterface
 
             // db
             DbDriver::class => fn(ContainerInterface $c) => DbFactory::getDatabase($c->get(DbConfig::class)),
+            RedisClient::class => create(RedisClient::class)
+                ->constructor(RedisConfig::class),
 
             // libraries
             GuzzleClient::class => create(GuzzleClient::class),
@@ -176,6 +184,12 @@ class Container implements ContainerInterface
                 $c->get(LoggerFactoryInterface::class)->logger("steampeek")
             ),
 
+            EarlyAccessProviderInterface::class => create(EarlyAccessProvider::class)
+                ->constructor(
+                    get(SimpleLoader::class),
+                    get(EndpointBuilder::class)
+                ),
+
             // managers
 
             MarketManager::class => create()
@@ -236,7 +250,8 @@ class Container implements ContainerInterface
                 ),
             EarlyAccessManager::class => create()
                 ->constructor(
-                    get(DbDriver::class)
+                    get(RedisClient::class),
+                    get(EarlyAccessProviderInterface::class)
                 ),
             TwitchManager::class => create()
                 ->constructor(
