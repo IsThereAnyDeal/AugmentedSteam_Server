@@ -25,7 +25,6 @@ abstract class ApiException extends BadRequestException {
 
         if ($response->getBody()->isWritable()) {
             $response->getBody()->write(json_encode([
-                "result" => "error",
                 "error" => $this->errorCode,
                 "error_description" => $this->errorMessage,
                 "status_code"   => $this->status,

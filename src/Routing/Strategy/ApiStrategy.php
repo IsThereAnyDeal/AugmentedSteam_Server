@@ -79,10 +79,7 @@ class ApiStrategy extends JsonStrategy implements ContainerAwareInterface
         $response = $controller($request, $route->getVars());
 
         if ($this->isJsonSerializable($response)) {
-            $body = json_encode([
-                "result" => "success",
-                "data" => $response
-            ], $this->jsonFlags | JSON_THROW_ON_ERROR);
+            $body = json_encode($response, $this->jsonFlags | JSON_THROW_ON_ERROR);
             $response = $this->responseFactory->createResponse();
             $response->getBody()->write($body);
         }
