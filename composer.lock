@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e52d0f1074fabc5a17734ed896e2f3ce",
+    "content-hash": "b11d8a8582f2f5a6ed05026e7be081a6",
     "packages": [
         {
             "name": "filp/whoops",
@@ -485,43 +485,41 @@
             "time": "2024-01-02T22:56:33+00:00"
         },
         {
-            "name": "itad/twitch-api",
-            "version": "v0.1.1",
+            "name": "itad/deby",
+            "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/IsThereAnyDeal/TwitchApi.git",
-                "reference": "90ad6fe7a5fe341922b6c766c89ede2b73d3f822"
+                "url": "git@github.com:IsThereAnyDeal/Deby.git",
+                "reference": "22a97d18be5fa0596c1a74bd66e2c56069fddc63"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/IsThereAnyDeal/TwitchApi/zipball/90ad6fe7a5fe341922b6c766c89ede2b73d3f822",
-                "reference": "90ad6fe7a5fe341922b6c766c89ede2b73d3f822",
+                "url": "https://api.github.com/repos/IsThereAnyDeal/Deby/zipball/22a97d18be5fa0596c1a74bd66e2c56069fddc63",
+                "reference": "22a97d18be5fa0596c1a74bd66e2c56069fddc63",
                 "shasum": ""
             },
             "require": {
-                "ext-json": "*",
-                "guzzlehttp/guzzle": "^7.4"
+                "ext-ds": "*",
+                "vanilla/garden-cli": "^4.0"
             },
             "require-dev": {
-                "phpstan/phpstan": "^1.4"
+                "phpstan/phpstan": "^1.10"
             },
+            "default-branch": true,
+            "bin": [
+                "bin/deby"
+            ],
             "type": "library",
             "autoload": {
                 "psr-4": {
-                    "IsThereAnyDeal\\Twitch\\Api\\": "src"
+                    "IsThereAnyDeal\\Tools\\Deby\\": "src/"
                 }
             },
-            "scripts": {
-                "phpstan": [
-                    "vendor/bin/phpstan analyse -c phpstan.neon"
-                ]
-            },
             "support": {
-                "source": "https://github.com/IsThereAnyDeal/TwitchApi/tree/v0.1.1",
-                "issues": "https://github.com/IsThereAnyDeal/TwitchApi/issues"
+                "source": "https://github.com/IsThereAnyDeal/Deby/tree/master",
+                "issues": "https://github.com/IsThereAnyDeal/Deby/issues"
             },
-            "abandoned": true,
-            "time": "2022-02-10T03:14:43+00:00"
+            "time": "2024-01-28T02:05:06+00:00"
         },
         {
             "name": "jean85/pretty-package-versions",
@@ -2275,16 +2273,16 @@
         },
         {
             "name": "sentry/sentry",
-            "version": "4.4.0",
+            "version": "4.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/getsentry/sentry-php.git",
-                "reference": "95a428a59ebddf786a27f09d19ec395a32f62082"
+                "reference": "a6e06f0b7a17e7f68e11297427da76bfe01a3ca3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/getsentry/sentry-php/zipball/95a428a59ebddf786a27f09d19ec395a32f62082",
-                "reference": "95a428a59ebddf786a27f09d19ec395a32f62082",
+                "url": "https://api.github.com/repos/getsentry/sentry-php/zipball/a6e06f0b7a17e7f68e11297427da76bfe01a3ca3",
+                "reference": "a6e06f0b7a17e7f68e11297427da76bfe01a3ca3",
                 "shasum": ""
             },
             "require": {
@@ -2348,7 +2346,7 @@
             ],
             "support": {
                 "issues": "https://github.com/getsentry/sentry-php/issues",
-                "source": "https://github.com/getsentry/sentry-php/tree/4.4.0"
+                "source": "https://github.com/getsentry/sentry-php/tree/4.5.0"
             },
             "funding": [
                 {
@@ -2360,7 +2358,7 @@
                     "type": "custom"
                 }
             ],
-            "time": "2024-01-23T09:49:55+00:00"
+            "time": "2024-01-29T16:16:10+00:00"
         },
         {
             "name": "symfony/deprecation-contracts",
@@ -2495,6 +2493,61 @@
                 }
             ],
             "time": "2023-08-08T10:20:21+00:00"
+        },
+        {
+            "name": "vanilla/garden-cli",
+            "version": "v4.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/vanilla/garden-cli.git",
+                "reference": "e7e2f655b04661e9808ec7d51a381176e9bc981d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/vanilla/garden-cli/zipball/e7e2f655b04661e9808ec7d51a381176e9bc981d",
+                "reference": "e7e2f655b04661e9808ec7d51a381176e9bc981d",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "php": ">=8.1",
+                "psr/log": "^3.0"
+            },
+            "require-dev": {
+                "ergebnis/composer-normalize": "^2.8",
+                "phpdocumentor/reflection-docblock": "^5.3",
+                "phpunit/phpunit": "^8",
+                "vanilla/garden-container": "^3.0",
+                "vanilla/standards": "^1.3",
+                "vimeo/psalm": "^4.0"
+            },
+            "suggest": {
+                "ext-pdo": "Required for the DbUtils class.",
+                "phpdocumentor/reflection-docblock": "Required for the CliApplication functionality.",
+                "vanilla/garden-container": "Required for the CliApplication functionality."
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Garden\\Cli\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Todd Burry",
+                    "email": "todd@vanillaforums.com"
+                }
+            ],
+            "description": "A full-featured, yet ridiculously simple commandline parser for your next php cli script. Stop fighting with getopt().",
+            "support": {
+                "issues": "https://github.com/vanilla/garden-cli/issues",
+                "source": "https://github.com/vanilla/garden-cli/tree/v4.0"
+            },
+            "time": "2023-01-24T20:33:46+00:00"
         }
     ],
     "packages-dev": [
@@ -2613,7 +2666,8 @@
     "minimum-stability": "stable",
     "stability-flags": {
         "itad/config": 20,
-        "itad/db": 20
+        "itad/db": 20,
+        "itad/deby": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,
