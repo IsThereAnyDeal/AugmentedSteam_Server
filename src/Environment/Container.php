@@ -16,6 +16,7 @@ use AugmentedSteam\Server\Controllers\TwitchController;
 use AugmentedSteam\Server\Cron\CronJobFactory;
 use AugmentedSteam\Server\Data\Interfaces\EarlyAccessProviderInterface;
 use AugmentedSteam\Server\Data\Interfaces\GameIdsProviderInterface;
+use AugmentedSteam\Server\Data\Interfaces\PlayersProviderInterface;
 use AugmentedSteam\Server\Data\Interfaces\PricesProviderInterface;
 use AugmentedSteam\Server\Data\Interfaces\SteamPeekProviderInterface;
 use AugmentedSteam\Server\Data\Interfaces\SteamRepProviderInterface;
@@ -31,6 +32,7 @@ use AugmentedSteam\Server\Data\Managers\TwitchManager;
 use AugmentedSteam\Server\Data\Managers\WSGFManager;
 use AugmentedSteam\Server\Data\Providers\EarlyAccessProvider;
 use AugmentedSteam\Server\Data\Providers\GameIdsProvider;
+use AugmentedSteam\Server\Data\Providers\PlayersProvider;
 use AugmentedSteam\Server\Data\Providers\PricesProvider;
 use AugmentedSteam\Server\Data\Providers\SteamPeekProvider;
 use AugmentedSteam\Server\Data\Providers\SteamRepProvider;
@@ -52,7 +54,6 @@ use AugmentedSteam\Server\Logging\LoggingConfig;
 use AugmentedSteam\Server\Model\Cache\Cache;
 use AugmentedSteam\Server\Model\Market\MarketManager;
 use AugmentedSteam\Server\Model\Reviews\ReviewsManager;
-use AugmentedSteam\Server\Model\StorePage\SteamChartsManager;
 use AugmentedSteam\Server\Model\StorePage\SteamSpyManager;
 use AugmentedSteam\Server\Model\User\UserManager;
 use AugmentedSteam\Server\OpenId\Session;
@@ -210,6 +211,12 @@ class Container implements ContainerInterface
                     get(EndpointBuilder::class)
                 ),
 
+            PlayersProviderInterface::class => create(PlayersProvider::class)
+                ->constructor(
+                    get(SimpleLoader::class),
+                    get(EndpointBuilder::class)
+                ),
+
             // managers
 
             MarketManager::class => create()
@@ -220,13 +227,6 @@ class Container implements ContainerInterface
                 ->constructor(
                     get(DbDriver::class),
                     get(SteamRepProviderInterface::class)
-                ),
-            SteamChartsManager::class => create()
-                ->constructor(
-                    get(DbDriver::class),
-                    get(SimpleLoader::class),
-                    get(LoggerFactoryInterface::class),
-                    get(EndpointsConfig::class)
                 ),
             SteamSpyManager::class => create()
                 ->constructor(
@@ -316,7 +316,6 @@ class Container implements ContainerInterface
                 ->constructor(
                     get(ResponseFactoryInterface::class),
                     get(DbDriver::class),
-                    get(SteamChartsManager::class),
                     get(SteamSpyManager::class),
                     get(WSGFManager::class),
                     get(ExfglsManager::class),
@@ -335,7 +334,8 @@ class Container implements ContainerInterface
                 ->constructor(
                     get(ResponseFactoryInterface::class),
                     get(DbDriver::class),
-                    get(PricesManager::class)
+                    get(GameIdsProviderInterface::class),
+                    get(PricesProviderInterface::class)
                 ),
 
             EarlyAccessController::class => create()

@@ -13,7 +13,6 @@ class EndpointsConfig extends AConfig
         return Expect::structure([
             "wsgf" => Expect::string()->required(),
             "steamspy" => Expect::string()->required(),
-            "steamcharts" => Expect::string()->required(),
             "steamrep" => Expect::string()->required(),
             "steampeek" => Expect::string()->required(),
             "itad" => Expect::string()->required()
@@ -26,10 +25,6 @@ class EndpointsConfig extends AConfig
 
     public function getSteamSpyEndpoint(int $appid): string {
         return sprintf($this->config->steamspy, $appid);
-    }
-
-    public function getSteamChartsEndpoint(int $appid): string {
-        return sprintf($this->config->steamcharts, $appid);
     }
 
     public function getSteamRepEndpoint(): string {

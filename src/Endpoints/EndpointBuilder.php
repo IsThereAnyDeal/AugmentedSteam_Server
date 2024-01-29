@@ -48,6 +48,12 @@ class EndpointBuilder
     public function getTwitchStream(string $channel): string {
         $host = $this->endpoints->getIsThereAnyDealApiHost();
         $key = $this->keys->getIsThereAnyDealApiKey();
-        return $host."/internal/twitch/{$channel}/stream/v2?key={$key}";
+        return $host."/internal/twitch/{$channel}/stream/v1?key={$key}";
+    }
+
+    public function getPlayers(int $appid): string {
+        $host = $this->endpoints->getIsThereAnyDealApiHost();
+        $key = $this->keys->getIsThereAnyDealApiKey();
+        return $host."/internal/players/{$appid}/v1?key={$key}";
     }
 }
