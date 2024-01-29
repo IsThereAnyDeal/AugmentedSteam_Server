@@ -16,16 +16,22 @@ use AugmentedSteam\Server\Controllers\StorePageController;
 use AugmentedSteam\Server\Controllers\TwitchController;
 use AugmentedSteam\Server\Cron\CronJobFactory;
 use AugmentedSteam\Server\Data\Interfaces\EarlyAccessProviderInterface;
+use AugmentedSteam\Server\Data\Interfaces\GameIdsProviderInterface;
+use AugmentedSteam\Server\Data\Interfaces\PricesProviderInterface;
 use AugmentedSteam\Server\Data\Interfaces\SteamPeekProviderInterface;
 use AugmentedSteam\Server\Data\Interfaces\SteamRepProviderInterface;
 use AugmentedSteam\Server\Data\Interfaces\WSGFProviderInterface;
 use AugmentedSteam\Server\Data\Managers\EarlyAccessManager;
 use AugmentedSteam\Server\Data\Managers\ExfglsManager;
+use AugmentedSteam\Server\Data\Managers\GameIdsManager;
 use AugmentedSteam\Server\Data\Managers\HLTBManager;
+use AugmentedSteam\Server\Data\Managers\PricesManager;
 use AugmentedSteam\Server\Data\Managers\SteamPeekManager;
 use AugmentedSteam\Server\Data\Managers\SteamRepManager;
 use AugmentedSteam\Server\Data\Managers\WSGFManager;
 use AugmentedSteam\Server\Data\Providers\EarlyAccessProvider;
+use AugmentedSteam\Server\Data\Providers\GameIdsProvider;
+use AugmentedSteam\Server\Data\Providers\PricesProvider;
 use AugmentedSteam\Server\Data\Providers\SteamPeekProvider;
 use AugmentedSteam\Server\Data\Providers\SteamRepProvider;
 use AugmentedSteam\Server\Data\Providers\WSGFProvider;
@@ -43,7 +49,6 @@ use AugmentedSteam\Server\Logging\LoggerFactoryInterface;
 use AugmentedSteam\Server\Logging\LoggingConfig;
 use AugmentedSteam\Server\Model\Cache\Cache;
 use AugmentedSteam\Server\Model\Market\MarketManager;
-use AugmentedSteam\Server\Model\Prices\PricesManager;
 use AugmentedSteam\Server\Model\Reviews\ReviewsManager;
 use AugmentedSteam\Server\Model\StorePage\SteamChartsManager;
 use AugmentedSteam\Server\Model\StorePage\SteamSpyManager;
@@ -189,6 +194,18 @@ class Container implements ContainerInterface
                     get(EndpointBuilder::class)
                 ),
 
+            GameIdsProviderInterface::class => create(GameIdsProvider::class)
+                ->constructor(
+                    get(GuzzleClient::class),
+                    get(EndpointBuilder::class)
+                ),
+
+            PricesProviderInterface::class => create(PricesProvider::class)
+                ->constructor(
+                    get(GuzzleClient::class),
+                    get(EndpointBuilder::class)
+                ),
+
             // managers
 
             MarketManager::class => create()
@@ -241,11 +258,10 @@ class Container implements ContainerInterface
                     get(Cache::class),
                     get(SteamRepProviderInterface::class)
                 ),
-            PricesManager::class => create()
+            GameIdsManager::class => create()
                 ->constructor(
-                    get(SimpleLoader::class),
-                    get(EndpointsConfig::class),
-                    get(KeysConfig::class)
+                    get(RedisClient::class),
+                    get(GameIdsProviderInterface::class)
                 ),
             EarlyAccessManager::class => create()
                 ->constructor(

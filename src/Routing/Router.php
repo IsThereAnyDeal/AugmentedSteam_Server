@@ -90,7 +90,7 @@ class Router
         $router->get("/app/{appid:\d+}/v2", [StorePageController::class, "getAppInfo_v2"]);
 
         $router->get("/similar/{appid:\d+}/v2", [SimilarController::class, "getSimilar_v2"]);
-        $router->get("/v2/prices/", [PricesController::class, "getPricesV2"]);
+        $router->get("/prices/v2", [PricesController::class, "getPrices_v2"]);
         $router->get("/earlyaccess/v1", [EarlyAccessController::class, "getAppids_v1"]);
 
         $router->get("/v2/twitch/{channel}/stream/", [TwitchController::class, "getStreamV2"]);
