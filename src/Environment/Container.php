@@ -92,7 +92,8 @@ class Container implements ContainerInterface
             // ->enableCompilation()
             // ->writeProxiesToFile()
             ->useAutowiring(false)
-            ->useAttributes(false);
+            ->useAttributes(false)
+            ->build();
     }
 
     /**

@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace AugmentedSteam\Server\Routing\Strategy;
 
+use AugmentedSteam\Server\Config\CoreConfig;
 use League\Route\ContainerAwareInterface;
 use League\Route\Http;
 use League\Route\Route;
@@ -16,8 +17,15 @@ use Throwable;
 
 class ApiStrategy extends JsonStrategy implements ContainerAwareInterface
 {
-    public function __construct(ResponseFactoryInterface $responseFactory, int $jsonFlags=0) {
+    private readonly bool $isDev;
+
+    public function __construct(
+        CoreConfig $config,
+        ResponseFactoryInterface $responseFactory,
+        int $jsonFlags=0
+    ) {
         parent::__construct($responseFactory, $jsonFlags);
+        $this->isDev = $config->isDev();
 
         $this->addResponseDecorator(static function (ResponseInterface $response): ResponseInterface {
             if (false === $response->hasHeader("access-control-allow-origin")) {
@@ -28,10 +36,11 @@ class ApiStrategy extends JsonStrategy implements ContainerAwareInterface
     }
 
     public function getThrowableHandler(): MiddlewareInterface {
-        return new class ($this->responseFactory->createResponse()) implements MiddlewareInterface
+        return new class ($this->responseFactory->createResponse(), $this->isDev) implements MiddlewareInterface
         {
             public function __construct(
-                private ResponseInterface $response
+                private readonly ResponseInterface $response,
+                private readonly bool $isDev
             ) {}
 
             public function process(
@@ -40,13 +49,18 @@ class ApiStrategy extends JsonStrategy implements ContainerAwareInterface
             ): ResponseInterface {
                 try {
                     return $handler->handle($request);
-                } catch (Throwable $exception) {
-                    $response = $this->response;
-
-                    if ($exception instanceof Http\Exception) {
-                        return $exception->buildJsonResponse($response);
+                } catch (Throwable $e) {
+                    if ($this->isDev) {
+                        throw $e;
                     }
 
+                    $response = $this->response;
+
+                    if ($e instanceof Http\Exception) {
+                        return $e->buildJsonResponse($response);
+                    }
+
+                    \Sentry\captureException($e);
                     $response->getBody()->write(json_encode([
                         "status_code"   => 500,
                         "reason_phrase" => "Internal Server Error"

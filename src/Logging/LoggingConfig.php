@@ -13,18 +13,13 @@ class LoggingConfig
     /**
      * @param array<string, mixed> $config
      */
-    protected function __construct(array $config) {
+    public function __construct(array $config) {
         $this->config = (new Processor())->process(Expect::structure([
-            "enabled" => Expect::bool(true),
-            "maxFiles" => Expect::int(14)
+            "enabled" => Expect::bool(true)
         ]), $config);
     }
 
     public function isEnabled(): bool {
         return $this->config->enabled;
-    }
-
-    public function getMaxFiles(): int {
-        return $this->config->maxFiles;
     }
 }

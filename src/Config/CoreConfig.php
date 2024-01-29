@@ -20,7 +20,7 @@ class CoreConfig
                 "enabled" => Expect::bool(false),
                 "dsn" => Expect::string(),
                 "environment" => Expect::string()
-            ])->default([])
+            ])
         ]), $config);
     }
 
@@ -41,7 +41,7 @@ class CoreConfig
     }
 
     public function usePrettyErrors(): bool {
-        return $this->config->errors;
+        return $this->config->prettyErrors;
     }
 
     public function isSentryEnabled(): bool {

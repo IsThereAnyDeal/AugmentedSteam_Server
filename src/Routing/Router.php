@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace AugmentedSteam\Server\Routing;
 
+use AugmentedSteam\Server\Config\CoreConfig;
 use AugmentedSteam\Server\Controllers\EarlyAccessController;
 use AugmentedSteam\Server\Controllers\GameController;
 use AugmentedSteam\Server\Controllers\MarketController;
@@ -12,7 +13,6 @@ use AugmentedSteam\Server\Controllers\ProfileManagementController;
 use AugmentedSteam\Server\Controllers\RatesController;
 use AugmentedSteam\Server\Controllers\SimilarController;
 use AugmentedSteam\Server\Controllers\StorePageController;
-use AugmentedSteam\Server\Controllers\SurveyController;
 use AugmentedSteam\Server\Controllers\TwitchController;
 use AugmentedSteam\Server\Environment\Container;
 use AugmentedSteam\Server\Logging\LoggerFactoryInterface;
@@ -99,6 +99,7 @@ class Router
     public function route(Container $container): void {
 
         $strategy = new ApiStrategy(
+            $container->get(CoreConfig::class),
             $container->get(ResponseFactoryInterface::class)
         );
         $strategy->setContainer($container);
