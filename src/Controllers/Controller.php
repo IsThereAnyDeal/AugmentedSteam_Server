@@ -1,16 +1,25 @@
 <?php
 namespace AugmentedSteam\Server\Controllers;
 
-use IsThereAnyDeal\Database\DbDriver;
-use Psr\Http\Message\ResponseFactoryInterface;
+use League\Route\Http\Exception\BadRequestException;
 
 abstract class Controller
 {
-    protected ResponseFactoryInterface $responseFactory;
-    protected DbDriver $db;
-
-    public function __construct(ResponseFactoryInterface $responseFactory, DbDriver $db) {
-        $this->responseFactory = $responseFactory;
-        $this->db = $db;
+    /**
+     * @param array<mixed> $data
+     * @return list<int>
+     */
+    protected function validateIntList(array $data, string $key): array {
+        if (isset($data[$key])) {
+            if (!is_array($data[$key]) || !array_is_list($data[$key])) {
+                throw new BadRequestException();
+            }
+            foreach($data[$key] as $value) {
+                if (!is_int($value)) {
+                    throw new BadRequestException();
+                }
+            }
+        }
+        return $data[$key] ?? [];
     }
 }

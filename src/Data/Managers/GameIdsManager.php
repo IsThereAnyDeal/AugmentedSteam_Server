@@ -51,6 +51,6 @@ class GameIdsManager
             $this->redis->expire($gameMapKey, self::CacheExpiry, "NX");
         }
 
-        return $ids;
+        return $idMap;
     }
 }

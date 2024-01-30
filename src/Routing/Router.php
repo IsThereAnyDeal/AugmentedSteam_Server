@@ -29,7 +29,7 @@ class Router
 
         $router->get("/rates/v1", [RatesController::class, "getRates_v1"]);
         $router->get("/early-access/v1", [EarlyAccessController::class, "getAppids_v1"]);
-
+        $router->post("/prices/v2", [PricesController::class, "prices_v2"]);
 
         $router->get("/dlcinfo/v2", [GameController::class, "getDlcInfo_v2"]);
 
@@ -51,7 +51,6 @@ class Router
         $router->get("/app/{appid:\d+}/v2", [StorePageController::class, "getAppInfo_v2"]);
 
         $router->get("/similar/{appid:\d+}/v2", [SimilarController::class, "getSimilar_v2"]);
-        $router->get("/prices/v2", [PricesController::class, "getPrices_v2"]);
 
         $router->get("/v2/twitch/{channel}/stream/", [TwitchController::class, "getStream_v2"]);
     }

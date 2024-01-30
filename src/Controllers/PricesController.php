@@ -5,33 +5,38 @@ use AugmentedSteam\Server\Data\Interfaces\PricesProviderInterface;
 use AugmentedSteam\Server\Data\Managers\GameIdsManager;
 use AugmentedSteam\Server\Http\ListParam;
 use AugmentedSteam\Server\Http\StringParam;
-use IsThereAnyDeal\Database\DbDriver;
 use League\Route\Http\Exception\BadRequestException;
-use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 class PricesController extends Controller {
 
     public function __construct(
-        ResponseFactoryInterface $responseFactory,
-        DbDriver $db,
         private readonly GameIdsManager $gameIdsManager,
         private readonly PricesProviderInterface $pricesProvider
-    ) {
-        parent::__construct($responseFactory, $db);
-    }
+    ) {}
 
-    public function getPrices_v2(ServerRequestInterface $request): ?array {
-        $country = (new StringParam($request, "country"))->value();
-        $shops = (new ListParam($request, "shops", default: []))->value();
-        $appids = (new ListParam($request, "appids", default: []))->value();
-        $subids = (new ListParam($request, "subids", default: []))->value();
-        $bundleids = (new ListParam($request, "bundleids", default: []))->value();
+    public function prices_v2(ServerRequestInterface $request): ?array {
+        $data = $request->getBody()->getContents();
+        if (!json_validate($data)) {
+            throw new BadRequestException();
+        }
+
+        $params = json_decode($data, true, flags: JSON_THROW_ON_ERROR);
+        if (!isset($params['country']) || !is_string($params['country'])) {
+            throw new BadRequestException();
+        }
+
+        $country = $params['country'];
+        $shops = $this->validateIntList($params, "shops");
+        $apps = $this->validateIntList($params, "apps");
+        $subs = $this->validateIntList($params, "subs");
+        $bundles = $this->validateIntList($params, "bundles");
+        $voucher = filter_var($params['voucher'] ?? true, FILTER_VALIDATE_BOOLEAN);
 
         $ids = array_merge(
-            array_map(fn($id) => "app/$id", array_filter($appids)),
-            array_map(fn($id) => "sub/$id", array_filter($subids)),
-            array_map(fn($id) => "bundle/$id", array_filter($bundleids)),
+            array_map(fn($id) => "app/$id", array_filter($apps)),
+            array_map(fn($id) => "sub/$id", array_filter($subs)),
+            array_map(fn($id) => "bundle/$id", array_filter($bundles)),
         );
 
         if (count($ids) == 0) {
@@ -40,14 +45,23 @@ class PricesController extends Controller {
 
         $map = $this->gameIdsManager->getIdMap($ids);
         $gids = array_values($map);
-        $prices = $this->pricesProvider->fetch($gids, $shops, $country);
+        $gidMap = array_flip($map);
+
+        $overview = $this->pricesProvider->fetch($gids, $shops, $country);
 
         $result = [];
-        /* TODO finish results
-        foreach($map as $steamId => $gid) {
-            $result[$steamId] = $prices[$gid] ?? null;
+        foreach($overview['prices'] as $game) {
+            $steamId = $gidMap[$game['id']];
+            $result['prices'][$steamId] = [
+                "current" => $game['current'],
+                "lowest" => $game['lowest'],
+                "urls" => [
+                    "info" => "https://isthereanydeal.com/game/id:{$game['id']}/info/",
+                    "history" => "https://isthereanydeal.com/game/id:{$game['id']}/history/",
+                ]
+            ];
         }
-        */
+        $result['bundles'] = $overview['bundles'];
         return $result;
     }
 }
