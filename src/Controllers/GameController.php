@@ -5,23 +5,31 @@ namespace AugmentedSteam\Server\Controllers;
 
 use AugmentedSteam\Server\Database\TDlcCategories;
 use AugmentedSteam\Server\Database\TGameDlc;
-use AugmentedSteam\Server\Http\IntParam;
 use AugmentedSteam\Server\Model\DataObjects\DDlcCategories;
+use IsThereAnyDeal\Database\DbDriver;
 use Psr\Http\Message\ServerRequestInterface;
 
 class GameController extends Controller
 {
+    public function __construct(
+        private readonly DbDriver $db
+    ) {}
+
     /**
-     * return list<array{id: number, name: string, description: string}>
+     * @param array{appid: numeric-string} $params
+     * @return list<array{id: number, name: string, description: string}>
      */
-    public function getDlcInfo_v2(ServerRequestInterface $request): array {
-        $appid = (new IntParam($request, "appid"))->value();
+    public function dlcInfo_v2(ServerRequestInterface $request, array $params): array {
+        $appid = intval($params['appid']);
+        if (empty($appid)) {
+            return [];
+        }
 
         $g = new TGameDlc();
         $d = new TDlcCategories();
 
         return $this->db->select(<<<SQL
-            SELECT $d->id, $d->name, $d->description
+            SELECT $d->id, $d->name, $d->description, $d->icon
             FROM $g
             JOIN $d ON $g->dlc_category=$d->id
             WHERE $g->appid=:appid
@@ -35,6 +43,7 @@ class GameController extends Controller
                 "id" => $o->getId(),
                 "name" => $o->getName(),
                 "description" => $o->getDescription(),
+                "icon" => $o->getIcon()
             ]);
     }
 }
