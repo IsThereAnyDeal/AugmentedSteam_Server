@@ -5,22 +5,16 @@ use AugmentedSteam\Server\Data\Managers\SteamPeekManager;
 use AugmentedSteam\Server\Data\Objects\SteamPeekGame;
 use AugmentedSteam\Server\Http\BoolParam;
 use AugmentedSteam\Server\Http\IntParam;
-use IsThereAnyDeal\Database\DbDriver;
-use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 class SimilarController extends Controller {
 
     public function __construct(
-        ResponseFactoryInterface $responseFactory,
-        DbDriver $db,
         private readonly SteamPeekManager $steamPeekManager
-    ) {
-        parent::__construct($responseFactory, $db);
-    }
+    ) {}
 
     public function getSimilar_v2(ServerRequestInterface $request, array $params): array {
-        $appid = (int)$params['appid'];
+        $appid = intval($params['appid']);
         $count = (new IntParam($request, "count", 5))->value();
         $shuffle = (new BoolParam($request, "shuffle", false))->value();
 
