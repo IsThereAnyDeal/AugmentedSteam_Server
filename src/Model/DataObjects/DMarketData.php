@@ -3,22 +3,19 @@ declare(strict_types=1);
 
 namespace AugmentedSteam\Server\Model\DataObjects;
 
-use IsThereAnyDeal\Database\Sql\AInsertableObject;
-use IsThereAnyDeal\Database\Sql\ISelectable;
-
-class DMarketData extends AInsertableObject implements ISelectable
+class DMarketData
 {
-    protected string $hash_name;
-    protected int $appid;
-    protected string $appname;
-    protected string $name;
-    protected int $sell_listings;
-    protected int $sell_price_usd;
-    protected string $img;
-    protected string $url;
-    protected string $type;
-    protected string $rarity;
-    protected int $timestamp;
+    private string $hash_name;
+    private int $appid;
+    private string $appname;
+    private string $name;
+    private int $sell_listings;
+    private int $sell_price_usd;
+    private string $img;
+    private string $url;
+    private string $type;
+    private string $rarity;
+    private int $timestamp;
 
     public function getHashName(): string {
         return $this->hash_name;

@@ -3,14 +3,11 @@ declare(strict_types=1);
 
 namespace AugmentedSteam\Server\Model\DataObjects;
 
-use IsThereAnyDeal\Database\Sql\AInsertableObject;
-use IsThereAnyDeal\Database\Sql\ISelectable;
-
-class DBadges extends AInsertableObject implements ISelectable
+class DBadges
 {
-    protected int $id;
-    protected string $title;
-    protected string $img;
+    private int $id;
+    private string $title;
+    private string $img;
 
     public function getId(): int {
         return $this->id;

@@ -3,15 +3,12 @@ declare(strict_types=1);
 
 namespace AugmentedSteam\Server\Model\DataObjects;
 
-use IsThereAnyDeal\Database\Sql\AInsertableObject;
-use IsThereAnyDeal\Database\Sql\ISelectable;
-
-class DMarketIndex extends AInsertableObject implements ISelectable
+class DMarketIndex
 {
-    protected int $appid;
-    protected int $last_update;
-    protected int $last_request;
-    protected int $request_counter;
+    private int $appid;
+    private int $last_update;
+    private int $last_request;
+    private int $request_counter;
 
     public function getAppid(): int {
         return $this->appid;
