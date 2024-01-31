@@ -29,7 +29,7 @@ class EndpointBuilder
     public function getSteamIdLookup(): string {
         $host = $this->endpoints->getIsThereAnyDealApiHost();
         $key = $this->keys->getIsThereAnyDealApiKey();
-        return $host."/internal/steam-lookup/v1?key={$key}";
+        return $host."/unstable/id-lookup/game/v1?key={$key}";
     }
 
     /**

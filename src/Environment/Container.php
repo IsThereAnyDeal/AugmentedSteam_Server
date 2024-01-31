@@ -281,11 +281,6 @@ class Container implements ContainerInterface
                     get(Cache::class),
                     get(SteamRepProviderInterface::class)
                 ),
-            GameIdsManager::class => create()
-                ->constructor(
-                    get(RedisClient::class),
-                    get(GameIdsProviderInterface::class)
-                ),
             TwitchManager::class => create()
                 ->constructor(
                     get(RedisCache::class),

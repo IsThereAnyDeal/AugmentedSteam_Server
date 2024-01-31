@@ -2,20 +2,17 @@
 namespace AugmentedSteam\Server\Controllers;
 
 use AugmentedSteam\Server\Data\Interfaces\PricesProviderInterface;
-use AugmentedSteam\Server\Data\Managers\GameIdsManager;
-use AugmentedSteam\Server\Http\ListParam;
-use AugmentedSteam\Server\Http\StringParam;
+use JsonSerializable;
 use League\Route\Http\Exception\BadRequestException;
 use Psr\Http\Message\ServerRequestInterface;
 
 class PricesController extends Controller {
 
     public function __construct(
-        private readonly GameIdsManager $gameIdsManager,
         private readonly PricesProviderInterface $pricesProvider
     ) {}
 
-    public function prices_v2(ServerRequestInterface $request): ?array {
+    public function prices_v2(ServerRequestInterface $request): array|JsonSerializable|null {
         $data = $request->getBody()->getContents();
         if (!json_validate($data)) {
             throw new BadRequestException();
@@ -31,7 +28,7 @@ class PricesController extends Controller {
         $apps = $this->validateIntList($params, "apps");
         $subs = $this->validateIntList($params, "subs");
         $bundles = $this->validateIntList($params, "bundles");
-        $voucher = filter_var($params['voucher'] ?? true, FILTER_VALIDATE_BOOLEAN);
+        $voucher = filter_var($params['voucher'] ?? true, FILTER_VALIDATE_BOOLEAN); // TODO unused right now
 
         $ids = array_merge(
             array_map(fn($id) => "app/$id", array_filter($apps)),
@@ -43,25 +40,7 @@ class PricesController extends Controller {
             throw new BadRequestException();
         }
 
-        $map = $this->gameIdsManager->getIdMap($ids);
-        $gids = array_values($map);
-        $gidMap = array_flip($map);
-
-        $overview = $this->pricesProvider->fetch($gids, $shops, $country);
-
-        $result = [];
-        foreach($overview['prices'] as $game) {
-            $steamId = $gidMap[$game['id']];
-            $result['prices'][$steamId] = [
-                "current" => $game['current'],
-                "lowest" => $game['lowest'],
-                "urls" => [
-                    "info" => "https://isthereanydeal.com/game/id:{$game['id']}/info/",
-                    "history" => "https://isthereanydeal.com/game/id:{$game['id']}/history/",
-                ]
-            ];
-        }
-        $result['bundles'] = $overview['bundles'];
-        return $result;
+        $overview = $this->pricesProvider->fetch($ids, $shops, $country);
+        return $overview ?? [];
     }
 }

@@ -3,12 +3,13 @@ declare(strict_types=1);
 
 namespace AugmentedSteam\Server\Data\Interfaces;
 
+use AugmentedSteam\Server\Data\Objects\Prices;
+
 interface PricesProviderInterface {
 
     /**
-     * @param list<string> $gids
+     * @param list<string> $steamIds
      * @param list<int> $shops
-     * @return array<mixed>
      */
-    public function fetch(array $gids, array $shops, string $country): array;
+    public function fetch(array $steamIds, array $shops, string $country): ?Prices;
 }
