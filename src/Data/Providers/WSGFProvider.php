@@ -35,13 +35,13 @@ class WSGFProvider implements WSGFProviderInterface
 
                 $data = new WSGF();
                 $data->title = $node['Title'];
-                $data->steamId = $node['SteamID'];
+                $data->steamId = intval($node['SteamID']);
                 $data->path = $node['Path'];
                 $data->wideScreenGrade = $node['WideScreenGrade'];
                 $data->multiMonitorGrade = $node['MultiMonitorGrade'];
                 $data->ultraWideScreenGrade = $node['UltraWideScreenGrade'];
                 $data->grade4k = $node['Grade4k'];
-                $data->nid = $node['Nid'];
+                $data->nid = intval($node['Nid']);
             }
         }
 

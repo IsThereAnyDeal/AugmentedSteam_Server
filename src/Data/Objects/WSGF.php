@@ -35,6 +35,7 @@ class WSGF
         $this->path = $data['Path'];
         $this->wideScreenGrade = $data['WideScreenGrade'];
         $this->multiMonitorGrade = $data['MultiMonitorGrade'];
+        $this->ultraWideScreenGrade = $data['UltraWideScreenGrade'];
         $this->grade4k = $data['Grade4k'];
         $this->nid = $data['Nid'];
         return $this;
