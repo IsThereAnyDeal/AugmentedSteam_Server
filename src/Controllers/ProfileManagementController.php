@@ -8,9 +8,7 @@ use AugmentedSteam\Server\Http\StringParam;
 use AugmentedSteam\Server\Model\Market\MarketManager;
 use AugmentedSteam\Server\Model\User\UserManager;
 use AugmentedSteam\Server\OpenId\Session;
-use IsThereAnyDeal\Database\DbDriver;
 use Laminas\Diactoros\Response\RedirectResponse;
-use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Throwable;
 
@@ -24,13 +22,10 @@ class ProfileManagementController extends Controller
     private const string Failure = "#as-failure";
 
     public function __construct(
-        ResponseFactoryInterface $responseFactory,
-        DbDriver $db,
         private readonly Session $session,
         private readonly MarketManager $marketManager,
         private readonly UserManager $userManager
     ) {
-        parent::__construct($responseFactory, $db);
     }
 
     /**
@@ -106,7 +101,7 @@ class ProfileManagementController extends Controller
 
         $authResponse = $this->session->authorize(
             $request,
-            "/v1/profile/style/edit/delete/",
+            "/profile/style/delete/v2",
             self::ReturnUrl.self::Failure,
             $profile
         );
