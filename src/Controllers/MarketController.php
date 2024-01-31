@@ -8,27 +8,17 @@ use AugmentedSteam\Server\Http\StringParam;
 use AugmentedSteam\Server\Model\Market\MarketIndex;
 use AugmentedSteam\Server\Model\Market\MarketManager;
 use AugmentedSteam\Server\Model\Money\CurrencyConverter;
-use IsThereAnyDeal\Database\DbDriver;
-use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 class MarketController extends Controller {
 
-    private readonly CurrencyConverter $converter;
-    private readonly MarketIndex $index;
-    private readonly MarketManager $manager;
-
     public function __construct(
-        ResponseFactoryInterface $responseFactory,
-        DbDriver $db
-    ) {
-        parent::__construct($responseFactory, $db);
-        $this->converter = new CurrencyConverter($this->db);
-        $this->index = new MarketIndex($this->db);
-        $this->manager = new MarketManager($this->db);
-    }
+        private readonly CurrencyConverter $converter,
+        private readonly MarketIndex $index,
+        private readonly MarketManager $manager
+    ) {}
 
-    public function getAverageCardPrices_v2(ServerRequestInterface $request): array {
+    public function averageCardPrices_v2(ServerRequestInterface $request): array {
         $currency = (new StringParam($request, "currency"))->value();
         $appids = (new ListParam($request, "appids"))->value();
 
@@ -47,7 +37,7 @@ class MarketController extends Controller {
         return $this->manager->getAverageCardPrices($appids, $conversion);
     }
 
-    public function getCards_v2(ServerRequestInterface $request): array {
+    public function cards_v2(ServerRequestInterface $request): array {
         $currency = (new StringParam($request, "currency"))->value();
         $appid = (new IntParam($request, "appid"))->value();
 

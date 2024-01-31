@@ -25,7 +25,7 @@ class MarketManager
             FROM $d
             WHERE $d->type=:card
               AND $d->appid IN :appids
-            GROUP BY $d->appid, $d->rarity:foil
+            GROUP BY $d->appid, $d->rarity=:foil
             SQL
         )->params([
             ":appids" => $appids,

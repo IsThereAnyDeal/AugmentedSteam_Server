@@ -20,7 +20,7 @@ readonly class MarketIndex
         $insert = $this->db->insert($i)
             ->columns($i->appid, $i->last_request)
             ->onDuplicateKeyUpdate($i->last_request)
-            ->onDuplicateKeyExpression($i->request_counter, "$i->request_counter+1");
+            ->onDuplicateKeyExpression($i->request_counter, "{$i->request_counter->name}+1");
 
         foreach($appids as $appid) {
             $insert->stack(
