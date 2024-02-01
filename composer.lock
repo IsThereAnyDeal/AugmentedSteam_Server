@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b11d8a8582f2f5a6ed05026e7be081a6",
+    "content-hash": "e39a3f659c5ad0abe7a77a97f59fbe56",
     "packages": [
         {
             "name": "filp/whoops",
@@ -483,43 +483,6 @@
                 "issues": "https://github.com/IsThereAnyDeal/Database/issues"
             },
             "time": "2024-01-02T22:56:33+00:00"
-        },
-        {
-            "name": "itad/deby",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "git@github.com:IsThereAnyDeal/Deby.git",
-                "reference": "22a97d18be5fa0596c1a74bd66e2c56069fddc63"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/IsThereAnyDeal/Deby/zipball/22a97d18be5fa0596c1a74bd66e2c56069fddc63",
-                "reference": "22a97d18be5fa0596c1a74bd66e2c56069fddc63",
-                "shasum": ""
-            },
-            "require": {
-                "ext-ds": "*",
-                "vanilla/garden-cli": "^4.0"
-            },
-            "require-dev": {
-                "phpstan/phpstan": "^1.10"
-            },
-            "default-branch": true,
-            "bin": [
-                "bin/deby"
-            ],
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "IsThereAnyDeal\\Tools\\Deby\\": "src/"
-                }
-            },
-            "support": {
-                "source": "https://github.com/IsThereAnyDeal/Deby/tree/master",
-                "issues": "https://github.com/IsThereAnyDeal/Deby/issues"
-            },
-            "time": "2024-01-28T02:05:06+00:00"
         },
         {
             "name": "jean85/pretty-package-versions",
@@ -1685,6 +1648,68 @@
             "time": "2023-12-19T16:52:21+00:00"
         },
         {
+            "name": "php-sage/sage",
+            "version": "v1.5.6",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-sage/sage.git",
+                "reference": "a6bbc9b837b53994df1b26d06522df4bf9df760f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-sage/sage/zipball/a6bbc9b837b53994df1b26d06522df4bf9df760f",
+                "reference": "a6bbc9b837b53994df1b26d06522df4bf9df760f",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.1.0"
+            },
+            "require-dev": {
+                "pestphp/pest": "^1.0",
+                "seld/phar-utils": "^1.0",
+                "spatie/pest-plugin-snapshots": "^1.0",
+                "symfony/finder": "^3.0 || ^4.0 || ^5.0",
+                "symfony/var-dumper": "^6.1"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "Sage.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Rokas Šleinius",
+                    "homepage": "https://github.com/raveren"
+                },
+                {
+                    "name": "Contributors",
+                    "homepage": "https://github.com/php-sage/sage/contributors"
+                }
+            ],
+            "description": "☯ Insightful PHP debugging assistant.",
+            "homepage": "https://github.com/php-sage/sage",
+            "keywords": [
+                "debug",
+                "debug_backtrace",
+                "dump",
+                "dumper",
+                "json_decode",
+                "php",
+                "sage",
+                "var_dump"
+            ],
+            "support": {
+                "issues": "https://github.com/php-sage/sage/issues",
+                "source": "https://github.com/php-sage/sage/tree/v1.5.6"
+            },
+            "time": "2023-07-30T07:56:05+00:00"
+        },
+        {
             "name": "predis/predis",
             "version": "v2.2.2",
             "source": {
@@ -2493,64 +2518,46 @@
                 }
             ],
             "time": "2023-08-08T10:20:21+00:00"
-        },
-        {
-            "name": "vanilla/garden-cli",
-            "version": "v4.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/vanilla/garden-cli.git",
-                "reference": "e7e2f655b04661e9808ec7d51a381176e9bc981d"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/vanilla/garden-cli/zipball/e7e2f655b04661e9808ec7d51a381176e9bc981d",
-                "reference": "e7e2f655b04661e9808ec7d51a381176e9bc981d",
-                "shasum": ""
-            },
-            "require": {
-                "ext-json": "*",
-                "php": ">=8.1",
-                "psr/log": "^3.0"
-            },
-            "require-dev": {
-                "ergebnis/composer-normalize": "^2.8",
-                "phpdocumentor/reflection-docblock": "^5.3",
-                "phpunit/phpunit": "^8",
-                "vanilla/garden-container": "^3.0",
-                "vanilla/standards": "^1.3",
-                "vimeo/psalm": "^4.0"
-            },
-            "suggest": {
-                "ext-pdo": "Required for the DbUtils class.",
-                "phpdocumentor/reflection-docblock": "Required for the CliApplication functionality.",
-                "vanilla/garden-container": "Required for the CliApplication functionality."
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Garden\\Cli\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Todd Burry",
-                    "email": "todd@vanillaforums.com"
-                }
-            ],
-            "description": "A full-featured, yet ridiculously simple commandline parser for your next php cli script. Stop fighting with getopt().",
-            "support": {
-                "issues": "https://github.com/vanilla/garden-cli/issues",
-                "source": "https://github.com/vanilla/garden-cli/tree/v4.0"
-            },
-            "time": "2023-01-24T20:33:46+00:00"
         }
     ],
     "packages-dev": [
+        {
+            "name": "itad/deby",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:IsThereAnyDeal/Deby.git",
+                "reference": "f4b4c0e88dfb6d79175ad0062144e6b3b05f485b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/IsThereAnyDeal/Deby/zipball/f4b4c0e88dfb6d79175ad0062144e6b3b05f485b",
+                "reference": "f4b4c0e88dfb6d79175ad0062144e6b3b05f485b",
+                "shasum": ""
+            },
+            "require": {
+                "ext-ds": "*",
+                "vanilla/garden-cli": "^4.0"
+            },
+            "require-dev": {
+                "phpstan/phpstan": "^1.10"
+            },
+            "default-branch": true,
+            "bin": [
+                "bin/deby"
+            ],
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "IsThereAnyDeal\\Tools\\Deby\\": "src/"
+                }
+            },
+            "support": {
+                "source": "https://github.com/IsThereAnyDeal/Deby/tree/master",
+                "issues": "https://github.com/IsThereAnyDeal/Deby/issues"
+            },
+            "time": "2024-02-01T14:31:28+00:00"
+        },
         {
             "name": "phpstan/phpstan",
             "version": "1.10.57",
@@ -2660,6 +2667,61 @@
                 "source": "https://github.com/phpstan/phpstan-deprecation-rules/tree/1.1.4"
             },
             "time": "2023-08-05T09:02:04+00:00"
+        },
+        {
+            "name": "vanilla/garden-cli",
+            "version": "v4.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/vanilla/garden-cli.git",
+                "reference": "e7e2f655b04661e9808ec7d51a381176e9bc981d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/vanilla/garden-cli/zipball/e7e2f655b04661e9808ec7d51a381176e9bc981d",
+                "reference": "e7e2f655b04661e9808ec7d51a381176e9bc981d",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "php": ">=8.1",
+                "psr/log": "^3.0"
+            },
+            "require-dev": {
+                "ergebnis/composer-normalize": "^2.8",
+                "phpdocumentor/reflection-docblock": "^5.3",
+                "phpunit/phpunit": "^8",
+                "vanilla/garden-container": "^3.0",
+                "vanilla/standards": "^1.3",
+                "vimeo/psalm": "^4.0"
+            },
+            "suggest": {
+                "ext-pdo": "Required for the DbUtils class.",
+                "phpdocumentor/reflection-docblock": "Required for the CliApplication functionality.",
+                "vanilla/garden-container": "Required for the CliApplication functionality."
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Garden\\Cli\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Todd Burry",
+                    "email": "todd@vanillaforums.com"
+                }
+            ],
+            "description": "A full-featured, yet ridiculously simple commandline parser for your next php cli script. Stop fighting with getopt().",
+            "support": {
+                "issues": "https://github.com/vanilla/garden-cli/issues",
+                "source": "https://github.com/vanilla/garden-cli/tree/v4.0"
+            },
+            "time": "2023-01-24T20:33:46+00:00"
         }
     ],
     "aliases": [],

@@ -9,3 +9,4 @@ deployer.yaml
 node_modules/
 dist/
 build/
+cron.table
