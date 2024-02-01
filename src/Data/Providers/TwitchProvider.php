@@ -6,7 +6,7 @@ namespace AugmentedSteam\Server\Data\Providers;
 use AugmentedSteam\Server\Data\Interfaces\TwitchProviderInterface;
 use AugmentedSteam\Server\Data\Objects\TwitchStream;
 use AugmentedSteam\Server\Endpoints\EndpointBuilder;
-use AugmentedSteam\Server\Loader\SimpleLoader;
+use AugmentedSteam\Server\Lib\Loader\SimpleLoader;
 
 class TwitchProvider implements TwitchProviderInterface {
 

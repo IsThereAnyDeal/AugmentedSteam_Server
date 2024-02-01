@@ -5,11 +5,11 @@ namespace AugmentedSteam\Server\Data\Updaters\HowLongToBeat;
 
 use AugmentedSteam\Server\Database\DHLTB;
 use AugmentedSteam\Server\Database\THLTB;
-use AugmentedSteam\Server\Loader\Crawler;
-use AugmentedSteam\Server\Loader\Item;
-use AugmentedSteam\Server\Loader\Loader;
-use AugmentedSteam\Server\Loader\Proxy\ProxyFactoryInterface;
-use AugmentedSteam\Server\Loader\Proxy\ProxyInterface;
+use AugmentedSteam\Server\Lib\Loader\Crawler;
+use AugmentedSteam\Server\Lib\Loader\Item;
+use AugmentedSteam\Server\Lib\Loader\Loader;
+use AugmentedSteam\Server\Lib\Loader\Proxy\ProxyFactoryInterface;
+use AugmentedSteam\Server\Lib\Loader\Proxy\ProxyInterface;
 use IsThereAnyDeal\Database\DbDriver;
 use IsThereAnyDeal\Database\Sql\Create\SqlInsertQuery;
 use Psr\Http\Message\ResponseInterface;

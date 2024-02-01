@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace AugmentedSteam\Server\Model\Market;
 
+use AugmentedSteam\Server\Database\DMarketData;
 use AugmentedSteam\Server\Database\TMarketData;
-use AugmentedSteam\Server\Model\DataObjects\DMarketData;
 use IsThereAnyDeal\Database\DbDriver;
 
 class MarketManager

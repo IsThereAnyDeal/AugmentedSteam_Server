@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace AugmentedSteam\Server\Data\Updaters\Exfgls;
 
+use AugmentedSteam\Server\Database\DExfgls;
 use AugmentedSteam\Server\Database\TExfgls;
-use AugmentedSteam\Server\Model\DataObjects\DExfgls;
 use IsThereAnyDeal\Database\DbDriver;
 use Psr\Log\LoggerInterface;
 

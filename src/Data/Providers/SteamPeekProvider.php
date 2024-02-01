@@ -5,7 +5,7 @@ use AugmentedSteam\Server\Data\Interfaces\AppData\SteamPeekProviderInterface;
 use AugmentedSteam\Server\Data\Objects\SteamPeak\SteamPeekGame;
 use AugmentedSteam\Server\Data\Objects\SteamPeak\SteamPeekResults;
 use AugmentedSteam\Server\Endpoints\EndpointBuilder;
-use AugmentedSteam\Server\Loader\SimpleLoader;
+use AugmentedSteam\Server\Lib\Loader\SimpleLoader;
 use Psr\Log\LoggerInterface;
 
 class SteamPeekProvider implements SteamPeekProviderInterface {

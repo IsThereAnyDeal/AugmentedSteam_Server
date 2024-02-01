@@ -2,12 +2,12 @@
 namespace AugmentedSteam\Server\Controllers;
 
 use AugmentedSteam\Server\Exceptions\InvalidValueException;
-use AugmentedSteam\Server\Http\IntParam;
-use AugmentedSteam\Server\Http\ListParam;
-use AugmentedSteam\Server\Http\StringParam;
+use AugmentedSteam\Server\Lib\Http\IntParam;
+use AugmentedSteam\Server\Lib\Http\ListParam;
+use AugmentedSteam\Server\Lib\Http\StringParam;
+use AugmentedSteam\Server\Lib\Money\CurrencyConverter;
 use AugmentedSteam\Server\Model\Market\MarketIndex;
 use AugmentedSteam\Server\Model\Market\MarketManager;
-use AugmentedSteam\Server\Model\Money\CurrencyConverter;
 use Psr\Http\Message\ServerRequestInterface;
 
 class MarketController extends Controller {

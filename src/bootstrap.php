@@ -15,8 +15,8 @@ use AugmentedSteam\Server\Data\Updaters\Exfgls\ExfglsConfig;
 use AugmentedSteam\Server\Endpoints\EndpointsConfig;
 use AugmentedSteam\Server\Endpoints\KeysConfig;
 use AugmentedSteam\Server\Environment\Container;
+use AugmentedSteam\Server\Lib\Logging\LoggingConfig;
 use AugmentedSteam\Server\Lib\Redis\RedisConfig;
-use AugmentedSteam\Server\Logging\LoggingConfig;
 use IsThereAnyDeal\Config\Config;
 use IsThereAnyDeal\Database\DbConfig;
 

@@ -2,8 +2,8 @@
 namespace AugmentedSteam\Server\Controllers;
 
 use AugmentedSteam\Server\Exceptions\InvalidValueException;
-use AugmentedSteam\Server\Http\ListParam;
-use AugmentedSteam\Server\Model\Money\CurrencyConverter;
+use AugmentedSteam\Server\Lib\Http\ListParam;
+use AugmentedSteam\Server\Lib\Money\CurrencyConverter;
 use Psr\Http\Message\ServerRequestInterface;
 
 class RatesController extends Controller {

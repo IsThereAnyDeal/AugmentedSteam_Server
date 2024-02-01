@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace AugmentedSteam\Server\Model\Market;
 
+use AugmentedSteam\Server\Database\DMarketIndex;
 use AugmentedSteam\Server\Database\TMarketIndex;
-use AugmentedSteam\Server\Model\DataObjects\DMarketIndex;
 use IsThereAnyDeal\Database\DbDriver;
 
 readonly class MarketIndex

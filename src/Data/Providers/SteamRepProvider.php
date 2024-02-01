@@ -5,7 +5,7 @@ namespace AugmentedSteam\Server\Data\Providers;
 
 use AugmentedSteam\Server\Data\Interfaces\SteamRepProviderInterface;
 use AugmentedSteam\Server\Endpoints\EndpointBuilder;
-use AugmentedSteam\Server\Loader\SimpleLoader;
+use AugmentedSteam\Server\Lib\Loader\SimpleLoader;
 
 class SteamRepProvider implements SteamRepProviderInterface {
 

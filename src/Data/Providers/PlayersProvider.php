@@ -6,7 +6,7 @@ namespace AugmentedSteam\Server\Data\Providers;
 use AugmentedSteam\Server\Data\Interfaces\AppData\PlayersProviderInterface;
 use AugmentedSteam\Server\Data\Objects\Players;
 use AugmentedSteam\Server\Endpoints\EndpointBuilder;
-use AugmentedSteam\Server\Loader\SimpleLoader;
+use AugmentedSteam\Server\Lib\Loader\SimpleLoader;
 
 class PlayersProvider implements PlayersProviderInterface
 {

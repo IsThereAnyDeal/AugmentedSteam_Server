@@ -7,7 +7,7 @@ use AugmentedSteam\Server\Data\Interfaces\AppData\ReviewsProviderInterface;
 use AugmentedSteam\Server\Data\Objects\Reviews\Review;
 use AugmentedSteam\Server\Data\Objects\Reviews\Reviews;
 use AugmentedSteam\Server\Endpoints\EndpointBuilder;
-use AugmentedSteam\Server\Loader\SimpleLoader;
+use AugmentedSteam\Server\Lib\Loader\SimpleLoader;
 
 class ReviewsProvider implements ReviewsProviderInterface
 {

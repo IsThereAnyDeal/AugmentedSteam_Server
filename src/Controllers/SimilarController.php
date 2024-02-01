@@ -2,10 +2,10 @@
 namespace AugmentedSteam\Server\Controllers;
 
 use AugmentedSteam\Server\Data\Interfaces\AppData\SteamPeekProviderInterface;
-use AugmentedSteam\Server\Http\BoolParam;
-use AugmentedSteam\Server\Http\IntParam;
 use AugmentedSteam\Server\Lib\Cache\CacheInterface;
 use AugmentedSteam\Server\Lib\Cache\ECacheKey;
+use AugmentedSteam\Server\Lib\Http\BoolParam;
+use AugmentedSteam\Server\Lib\Http\IntParam;
 use Psr\Http\Message\ServerRequestInterface;
 
 class SimilarController extends Controller {

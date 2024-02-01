@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace AugmentedSteam\Server\Data\Updaters\Rates;
 
 use AugmentedSteam\Server\Data\Interfaces\RatesProviderInterface;
+use AugmentedSteam\Server\Database\DCurrency;
 use AugmentedSteam\Server\Database\TCurrency;
-use AugmentedSteam\Server\Model\DataObjects\DCurrency;
 use IsThereAnyDeal\Database\DbDriver;
 use Psr\Log\LoggerInterface;
 

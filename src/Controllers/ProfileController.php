@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace AugmentedSteam\Server\Controllers;
 
 use AugmentedSteam\Server\Data\Managers\SteamRepManager;
-use AugmentedSteam\Server\Model\DataObjects\DBadges;
-use AugmentedSteam\Server\Model\User\UserManager;
+use AugmentedSteam\Server\Data\Managers\UserManager;
+use AugmentedSteam\Server\Database\DBadges;
 use Psr\Http\Message\ServerRequestInterface;
 
 class ProfileController extends Controller
