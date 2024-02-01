@@ -29,11 +29,11 @@ class Router
 
         $router->get("/rates/v1", [RatesController::class, "getRates_v1"]);
         $router->get("/early-access/v1", [EarlyAccessController::class, "getAppids_v1"]);
-        $router->post("/prices/v2", [PricesController::class, "prices_v2"]);
 
+        $router->post("/prices/v2", [PricesController::class, "prices_v2"]);
         $router->get("/app/{appid:\d+}/v2", [AppController::class, "appInfo_v2"]);
         $router->get("/dlc/{appid:\d+}/v2", [DLCController::class, "dlcInfo_v2"]);
-        $router->get("/similar/{appid:\d+}/v2", [SimilarController::class, "getSimilar_v2"]);
+        $router->get("/similar/{appid:\d+}/v2", [SimilarController::class, "similar_v2"]);
 
         $router->group("/market", function(RouteGroup $g) {
             $g->get("/cards/v2", [MarketController::class, "cards_v2"]);

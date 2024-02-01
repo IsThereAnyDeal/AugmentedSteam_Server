@@ -1,9 +1,9 @@
 <?php
 namespace AugmentedSteam\Server\Data\Providers;
 
-use AugmentedSteam\Server\Data\Interfaces\SteamPeekProviderInterface;
-use AugmentedSteam\Server\Data\Objects\SteamPeekGame;
-use AugmentedSteam\Server\Data\Objects\SteamPeekResults;
+use AugmentedSteam\Server\Data\Interfaces\AppData\SteamPeekProviderInterface;
+use AugmentedSteam\Server\Data\Objects\SteamPeak\SteamPeekGame;
+use AugmentedSteam\Server\Data\Objects\SteamPeak\SteamPeekResults;
 use AugmentedSteam\Server\Endpoints\EndpointBuilder;
 use AugmentedSteam\Server\Loader\SimpleLoader;
 use Psr\Log\LoggerInterface;

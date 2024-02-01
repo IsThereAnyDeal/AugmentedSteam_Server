@@ -1,31 +1,37 @@
 <?php
 namespace AugmentedSteam\Server\Controllers;
 
-use AugmentedSteam\Server\Data\Managers\SteamPeekManager;
-use AugmentedSteam\Server\Data\Objects\SteamPeekGame;
+use AugmentedSteam\Server\Data\Interfaces\AppData\SteamPeekProviderInterface;
 use AugmentedSteam\Server\Http\BoolParam;
 use AugmentedSteam\Server\Http\IntParam;
+use AugmentedSteam\Server\Lib\Cache\CacheInterface;
+use AugmentedSteam\Server\Lib\Cache\ECacheKey;
 use Psr\Http\Message\ServerRequestInterface;
 
 class SimilarController extends Controller {
 
     public function __construct(
-        private readonly SteamPeekManager $steamPeekManager
+        private readonly CacheInterface $cache,
+        private readonly SteamPeekProviderInterface $steamPeek
     ) {}
 
-    public function getSimilar_v2(ServerRequestInterface $request, array $params): array {
+    public function similar_v2(ServerRequestInterface $request, array $params): \JsonSerializable {
         $appid = intval($params['appid']);
         $count = (new IntParam($request, "count", 5))->value();
         $shuffle = (new BoolParam($request, "shuffle", false))->value();
 
-        return array_map(
-            fn(SteamPeekGame $game) => [
-                "title" => $game->title,
-                "appid" => $game->appid,
-                "sprating" => $game->rating,
-                "score" => $game->score
-            ],
-            $this->steamPeekManager->getSimilar($appid, $count, $shuffle)
-        );
+        $key = ECacheKey::SteamPeek;
+        $field = (string)$appid;
+
+        if ($this->cache->has($key, $field)) {
+            $games = $this->cache->get($key, $field);
+        } else {
+            $games = $this->steamPeek->fetch($appid);
+            $this->cache->set($key, $field, $games, 10*86400);
+        }
+
+        return $games
+            ->shuffle($shuffle)
+            ->limit($count);
     }
 }

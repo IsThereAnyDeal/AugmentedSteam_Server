@@ -25,7 +25,6 @@ use AugmentedSteam\Server\Data\Interfaces\SteamRepProviderInterface;
 use AugmentedSteam\Server\Data\Interfaces\TwitchProviderInterface;
 use AugmentedSteam\Server\Data\Managers\ExfglsManager;
 use AugmentedSteam\Server\Data\Managers\HLTBManager;
-use AugmentedSteam\Server\Data\Managers\SteamPeekManager;
 use AugmentedSteam\Server\Data\Managers\SteamRepManager;
 use AugmentedSteam\Server\Data\Managers\TwitchManager;
 use AugmentedSteam\Server\Data\Providers\EarlyAccessProvider;
@@ -258,11 +257,6 @@ class Container implements ContainerInterface
                 ->constructor(
                     get(DbDriver::class)
                 ),
-            SteamPeekManager::class => create()
-                ->constructor(
-                    get(Cache::class),
-                    get(SteamPeekProviderInterface::class)
-                ),
             TwitchManager::class => create()
                 ->constructor(
                     get(RedisCache::class),
@@ -318,7 +312,8 @@ class Container implements ContainerInterface
 
             SimilarController::class => create()
                 ->constructor(
-                    get(SteamPeekManager::class)
+                    get(CacheInterface::class),
+                    get(SteamPeekProviderInterface::class)
                 ),
 
             PricesController::class => create()
