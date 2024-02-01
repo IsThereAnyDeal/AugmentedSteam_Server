@@ -27,7 +27,7 @@ class RatesProvider implements RatesProviderInterface
         $response = $this->loader->get($endpoint);
         if (!is_null($response)) {
             $data = json_decode($response->getBody()->getContents(), true, flags: JSON_THROW_ON_ERROR);
-            if (!is_array($data)) {
+            if (is_array($data)) {
                 return $data;
             }
         }

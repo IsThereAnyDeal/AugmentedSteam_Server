@@ -50,6 +50,7 @@ class RatesUpdater {
         )->delete([
             ":timestamp" => $timestamp
         ]);
+        $this->db->commit();
 
         $this->logger->info("Done");
     }
