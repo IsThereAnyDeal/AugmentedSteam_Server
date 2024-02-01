@@ -4,14 +4,14 @@ namespace AugmentedSteam\Server\Environment;
 use AugmentedSteam\Server\Config\BrightDataConfig;
 use AugmentedSteam\Server\Config\CoreConfig;
 use AugmentedSteam\Server\Controllers\EarlyAccessController;
-use AugmentedSteam\Server\Controllers\GameController;
+use AugmentedSteam\Server\Controllers\DLCController;
 use AugmentedSteam\Server\Controllers\MarketController;
 use AugmentedSteam\Server\Controllers\PricesController;
 use AugmentedSteam\Server\Controllers\ProfileController;
 use AugmentedSteam\Server\Controllers\ProfileManagementController;
 use AugmentedSteam\Server\Controllers\RatesController;
 use AugmentedSteam\Server\Controllers\SimilarController;
-use AugmentedSteam\Server\Controllers\StorePageController;
+use AugmentedSteam\Server\Controllers\AppController;
 use AugmentedSteam\Server\Controllers\TwitchController;
 use AugmentedSteam\Server\Cron\CronJobFactory;
 use AugmentedSteam\Server\Data\Interfaces\AppData\PlayersProviderInterface;
@@ -283,7 +283,7 @@ class Container implements ContainerInterface
                 ),
 
 
-            GameController::class => create()
+            DLCController::class => create()
                 ->constructor(
                     get(DbDriver::class)
                 ),
@@ -306,7 +306,7 @@ class Container implements ContainerInterface
                     get(SteamRepManager::class)
                 ),
 
-            StorePageController::class => create()
+            AppController::class => create()
                 ->constructor(
                     get(CacheInterface::class),
                     get(WSGFProviderInterface::class),

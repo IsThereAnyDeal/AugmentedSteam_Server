@@ -5,14 +5,14 @@ namespace AugmentedSteam\Server\Routing;
 
 use AugmentedSteam\Server\Config\CoreConfig;
 use AugmentedSteam\Server\Controllers\EarlyAccessController;
-use AugmentedSteam\Server\Controllers\GameController;
+use AugmentedSteam\Server\Controllers\DLCController;
 use AugmentedSteam\Server\Controllers\MarketController;
 use AugmentedSteam\Server\Controllers\PricesController;
 use AugmentedSteam\Server\Controllers\ProfileController;
 use AugmentedSteam\Server\Controllers\ProfileManagementController;
 use AugmentedSteam\Server\Controllers\RatesController;
 use AugmentedSteam\Server\Controllers\SimilarController;
-use AugmentedSteam\Server\Controllers\StorePageController;
+use AugmentedSteam\Server\Controllers\AppController;
 use AugmentedSteam\Server\Controllers\TwitchController;
 use AugmentedSteam\Server\Environment\Container;
 use AugmentedSteam\Server\Logging\LoggerFactoryInterface;
@@ -31,8 +31,8 @@ class Router
         $router->get("/early-access/v1", [EarlyAccessController::class, "getAppids_v1"]);
         $router->post("/prices/v2", [PricesController::class, "prices_v2"]);
 
-        $router->get("/app/{appid:\d+}/v2", [StorePageController::class, "getAppInfo_v2"]);
-        $router->get("/dlc/{appid:\d+}/v2", [GameController::class, "dlcInfo_v2"]);
+        $router->get("/app/{appid:\d+}/v2", [AppController::class, "appInfo_v2"]);
+        $router->get("/dlc/{appid:\d+}/v2", [DLCController::class, "dlcInfo_v2"]);
         $router->get("/similar/{appid:\d+}/v2", [SimilarController::class, "getSimilar_v2"]);
 
         $router->group("/market", function(RouteGroup $g) {

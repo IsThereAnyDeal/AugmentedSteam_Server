@@ -13,7 +13,7 @@ use AugmentedSteam\Server\Lib\Cache\CacheInterface;
 use AugmentedSteam\Server\Lib\Cache\ECacheKey;
 use Psr\Http\Message\ServerRequestInterface;
 
-class StorePageController extends Controller
+class AppController extends Controller
 {
     public function __construct(
         private readonly CacheInterface $cache,
@@ -42,7 +42,7 @@ class StorePageController extends Controller
         return $data;
     }
 
-    public function getAppInfo_v2(ServerRequestInterface $request, array $params) {
+    public function appInfo_v2(ServerRequestInterface $request, array $params) {
         $appid = (int)$params['appid'];
 
         $exfgls = $this->exfglsManager->get($appid);

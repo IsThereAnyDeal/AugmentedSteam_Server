@@ -9,7 +9,7 @@ use AugmentedSteam\Server\Model\DataObjects\DDlcCategories;
 use IsThereAnyDeal\Database\DbDriver;
 use Psr\Http\Message\ServerRequestInterface;
 
-class GameController extends Controller
+class DLCController extends Controller
 {
     public function __construct(
         private readonly DbDriver $db
