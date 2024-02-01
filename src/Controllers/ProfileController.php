@@ -19,7 +19,7 @@ class ProfileController extends Controller
      * @param array{steamId: int} $params
      * @return array<string, mixed>
      */
-    public function getProfile_v2(ServerRequestInterface $request, array $params): array {
+    public function profile_v2(ServerRequestInterface $request, array $params): array {
         $steamId = (int)$params['steamId'];
 
         $info = $this->userManager->getProfileInfo($steamId);

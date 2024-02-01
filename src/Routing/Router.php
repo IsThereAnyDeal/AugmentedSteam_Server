@@ -35,7 +35,7 @@ class Router
         $router->get("/dlc/{appid:\d+}/v2", [DLCController::class, "dlcInfo_v2"]);
         $router->get("/similar/{appid:\d+}/v2", [SimilarController::class, "similar_v2"]);
 
-        $router->get("/twitch/{channel}/stream/v2", [TwitchController::class, "getStream_v2"]);
+        $router->get("/twitch/{channel}/stream/v2", [TwitchController::class, "stream_v2"]);
 
         $router->group("/market", function(RouteGroup $g) {
             $g->get("/cards/v2", [MarketController::class, "cards_v2"]);
@@ -43,9 +43,9 @@ class Router
         });
 
         $router->group("/profile", function(RouteGroup $g) {
-            $g->get("/{steamId:\d+}/v2", [ProfileController::class, "getProfile_v2"]);
-            $g->get("/background/list/v2", [ProfileManagementController::class, "getBackgrounds_v2"]);
-            $g->get("/background/games/v1", [ProfileManagementController::class, "getGames_v1"]);
+            $g->get("/{steamId:\d+}/v2", [ProfileController::class, "profile_v2"]);
+            $g->get("/background/list/v2", [ProfileManagementController::class, "backgrounds_v2"]);
+            $g->get("/background/games/v1", [ProfileManagementController::class, "games_v1"]);
             $g->get("/background/delete/v2", [ProfileManagementController::class, "deleteBackground_v2"]);
             $g->get("/background/save/v2", [ProfileManagementController::class, "saveBackground_v2"]);
             $g->get("/style/delete/v2", [ProfileManagementController::class, "deleteStyle_v2"]);

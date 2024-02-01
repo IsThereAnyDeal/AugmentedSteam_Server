@@ -31,7 +31,7 @@ class ProfileManagementController extends Controller
     /**
      * @return list<array{string, string}>
      */
-    public function getBackgrounds_v2(ServerRequestInterface $request): array {
+    public function backgrounds_v2(ServerRequestInterface $request): array {
         $appid = (new IntParam($request, "appid"))->value();
 
         return $this->marketManager
@@ -41,7 +41,7 @@ class ProfileManagementController extends Controller
     /**
      * @return list<array{int, string}>
      */
-    public function getGames_v1(ServerRequestInterface $request): array {
+    public function games_v1(ServerRequestInterface $request): array {
         return $this->marketManager
             ->getGamesWithBackgrounds();
     }

@@ -19,7 +19,7 @@ class TwitchController extends Controller
     /**
      * @param array{channel: string} $params
      */
-    public function getStream_v2(ServerRequestInterface $request, array $params): array|JsonSerializable {
+    public function stream_v2(ServerRequestInterface $request, array $params): array|JsonSerializable {
         $channel = $params['channel'];
 
         $key = ECacheKey::Twitch;
