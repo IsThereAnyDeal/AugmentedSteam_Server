@@ -1,0 +1,14 @@
+description: OK
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        user_name:
+          type: string
+        game:
+          type: string
+        view_count:
+          type: integer
+        thumbnail_url:
+          type: string

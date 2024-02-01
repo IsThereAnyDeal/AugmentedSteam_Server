@@ -1,15 +1,12 @@
 {
-  "result": "success",
-  "data": {
-    "Alyx Vance": {
-      "img": "IzMF03bk9WpSBq-S-ekoE33L-iLqGFHVaU25ZzQNQcXdA3g5gMEPvUZZEfSMJ6dESN8p_2SVTY7V2NsNxGVIwXpaL3_Z0W11LtNtNsjDhgz2oOWIQXDzMG-WKXeNHVs5HLBXNG6IqDCitO6TSjGbEukkQAoCfKMH-mFBaJyXf0xqwtVUuWG9hXt0Excvd5gXJFfjzndKN74gkHAUcchSynbwIMaPjQplahRtWbCxX72TOdPxmXwlQ1o5SLZcaYl9HTjTpg",
-      "url": "220-Alyx%20Vance",
-      "price": 0.09
-    },
-    "Alyx Vance (Foil)": {
-      "img": "IzMF03bk9WpSBq-S-ekoE33L-iLqGFHVaU25ZzQNQcXdA3g5gMEPvUZZEfSMJ6dESN8p_2SVTY7V2NsNxGVIwXpaL3_Z0W11LtNtNsjDhgz2oOWIQXDzMG-WKXeNHVs5HLBXNG6IqDCitO6TSjGbEukkQAoCfKMH-mFBaJyXf0xqwtVUuWG9hXt0Excvd5gWKF-6kiwXab8kkHZAJpMGnCT3I5eIgllgbEI8XurmVryUa4P3wS11Q1o5SLZcaYlIj14tyA",
-      "url": "220-Alyx%20Vance%20%28Foil%29",
-      "price": 0.82
-    }
+  "Alyx Vance": {
+    "img": "IzMF03bk9WpSBq-S-ekoE33L-iLqGFHVaU25ZzQNQcXdA3g5gMEPvUZZEfSMJ6dESN8p_2SVTY7V2NsNxGVIwXpaL3_Z0W11LtNtNsjDhgz2oOWIQXDzMG-WKXeNHVs5HLBXNG6IqDCitO6TSjGbEukkQAoCfKMH-mFBaJyXf0xqwtVUuWG9hXt0Excvd5gXJFfjzndKN74gkHAUcchSynbwIMaPjQplahRtWbCxX72TOdPxmXwlQ1o5SLZcaYl9HTjTpg",
+    "url": "220-Alyx%20Vance",
+    "price": 0.09
+  },
+  "Alyx Vance (Foil)": {
+    "img": "IzMF03bk9WpSBq-S-ekoE33L-iLqGFHVaU25ZzQNQcXdA3g5gMEPvUZZEfSMJ6dESN8p_2SVTY7V2NsNxGVIwXpaL3_Z0W11LtNtNsjDhgz2oOWIQXDzMG-WKXeNHVs5HLBXNG6IqDCitO6TSjGbEukkQAoCfKMH-mFBaJyXf0xqwtVUuWG9hXt0Excvd5gWKF-6kiwXab8kkHZAJpMGnCT3I5eIgllgbEI8XurmVryUa4P3wS11Q1o5SLZcaYlIj14tyA",
+    "url": "220-Alyx%20Vance%20%28Foil%29",
+    "price": 0.82
   }
 }

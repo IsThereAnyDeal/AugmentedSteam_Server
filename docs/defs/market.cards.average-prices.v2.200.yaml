@@ -2,22 +2,18 @@ description: Success
 content:
   application/json:
     schema:
-      allOf:
-        - $ref: "../schemas/resp.success.yaml"
-        - type: object
-          properties:
-            data:
-              type: object
-              propertyNames:
-                pattern: ^\d+$
-              additionalProperties:
-                type: object
-                properties:
-                  regular:
-                    type: number
-                  foil:
-                    type: number
-          examples:
-            success:
-              value:
-                $ref: "../examples/market.cards.average-prices.v2.success.json"
+      type: object
+      propertyNames:
+        pattern: ^\d+$
+      additionalProperties:
+        type: object
+        required: [regular, foil]
+        properties:
+          regular:
+            type: number
+          foil:
+            type: number
+    examples:
+      success:
+        value:
+          $ref: "../examples/market.cards.average-prices.v2.success.json"

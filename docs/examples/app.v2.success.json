@@ -1,0 +1,27 @@
+{
+  "family_sharing": true,
+  "players": {
+    "recent": 26069,
+    "peak_today": 27665,
+    "peak_all": 1051810
+  },
+  "wsgf": null,
+  "hltb": {
+    "story": 1534,
+    "extras": 3822,
+    "complete": 6455,
+    "url": "https:\/\/howlongtobeat.com\/game\/2127"
+  },
+  "reviews": {
+    "metauser": {
+      "score": 71,
+      "verdict": "Mixed or average",
+      "url": "https:\/\/metacritic.com\/game\/cyberpunk-2077\/user-reviews\/?platform=pc"
+    },
+    "opencritic": {
+      "score": 76,
+      "verdict": "Strong",
+      "url": "https:\/\/opencritic.com\/game\/8525\/cyberpunk-2077"
+    }
+  }
+}

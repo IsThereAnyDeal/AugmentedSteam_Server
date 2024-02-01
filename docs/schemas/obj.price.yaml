@@ -1,0 +1,15 @@
+$schema: "https://json-schema.org/draft/2020-12/schema"
+title: Prioce
+type: object
+required:
+  - amount
+  - amountInt
+  - currency
+properties:
+  amount:
+    type: float
+  amountInt:
+    type: integer
+  currency:
+    type: string
+

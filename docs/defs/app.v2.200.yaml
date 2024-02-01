@@ -1,0 +1,94 @@
+description: Success
+content:
+  application/json:
+    schema:
+      type: object
+      required:
+        - family_sharing
+        - players
+        - wsgf
+        - hltb
+        - reviews
+      properties:
+        family_sharing:
+          type: boolean
+        players:
+          type: object
+          required: [recent, peak_today, peak_all]
+          properties:
+            recent:
+              type:
+                - integer
+            peak_today:
+              type:
+                - integer
+            peak_all:
+              type:
+                - integer
+        wsgf:
+          type:
+            - object
+            - 'null'
+          required: [url, wide, ultrawide, multi_monitor, 4k]
+          properties:
+            url:
+              type: string
+            wide:
+              type: string
+            ultrawide:
+              type: string
+            multi_monitor:
+              type: string
+            4k:
+              type: string
+        hltb:
+          type:
+            - object
+            - 'null'
+          required: [story, extras, complete, url]
+          properties:
+            story:
+              type:
+                - integer
+                - 'null'
+            extras:
+              type:
+                - integer
+                - 'null'
+            complete:
+              type:
+                - integer
+                - 'null'
+            url:
+              type:
+                - string
+        reviews:
+          type: object
+          required:
+            - metauser
+            - opencritic
+          properties:
+            metauser:
+              type: [object, 'null']
+              required: [score, verdict, url]
+              properties:
+                score:
+                  type: [integer, 'null']
+                verdict:
+                  type: [string, 'null']
+                url:
+                  type: string
+            opencritic:
+              type: [object, 'null']
+              required: [score, verdict, url]
+              properties:
+                score:
+                  type: [integer, 'null']
+                verdict:
+                  type: [string, 'null']
+                url:
+                  type: string
+      examples:
+        success:
+          value:
+            $ref: "../examples/app.v2.success.json"

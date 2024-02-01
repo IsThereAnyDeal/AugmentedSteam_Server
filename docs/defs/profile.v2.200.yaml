@@ -2,40 +2,44 @@ description: Success
 content:
   application/json:
     schema:
-      allOf:
-        - $ref: "../schemas/resp.success.yaml"
-        - type: object
+      type: object
+      required:
+        - badges
+        - steamrep
+        - style
+        - bg
+      properties:
+        badges:
+          type: array
+          items:
+            type: object
+            required:
+              - title
+              - img
+            properties:
+              title:
+                type: string
+              img:
+                type: string
+        steamrep:
+          type: array
+          items:
+            type: string
+        style:
+          type:
+            - 'null'
+            - string
+        bg:
+          type: object
+          required:
+            - img
+            - appid
           properties:
-            data:
-              type: object
-              properties:
-                badges:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      link:
-                        type: string
-                      title:
-                        type: string
-                      img:
-                        type: string
-                steamrep:
-                  type: array
-                  items:
-                    type: string
-                style:
-                  type:
-                    - 'null'
-                    - string
-                bg:
-                  type: object
-                  properties:
-                    img:
-                      type:
-                        - 'null'
-                        - string
-                    appid:
-                      type:
-                        - 'null'
-                        - integer
+            img:
+              type:
+                - 'null'
+                - string
+            appid:
+              type:
+                - 'null'
+                - integer

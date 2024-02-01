@@ -13,7 +13,7 @@ paths:
     get:
       operationId: rates-v1
       tags:
-        - currency
+        - global
       summary: Currency Conversion Rates
       description: Get current conversion rates
       security: []
@@ -33,11 +33,80 @@ paths:
         default:
           $ref: "./defs/default-error.yaml"
 
-  /dlcinfo/v2:
+  /early-access/v1:
+    get:
+      operationId: earlyaccess-v1
+      tags:
+        - global
+      summary: Early Access Games
+      responses:
+        200:
+          $ref: "./defs/early-access.v1.yaml"
+
+  /prices/v2:
+    post:
+      operationId: prices-v2
+      tags:
+        - app
+      summary: Prices
+      security: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                country:
+                  type: string
+                shops:
+                  type: array
+                  items:
+                    type: integer
+                apps:
+                  type: array
+                  items:
+                    type: integer
+                subs:
+                  type: array
+                  items:
+                    type: integer
+                bundles:
+                  type: array
+                  items:
+                    type: integer
+                voucher:
+                  type: boolean
+
+      responses:
+        200:
+          $ref: "./defs/prices.v2.200.yaml"
+        default:
+          $ref: "./defs/default-error.yaml"
+
+  /app/{appid}/v2:
+    parameters:
+      - schema:
+          type: integer
+          name: appid
+          in: path
+          required: true
+    get:
+      operationId: get-v1-app-appid
+      tags:
+        - app
+      summary: App Info
+      security: []
+      responses:
+        200:
+          $ref: "./defs/app.v2.200.yaml"
+        default:
+          $ref: "./defs/default-error.yaml"
+
+  /dlc/{appid}/v2:
     get:
       operationId: dlcinfo-v2
       tags:
-        - game
+        - app
       summary: DLC Info
       security: []
       parameters:
@@ -45,6 +114,35 @@ paths:
       responses:
         200:
           $ref: "./defs/dlcinfo.v2.200.yaml"
+        default:
+          $ref: "./defs/default-error.yaml"
+
+  /similar/{appid}/v2:
+    parameters:
+      - schema:
+          type: integer
+          name: appid
+          in: path
+          required: true
+    get:
+      operationId: get-v2-similar-appid
+      tags:
+        - app
+      parameters:
+        - schema:
+            type: integer
+            example: 5
+            in: query
+            name: count
+        - schema:
+            type: boolean
+            example: '1'
+            in: query
+            name: shuffle
+      summary: Similar Games
+      responses:
+        200:
+          $ref: "./defs/similar.v2.200.yaml"
         default:
           $ref: "./defs/default-error.yaml"
 
@@ -86,6 +184,22 @@ paths:
           $ref: "./defs/market.cards.average-prices.v2.200.yaml"
         default:
           $ref: "./defs/default-error.yaml"
+
+  /twitch/{channel}/stream/v2:
+    parameters:
+      - schema:
+          type: string
+          name: channel
+          in: path
+          required: true
+    get:
+      operationId: twitch-stream-v2
+      summary: Current Stream of Twitch Channel
+      tags:
+        - community
+      responses:
+        '200':
+          $ref: "./defs/twitch-stream.v2.yaml"
 
   /profile/{steamId}/v2:
     get:
@@ -197,547 +311,6 @@ paths:
         302:
           description: Found
 
-  /v2/app/{appid}/:
-    parameters:
-      - schema:
-          type: integer
-        name: appid
-        in: path
-        required: true
-    get:
-      summary: App Info
-      tags:
-        - game
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  result:
-                    $ref: '#/components/schemas/SuccessResult'
-                  data:
-                    type: object
-                    required:
-                      - family_sharing
-                      - steamcharts
-                      - steamspy
-                      - wsgf
-                      - hltb
-                      - metacritic
-                      - opencritic
-                      - survey
-                    properties:
-                      family_sharing:
-                        type: boolean
-                      steamcharts:
-                        type: object
-                        properties:
-                          players:
-                            type: object
-                            properties:
-                              current:
-                                type:
-                                  - integer
-                                  - 'null'
-                              peak_today:
-                                type:
-                                  - integer
-                                  - 'null'
-                              peak_all:
-                                type:
-                                  - integer
-                                  - 'null'
-                      steamspy:
-                        type: object
-                        properties:
-                          owners:
-                            type: array
-                            maxItems: 2
-                            minItems: 0
-                            items:
-                              type: integer
-                          playtime:
-                            type: object
-                            description: Average playtime in minutes
-                            properties:
-                              2weeks:
-                                type: integer
-                              forever:
-                                type: integer
-                      wsgf:
-                        type:
-                          - object
-                          - 'null'
-                        properties:
-                          url:
-                            type: string
-                          wide:
-                            type: string
-                          ultrawide:
-                            type: string
-                          multi_monitor:
-                            type: string
-                          4k:
-                            type: string
-                      hltb:
-                        type:
-                          - object
-                          - 'null'
-                        properties:
-                          id:
-                            type: integer
-                          story:
-                            type:
-                              - integer
-                              - 'null'
-                          extras:
-                            type:
-                              - integer
-                              - 'null'
-                          complete:
-                            type:
-                              - integer
-                              - 'null'
-                      metacritic:
-                        type:
-                          - object
-                          - 'null'
-                        properties:
-                          userscore:
-                            type: integer
-                      opencritic:
-                        type:
-                          - object
-                          - 'null'
-                        properties:
-                          url:
-                            type: string
-                          score:
-                            type:
-                              - integer
-                              - 'null'
-                          award:
-                            type: string
-                          reviews:
-                            type: array
-                            items:
-                              type: object
-                              properties:
-                                date:
-                                  type: string
-                                snippet:
-                                  type: string
-                                score:
-                                  type: string
-                                url:
-                                  type: string
-                                author:
-                                  type:
-                                    - string
-                                    - 'null'
-                                name:
-                                  type: string
-                      survey:
-                        type:
-                          - object
-                          - 'null'
-                        properties:
-                          framerate:
-                            type: object
-                            properties:
-                              '0':
-                                type: integer
-                              '30':
-                                type: integer
-                              '60':
-                                type: integer
-                          settings:
-                            type: object
-                            properties:
-                              none:
-                                type: integer
-                              basic:
-                                type: integer
-                              granular:
-                                type: integer
-                          optimized:
-                            type: array
-                            minItems: 2
-                            maxItems: 2
-                            items:
-                              type: integer
-                          lag:
-                            type: array
-                            minItems: 2
-                            maxItems: 2
-                            items:
-                              type: integer
-                          bg_sound:
-                            type: array
-                            minItems: 2
-                            maxItems: 2
-                            items:
-                              type: integer
-                          controls:
-                            type: array
-                            minItems: 2
-                            maxItems: 2
-                            items:
-                              type: integer
-                required:
-                  - result
-                  - data
-              examples: {}
-        default:
-          description: ''
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-      operationId: get-v1-app-appid
-  /v2/similar/{appid}/:
-    parameters:
-      - schema:
-          type: integer
-        name: appid
-        in: path
-        required: true
-    get:
-      summary: Similar Games
-      tags:
-        - game
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                description: ''
-                type: object
-                x-examples:
-                  example-1:
-                    result: success
-                    data:
-                      - title: 'Counter-Strike: Source'
-                        appid: 240
-                        sprating: 10.94
-                        score: 68.687
-                      - title: Insurgency
-                        appid: 222880
-                        sprating: 10.43
-                        score: 68.288
-                      - title: Tom Clancy's Rainbow Six® Siege
-                        appid: 359550
-                        sprating: 12
-                        score: 62.307
-                      - title: The Machines Arena
-                        appid: 1539860
-                        sprating: 0
-                        score: 59.542
-                      - title: Task Force
-                        appid: 611300
-                        sprating: 0
-                        score: 59.193
-                properties:
-                  result:
-                    $ref: '#/components/schemas/SuccessResult'
-                  data:
-                    type: array
-                    uniqueItems: false
-                    minItems: 1
-                    items:
-                      type: object
-                      additionalProperties: false
-                      properties:
-                        title:
-                          type: string
-                          minLength: 1
-                        appid:
-                          type: integer
-                        sprating:
-                          type: number
-                        score:
-                          type: number
-                      required:
-                        - title
-                        - appid
-                        - sprating
-                        - score
-                required:
-                  - result
-                  - data
-        default:
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-      operationId: get-v2-similar-appid
-      parameters:
-        - schema:
-            type: integer
-            example: 5
-          in: query
-          name: count
-        - schema:
-            type: boolean
-            example: '1'
-          in: query
-          name: shuffle
-  /v2/prices/:
-    get:
-      summary: Prices
-      tags:
-        - game
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                description: ''
-                type: object
-                x-examples:
-                  example-1:
-                    result: success
-                    data:
-                      data:
-                        app/730:
-                          price:
-                            store: Steam
-                            cut: 0
-                            price: 0
-                            price_formatted: 0,00€
-                            url: https://store.steampowered.com/app/730/
-                            drm:
-                              - steam
-                          lowest:
-                            store: Steam
-                            cut: 0
-                            price: 0
-                            price_formatted: 0,00€
-                            url: https://store.steampowered.com/app/730/
-                            recorded: 1539217541
-                            recorded_formatted: 3 years ago
-                          bundles:
-                            count: 0
-                            live: []
-                          urls:
-                            info: https://isthereanydeal.com/game/counterstrikeglobaloffensive/info/
-                            history: https://isthereanydeal.com/game/counterstrikeglobaloffensive/history/
-                            bundles: https://isthereanydeal.com/specials/#/filter:search/counterstrikeglobaloffensive
-                      .meta:
-                        region: eu1
-                        country: IE
-                        currency: EUR
-                properties:
-                  result:
-                    $ref: '#/components/schemas/SuccessResult'
-                  data:
-                    type: object
-                required:
-                  - result
-                  - data
-              examples:
-                Success Example:
-                  value:
-                    result: success
-                    data:
-                      app/730:
-                        price:
-                          store: Steam
-                          cut: 0
-                          price: 0
-                          price_formatted: 0,00€
-                          url: https://store.steampowered.com/app/730/
-                          drm:
-                            - steam
-                        lowest:
-                          store: Steam
-                          cut: 0
-                          price: 0
-                          price_formatted: 0,00€
-                          url: https://store.steampowered.com/app/730/
-                          recorded: 1539217541
-                          recorded_formatted: 3 years ago
-                        bundles:
-                          count: 0
-                          live: []
-                        urls:
-                          info: https://isthereanydeal.com/game/counterstrikeglobaloffensive/info/
-                          history: https://isthereanydeal.com/game/counterstrikeglobaloffensive/history/
-                          bundles: https://isthereanydeal.com/specials/#/filter:search/counterstrikeglobaloffensive
-        default:
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-      operationId: get-v1-prices
-      parameters:
-        - schema:
-            type: array
-          in: query
-          name: stores
-        - in: query
-          name: cc
-          schema:
-            type: string
-            minLength: 2
-            maxLength: 2
-        - schema:
-            type: boolean
-          in: query
-          name: coupon
-        - schema:
-            type: array
-          in: query
-          name: appids
-        - schema:
-            type: array
-          in: query
-          name: subids
-        - schema:
-            type: array
-          in: query
-          name: bundleids
-    parameters: []
-  /v1/earlyaccess/:
-    get:
-      summary: Early Access Games
-      tags: []
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  data:
-                    type: object
-      operationId: get-v1-earlyaccess
-  /v1/survey/{appid}/submit/:
-    get:
-      summary: Submit Survey
-      tags: []
-      responses:
-        '302':
-          description: Found
-      operationId: get-v1-survey-submit
-      parameters:
-        - $ref: '#/components/parameters/SteamId'
-        - schema:
-            type: string
-            enum:
-              - th
-              - sx
-              - va
-          in: query
-          name: framerate
-        - schema:
-            type: string
-            enum:
-              - 'yes'
-              - 'no'
-          in: query
-          name: optimized
-        - schema:
-            type: string
-            enum:
-              - 'yes'
-              - 'no'
-          in: query
-          name: lag
-        - schema:
-            type: string
-            enum:
-              - 'no'
-              - bs
-              - gr
-          in: query
-          name: graphics_settings
-        - schema:
-            type: string
-            enum:
-              - 'yes'
-              - 'no'
-          in: query
-          name: bg_sound
-        - schema:
-            type: string
-            enum:
-              - 'yes'
-              - 'no'
-          in: query
-          name: good_controls
-    parameters:
-      - schema:
-          type: integer
-        name: appid
-        in: path
-        required: true
-  /v2/twitch/{channel}/stream/:
-    parameters:
-      - schema:
-          type: string
-        name: channel
-        in: path
-        required: true
-    get:
-      summary: Current Stream of Twitch Channel
-      tags: []
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                description: ''
-                type: object
-                x-examples:
-                  example-1:
-                    result: success
-                    data:
-                      user_name: Fextralife
-                      title: 🔥!DROPS !GIVEAWAY 🔥!CLASS !GUIDES !WIKI Lost Ark Playing Sorceress with YURIA
-                      thumbnail_url: https://static-cdn.jtvnw.net/previews-ttv/live_user_fextralife-{width}x{height}.jpg
-                      viewer_count: 29141
-                      game: LOST ARK
-                properties:
-                  result:
-                    type: string
-                    minLength: 1
-                  data:
-                    type:
-                      - object
-                      - 'null'
-                    required:
-                      - user_name
-                      - title
-                      - thumbnail_url
-                      - viewer_count
-                      - game
-                    properties:
-                      user_name:
-                        type: string
-                        minLength: 1
-                      title:
-                        type: string
-                        minLength: 1
-                      thumbnail_url:
-                        type: string
-                        minLength: 1
-                      viewer_count:
-                        type: number
-                      game:
-                        type: string
-                        minLength: 1
-                required:
-                  - result
-                  - data
-      operationId: get-v2-twitch-channel-stream
 components:
   parameters:
     AppId:
@@ -760,36 +333,6 @@ components:
         type: integer
       description: Steam profile ID
   schemas:
-    ErrorResponse:
-      type: object
-      properties:
-        result:
-          type: string
-          enum:
-            - error
-        error:
-          type: string
-          enum:
-            - missing_param
-            - invalid_value
-        error_description:
-          type: string
-        status_code:
-          type: integer
-        reason_phrase:
-          type: string
-      examples:
-        - result: error
-          error: missing_param
-          error_description: string
-          status_code: 0
-          reason_phrase: string
-    SuccessResult:
-      type: string
-      enum:
-        - success
-      examples:
-        - success
     CurrencyCode:
       type: string
       pattern: ^[A-Z]{3}$

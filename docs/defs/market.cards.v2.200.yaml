@@ -2,23 +2,19 @@ description: Success
 content:
   application/json:
     schema:
-      allOf:
-        - $ref: "../schemas/resp.success.yaml"
-        - type: object
-          properties:
-            data:
-              type: object
-              propertyNames:
-                type: string
-              additionalProperties:
-                type: object
-                properties:
-                  img:
-                    type: string
-                  url:
-                    type: string
-                  price:
-                    type: number
+      type: object
+      propertyNames:
+        type: string
+      additionalProperties:
+        type: object
+        required: [img, url, price]
+        properties:
+          img:
+            type: string
+          url:
+            type: string
+          price:
+            type: number
     examples:
       success:
         value:

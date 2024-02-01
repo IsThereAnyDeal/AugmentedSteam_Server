@@ -1,0 +1,172 @@
+description: OK
+content:
+  application/json:
+    schema:
+      type: object
+      required:
+        - prices
+        - bundles
+      properties:
+        prices:
+          type: object
+          propertyNames:
+            type: string
+          required:
+            - current
+            - lowest
+            - urls
+          properties:
+            current:
+              type: [object, 'null']
+              required:
+                - shop
+                - price
+                - regular
+                - cut
+                - voucher
+                - flag
+                - drm
+                - platforms
+                - timestamp
+                - expiry
+                - url
+              properties:
+                shop:
+                  $ref: "../schemas/obj.shop.yaml"
+                price:
+                  $ref: "../schemas/obj.price.yaml"
+                regular:
+                  $ref: "../schemas/obj.price.yaml"
+                cut:
+                  type: integer
+                voucher:
+                  type: [string, 'null']
+                flag:
+                  type: [string, null]
+                drm:
+                  type: array
+                  items:
+                    $ref: "../schemas/obj.drm.yaml"
+                platforms:
+                  type: array
+                  items:
+                    $ref: "../schemas/obj.drm.yaml"
+                timestamp:
+                  type: string
+                expiry:
+                  type: [string, 'null']
+                url:
+                  type: string
+            lowest:
+              type: [object, 'null']
+              required:
+                - shop
+                - price
+                - regular
+                - cut
+                - timestamp
+                - expiry
+                - url
+              properties:
+                shop:
+                  $ref: "../schemas/obj.shop.yaml"
+                price:
+                  $ref: "../schemas/obj.price.yaml"
+                regular:
+                  $ref: "../schemas/obj.price.yaml"
+                cut:
+                  type: integer
+                timestamp:
+                  type: string
+                expiry:
+                  type: [string, 'null']
+                url:
+                  type: string
+            urls:
+              type: [object, 'null']
+              required:
+                - info
+                - history
+              properties:
+                info:
+                  type: string
+                history:
+                  type: string
+        bundles:
+          type: array
+          items:
+            type: object
+            required:
+              - id
+              - title
+              - page
+              - url
+              - details
+              - isMature
+              - publish
+              - expiry
+              - counts
+              - tiers
+            properties:
+              id:
+                type: number
+              title:
+                type: string
+              page:
+                type: object
+                required:
+                  - id
+                  - name
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+              url:
+                type: string
+              details:
+                type: string
+              isMature:
+                type: boolean
+              publish:
+                type: string
+              expiry:
+                type: [string, 'null']
+              counts:
+                type: object
+                required: [games, media]
+                properties:
+                  games:
+                    type: integer
+                  media:
+                    type: integer
+              tiers:
+                type: array
+                items:
+                  type: object
+                  required:
+                    - price
+                    - games
+                  properties:
+                    price:
+                      $ref: "../schemas/obj.price.yaml"
+                    games:
+                      type: array
+                      items:
+                        type: object
+                        required: [id, slug, title, type, mature]
+                        properties:
+                          id:
+                            type: string
+                          slug:
+                            type: string
+                          title:
+                            type: string
+                          type:
+                            type: string
+                          mature:
+                            type: boolean
+    examples:
+      success:
+        value:
+          $ref: "../examples/prices.v2.success.json"

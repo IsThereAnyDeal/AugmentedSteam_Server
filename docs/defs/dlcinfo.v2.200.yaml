@@ -2,18 +2,19 @@ description: Success
 content:
   application/json:
     schema:
-      allOf:
-        - $ref: "../schemas/resp.success.yaml"
-        - type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: integer
-              name:
-                type: string
-              description:
-                type: string
+      type: array
+      items:
+        type: object
+        required: [id, name, description, icon]
+        properties:
+          id:
+            type: integer
+          name:
+            type: string
+          description:
+            type: string
+          icon:
+            type: string
     examples:
       success:
         summary: "Example success response"

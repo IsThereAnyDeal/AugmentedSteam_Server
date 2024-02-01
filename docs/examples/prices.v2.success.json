@@ -1,0 +1,159 @@
+{
+  "prices": {
+    "app\/403190": {
+      "current": {
+        "shop": {
+          "id": 37,
+          "name": "Humble Store"
+        },
+        "price": {
+          "amount": 6.24,
+          "amountInt": 624,
+          "currency": "EUR"
+        },
+        "regular": {
+          "amount": 12.49,
+          "amountInt": 1249,
+          "currency": "EUR"
+        },
+        "cut": 50,
+        "voucher": null,
+        "flag": "S",
+        "drm": [
+          {
+            "id": 61,
+            "name": "Steam"
+          }
+        ],
+        "platforms": [
+          {
+            "id": 1,
+            "name": "Windows"
+          },
+          {
+            "id": 2,
+            "name": "Mac"
+          }
+        ],
+        "timestamp": "2024-01-21T01:55:52+01:00",
+        "expiry": "2024-02-05T19:00:00+01:00",
+        "url": "https:\/\/isthereanydeal.com\/link\/018d2789-0f1b-7056-9c23-934949c59fc3\/"
+      },
+      "lowest": {
+        "shop": {
+          "id": 39,
+          "name": "Chrono.gg"
+        },
+        "price": {
+          "amount": 5.54,
+          "amountInt": 554,
+          "currency": "EUR"
+        },
+        "regular": {
+          "amount": 17.02,
+          "amountInt": 1702,
+          "currency": "EUR"
+        },
+        "cut": 67,
+        "timestamp": "2017-08-18T18:11:12+02:00"
+      },
+      "urls": {
+        "info": "https:\/\/isthereanydeal.com\/game\/id:018d2785-b38f-7200-8f41-5d86ca45ebe3\/info\/",
+        "history": "https:\/\/isthereanydeal.com\/game\/id:018d2785-b38f-7200-8f41-5d86ca45ebe3\/history\/"
+      }
+    }
+  },
+  "bundles": [
+    {
+      "id": 3882,
+      "title": "Humble Survive This Bundle ",
+      "page": {
+        "id": 1,
+        "name": "Humble Bundle"
+      },
+      "url": "https:\/\/www.humblebundle.com\/survive-this-bundle",
+      "details": "https:\/\/isthereanydeal.com\/bundles\/3882\/",
+      "isMature": false,
+      "publish": "2016-08-10T02:05:00+02:00",
+      "expiry": "2016-08-23T20:00:00+02:00",
+      "counts": {
+        "games": 7,
+        "media": 0
+      },
+      "tiers": [
+        {
+          "price": {
+            "amount": 1,
+            "amountInt": 100,
+            "currency": "USD"
+          },
+          "games": [
+            {
+              "id": "018d2785-9f4b-7319-b47b-8cfeaaaff5dc",
+              "slug": "tharsis",
+              "title": "Tharsis",
+              "type": "game",
+              "mature": false
+            },
+            {
+              "id": "018d2785-a584-739a-a511-5de9b234ed7f",
+              "slug": "kholat",
+              "title": "Kholat",
+              "type": "game",
+              "mature": false
+            },
+            {
+              "id": "018d2785-a6b7-7117-82aa-7331e28f467b",
+              "slug": "savage-lands",
+              "title": "Savage Lands",
+              "type": "game",
+              "mature": false
+            }
+          ]
+        },
+        {
+          "price": null,
+          "games": [
+            {
+              "id": "018d2785-9898-731d-8204-5ae9eb6da870",
+              "slug": "space-engineers",
+              "title": "Space Engineers",
+              "type": "game",
+              "mature": false
+            },
+            {
+              "id": "018d2785-9bd1-71b9-8f39-ef720854b2c3",
+              "slug": "rust",
+              "title": "Rust",
+              "type": "game",
+              "mature": true
+            },
+            {
+              "id": "018d2785-a7a6-72ef-a248-2088e3447395",
+              "slug": "shelter-2",
+              "title": "Shelter 2",
+              "type": "game",
+              "mature": false
+            }
+          ]
+        },
+        {
+          "price": {
+            "amount": 14,
+            "amountInt": 1400,
+            "currency": "USD"
+          },
+          "games": [
+            {
+              "id": "018d2785-b38f-7200-8f41-5d86ca45ebe3",
+              "slug": "planetbase",
+              "title": "Planetbase",
+              "type": "game",
+              "mature": false
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

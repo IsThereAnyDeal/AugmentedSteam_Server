@@ -1,0 +1,21 @@
+description: Success
+content:
+  application/json:
+    schema:
+      type: array
+      items:
+        type: object
+        required: [title, appid, sprating, score]
+        properties:
+          title:
+            type: string
+          appid:
+            type: integer
+          sprating:
+            type: number
+          score:
+            type: number
+    examples:
+      success:
+        value:
+          $ref: "../examples/similar.v2.success.json"

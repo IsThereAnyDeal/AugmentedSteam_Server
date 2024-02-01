@@ -2,20 +2,15 @@ description: Success
 content:
   application/json:
     schema:
-      allOf:
-        - $ref: "../schemas/resp.success.yaml"
-        - type: object
-          properties:
-            data:
-              type: array
-              items:
-                type: array
-                minItems: 2
-                maxItems: 2
-                items:
-                  type:
-                    - string
-                    - integer
+      type: array
+      items:
+        type: array
+        minItems: 2
+        maxItems: 2
+        items:
+          type:
+            - string
+            - integer
     examples:
       success:
         value:
