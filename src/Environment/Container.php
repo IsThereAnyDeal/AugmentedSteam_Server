@@ -19,14 +19,14 @@ use AugmentedSteam\Server\Data\Interfaces\GameIdsProviderInterface;
 use AugmentedSteam\Server\Data\Interfaces\PlayersProviderInterface;
 use AugmentedSteam\Server\Data\Interfaces\PricesProviderInterface;
 use AugmentedSteam\Server\Data\Interfaces\RatesProviderInterface;
+use AugmentedSteam\Server\Data\Interfaces\ReviewsProviderInterface;
 use AugmentedSteam\Server\Data\Interfaces\SteamPeekProviderInterface;
 use AugmentedSteam\Server\Data\Interfaces\SteamRepProviderInterface;
 use AugmentedSteam\Server\Data\Interfaces\TwitchProviderInterface;
 use AugmentedSteam\Server\Data\Interfaces\WSGFProviderInterface;
-use AugmentedSteam\Server\Data\Managers\EarlyAccessManager;
 use AugmentedSteam\Server\Data\Managers\ExfglsManager;
-use AugmentedSteam\Server\Data\Managers\GameIdsManager;
 use AugmentedSteam\Server\Data\Managers\HLTBManager;
+use AugmentedSteam\Server\Data\Managers\ReviewsManager;
 use AugmentedSteam\Server\Data\Managers\SteamPeekManager;
 use AugmentedSteam\Server\Data\Managers\SteamRepManager;
 use AugmentedSteam\Server\Data\Managers\TwitchManager;
@@ -36,6 +36,7 @@ use AugmentedSteam\Server\Data\Providers\GameIdsProvider;
 use AugmentedSteam\Server\Data\Providers\PlayersProvider;
 use AugmentedSteam\Server\Data\Providers\PricesProvider;
 use AugmentedSteam\Server\Data\Providers\RatesProvider;
+use AugmentedSteam\Server\Data\Providers\ReviewsProvider;
 use AugmentedSteam\Server\Data\Providers\SteamPeekProvider;
 use AugmentedSteam\Server\Data\Providers\SteamRepProvider;
 use AugmentedSteam\Server\Data\Providers\TwitchProvider;
@@ -54,9 +55,9 @@ use AugmentedSteam\Server\Logging\LoggerFactory;
 use AugmentedSteam\Server\Logging\LoggerFactoryInterface;
 use AugmentedSteam\Server\Logging\LoggingConfig;
 use AugmentedSteam\Server\Model\Cache\Cache;
+use AugmentedSteam\Server\Model\Market\MarketIndex;
 use AugmentedSteam\Server\Model\Market\MarketManager;
 use AugmentedSteam\Server\Model\Money\CurrencyConverter;
-use AugmentedSteam\Server\Model\StorePage\SteamSpyManager;
 use AugmentedSteam\Server\Model\User\UserManager;
 use AugmentedSteam\Server\OpenId\Session;
 use GuzzleHttp\Client as GuzzleClient;
@@ -229,6 +230,11 @@ class Container implements ContainerInterface
                     get(EndpointBuilder::class)
                 ),
 
+            ReviewsProviderInterface::class => create(ReviewsProvider::class)
+                ->constructor(
+                    get(SimpleLoader::class),
+                    get(EndpointBuilder::class)
+                ),
 
             RatesProviderInterface::class => create(RatesProvider::class)
                 ->constructor(
@@ -240,20 +246,14 @@ class Container implements ContainerInterface
 
             MarketManager::class => create()
                 ->constructor(get(DbDriver::class)),
+            MarketIndex::class => create()
+                ->constructor(get(DbDriver::class)),
             UserManager::class => create()
                 ->constructor(get(DbDriver::class)),
             SteamRepManager::class => create()
                 ->constructor(
                     get(DbDriver::class),
                     get(SteamRepProviderInterface::class)
-                ),
-            SteamSpyManager::class => create()
-                ->constructor(
-                    get(DbDriver::class),
-                    get(SimpleLoader::class),
-                    get(LoggerFactoryInterface::class),
-                    get(ProxyFactoryInterface::class),
-                    get(EndpointsConfig::class)
                 ),
             WSGFManager::class => create()
                 ->constructor(
@@ -271,15 +271,12 @@ class Container implements ContainerInterface
             ReviewsManager::class => create()
                 ->constructor(
                     get(Cache::class),
-                    get(SimpleLoader::class),
-                    get(LoggerFactoryInterface::class),
-                    get(EndpointsConfig::class),
-                    get(KeysConfig::class)
+                    get(ReviewsProviderInterface::class)
                 ),
             SteamPeekManager::class => create()
                 ->constructor(
                     get(Cache::class),
-                    get(SteamRepProviderInterface::class)
+                    get(SteamPeekProviderInterface::class)
                 ),
             TwitchManager::class => create()
                 ->constructor(
@@ -303,18 +300,16 @@ class Container implements ContainerInterface
 
             GameController::class => create()
                 ->constructor(
-                    get(ResponseFactoryInterface::class),
                     get(DbDriver::class)
                 ),
             MarketController::class => create()
                 ->constructor(
-                    get(ResponseFactoryInterface::class),
-                    get(DbDriver::class)
+                    get(CurrencyConverter::class),
+                    get(MarketIndex::class),
+                    get(MarketManager::class),
                 ),
             ProfileManagementController::class => create()
                 ->constructor(
-                    get(ResponseFactoryInterface::class),
-                    get(DbDriver::class),
                     get(Session::class),
                     get(MarketManager::class),
                     get(UserManager::class),
@@ -322,42 +317,31 @@ class Container implements ContainerInterface
 
             ProfileController::class => create()
                 ->constructor(
-                    get(ResponseFactoryInterface::class),
-                    get(DbDriver::class),
                     get(UserManager::class),
                     get(SteamRepManager::class)
                 ),
 
             StorePageController::class => create()
                 ->constructor(
-                    get(ResponseFactoryInterface::class),
-                    get(DbDriver::class),
-                    get(SteamSpyManager::class),
                     get(WSGFManager::class),
                     get(ExfglsManager::class),
                     get(HLTBManager::class),
-                    get(ReviewsManager::class)
+                    get(ReviewsManager::class),
+                    get(PlayersProviderInterface::class)
                 ),
 
             SimilarController::class => create()
                 ->constructor(
-                    get(ResponseFactoryInterface::class),
-                    get(DbDriver::class),
                     get(SteamPeekManager::class)
                 ),
 
             PricesController::class => create()
                 ->constructor(
-                    get(ResponseFactoryInterface::class),
-                    get(DbDriver::class),
-                    get(GameIdsProviderInterface::class),
                     get(PricesProviderInterface::class)
                 ),
 
             TwitchController::class => create()
                 ->constructor(
-                    get(ResponseFactoryInterface::class),
-                    get(DbDriver::class),
                     get(TwitchManager::class),
                 )
         ];
