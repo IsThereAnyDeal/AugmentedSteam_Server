@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace AugmentedSteam\Server\Data\Providers;
 
-use AugmentedSteam\Server\Data\Interfaces\ReviewsProviderInterface;
+use AugmentedSteam\Server\Data\Interfaces\AppData\ReviewsProviderInterface;
 use AugmentedSteam\Server\Data\Objects\Reviews\Review;
 use AugmentedSteam\Server\Data\Objects\Reviews\Reviews;
 use AugmentedSteam\Server\Endpoints\EndpointBuilder;

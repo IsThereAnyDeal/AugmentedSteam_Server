@@ -10,8 +10,8 @@ use IsThereAnyDeal\Database\Tables\Table;
 #[TableName("cache")]
 class TCache extends Table
 {
-    public Column $appid;
     public Column $key;
-    public Column $json;
-    public Column $timestamp;
+    public Column $field;
+    public Column $data;
+    public Column $expiry;
 }

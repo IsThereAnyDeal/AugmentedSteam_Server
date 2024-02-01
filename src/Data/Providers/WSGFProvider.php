@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace AugmentedSteam\Server\Data\Providers;
 
-use AugmentedSteam\Server\Data\Interfaces\WSGFProviderInterface;
+use AugmentedSteam\Server\Data\Interfaces\AppData\WSGFProviderInterface;
 use AugmentedSteam\Server\Data\Objects\WSGF;
 use AugmentedSteam\Server\Endpoints\EndpointBuilder;
 use AugmentedSteam\Server\Loader\SimpleLoader;

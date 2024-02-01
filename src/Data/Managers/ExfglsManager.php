@@ -13,7 +13,7 @@ class ExfglsManager
         private readonly DbDriver $db,
     ) {}
 
-    public function getData(int $appid): DExfgls {
+    public function get(int $appid): DExfgls {
         $e = new TExfgls();
 
         $data = $this->db->select(<<<SQL

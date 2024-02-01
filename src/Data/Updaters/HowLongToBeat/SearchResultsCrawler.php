@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace AugmentedSteam\Server\Data\Updaters\HowLongToBeat;
 
-use AugmentedSteam\Server\Data\Objects\DHLTB;
+use AugmentedSteam\Server\Database\DHLTB;
 use AugmentedSteam\Server\Database\THLTB;
 use AugmentedSteam\Server\Loader\Crawler;
 use AugmentedSteam\Server\Loader\Item;

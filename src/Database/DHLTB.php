@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace AugmentedSteam\Server\Data\Objects;
+namespace AugmentedSteam\Server\Database;
 
 class DHLTB
 {
