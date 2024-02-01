@@ -1,9 +1,8 @@
 {
   "scripts": {
-    "push": "vendor/bin/dep push",
-    "publish": "vendor/bin/dep publish",
-    "deploy": "vendor/bin/dep deploy",
-    "unlock": "vendor/bin/dep deploy:unlock",
+    "docs": "redocly preview-docs docs/openapi.yaml",
+    "build": "vendor/bin/deby --config build/build.php build",
+    "deploy": "vendor/bin/deby --config build/build.php deploy@next",
     "phpstan": "vendor/bin/phpstan analyse -c phpstan.neon"
   },
   "autoload": {
