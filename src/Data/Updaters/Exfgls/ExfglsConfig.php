@@ -8,9 +8,18 @@ use Nette\Schema\Processor;
 
 class ExfglsConfig
 {
+    /**
+     * @var object{
+     *     enabled: bool,
+     *     bin: string,
+     *     user: string,
+     *     password: string
+     * }
+     */
     private object $config;
 
-    public function __construct(array $config) {
+    public function __construct(mixed $config) {
+        // @phpstan-ignore-next-line
         $this->config = (new Processor())->process(Expect::structure([
             "enabled" => Expect::bool(false),
             "bin" => Expect::string(),

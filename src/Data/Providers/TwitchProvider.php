@@ -24,7 +24,20 @@ class TwitchProvider implements TwitchProviderInterface {
         }
 
         $body = $response->getBody()->getContents();
+
+        /**
+         * @var array{
+         *     user_name: string,
+         *     title: string,
+         *     thumbnail_url: string,
+         *     viewer_count: int,
+         *     game: string
+         * } $json
+         */
         $json = json_decode($body, true, flags: JSON_THROW_ON_ERROR);
+        if (!is_array($json)) {
+            return null;
+        }
 
         $stream = new TwitchStream();
         $stream->userName = $json['user_name'];

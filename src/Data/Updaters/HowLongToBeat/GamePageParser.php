@@ -18,17 +18,34 @@ class GamePageParser
         return $hours + $minutes;
     }
 
+    /**
+     * @return array{
+     *     appid?: ?int,
+     *     times?: array{
+     *         main?: ?int,
+     *         extra?: ?int,
+     *         complete?: ?int
+     *     }
+     * }
+     */
     public function parse(string $html): array {
         $dom = new DOMDocument();
         $dom->loadHTML($html, LIBXML_NOERROR);
 
         $xpath = new DOMXPath($dom);
 
-        $platformNode = $xpath->query(
+        $platformNodes = $xpath->query(
             "//table[contains(@class, 'GamePlatformTable_game_main_table')]//td[1]/text()[contains(., 'Platform')]/.."
-        )[0];
+        );
+        if ($platformNodes === false) {
+            return [];
+        }
+        $platformNode = $platformNodes[0];
 
         $headNodes = $xpath->query("ancestor::tr//td", $platformNode);
+        if ($headNodes === false) {
+            return [];
+        }
 
         $keys = [];
         $i = 0;
@@ -36,10 +53,17 @@ class GamePageParser
             $keys[$i++] = trim($node->textContent);
         }
 
-        $platformTable = $xpath->query("ancestor::table[contains(@class, 'GamePlatformTable_game_main_table')]", $platformNode)[0];
+        $platformTables = $xpath->query("ancestor::table[contains(@class, 'GamePlatformTable_game_main_table')]", $platformNode);
+        if ($platformTables === false) {
+            return [];
+        }
+        $platformTable = $platformTables[0];
 
         $map = [];
         $pcRowNodes = $xpath->query("//td/text()[contains(., 'PC')]/ancestor::tr//td", $platformTable);
+        if ($pcRowNodes === false) {
+            return [];
+        }
 
         $i = 0;
         foreach($pcRowNodes as $node) {

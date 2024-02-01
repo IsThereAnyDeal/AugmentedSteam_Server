@@ -12,7 +12,7 @@ class BoolParam
     public function __construct(
         ServerRequestInterface $request,
         string $name,
-        ?int $default = null,
+        ?bool $default = null,
         bool $nullable = false
     ) {
         $params = $request->getQueryParams();

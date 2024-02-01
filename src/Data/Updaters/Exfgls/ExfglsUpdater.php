@@ -23,6 +23,7 @@ class ExfglsUpdater
         if (!$this->config->isEnabled()) { return; }
 
         $e = new TExfgls();
+        /** @var list<int> $appids */
         $appids = $this->db->select(<<<SQL
             SELECT $e->appid
             FROM $e
@@ -49,6 +50,13 @@ class ExfglsUpdater
 
         $appidsParam = implode(",", $appids);
         $result = exec(BIN_DIR."/$bin \"$user\" \"$password\" \"$appidsParam\" \"$logPath\"");
+        if ($result === false) {
+            throw new \Exception();
+        }
+
+        /**
+         * @var array<string, bool> $json
+         */
         $json = json_decode($result, true, flags: JSON_THROW_ON_ERROR);
 
         $insert = $this->db->insert($e)

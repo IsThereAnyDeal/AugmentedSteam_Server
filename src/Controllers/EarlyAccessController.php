@@ -17,12 +17,19 @@ class EarlyAccessController extends Controller {
         private readonly EarlyAccessProviderInterface $provider
     ) {}
 
+    /**
+     * @return list<int>
+     */
     public function appids_v1(ServerRequestInterface $request): array {
         $key = ECacheKey::EarlyAccess;
         $field = "ea";
 
         if ($this->cache->has($key, $field)) {
-            return $this->cache->get($key, $field) ?? [];
+            $cached = $this->cache->get($key, $field) ?? [];
+            if (!is_array($cached) || !array_is_list($cached)) {
+                throw new \Exception();
+            }
+            return $cached;
         }
 
         $appids = $this->provider->fetch();

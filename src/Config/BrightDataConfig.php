@@ -4,18 +4,30 @@ declare(strict_types=1);
 namespace AugmentedSteam\Server\Config;
 
 use Nette\Schema\Expect;
-use Nette\Schema\Schema;
+use Nette\Schema\Processor;
 
-class BrightDataConfig extends AConfig
+class BrightDataConfig
 {
-    protected function getSchema(): Schema {
-        return Expect::structure([
+    /**
+     * @var object{
+     *     url: string,
+     *     port: int,
+     *     user: string,
+     *     password: string,
+     *     zone: string
+     * }
+     */
+    private readonly object $config;
+
+    public function __construct(mixed $config) {
+        // @phpstan-ignore-next-line
+        $this->config = (new Processor())->process(Expect::structure([
             "url" => Expect::string()->required(),
             "port" => Expect::int()->required(),
             "user" => Expect::string()->required(),
             "password" => Expect::string()->required(),
             "zone" => Expect::string()->required()
-        ]);
+        ]), $config);
     }
 
     public function getUrl(): string {

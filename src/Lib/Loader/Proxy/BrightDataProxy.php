@@ -11,6 +11,9 @@ class BrightDataProxy implements ProxyInterface {
         $this->config = $config;
     }
 
+    /**
+     * @return array<int, string|int>
+     */
     public function getCurlOptions(): array {
         $rand = mt_rand(10000, 99999);
 

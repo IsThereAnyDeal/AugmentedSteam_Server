@@ -26,7 +26,14 @@ class ReviewsProvider implements ReviewsProviderInterface
             $json = json_decode($body, true, flags: JSON_THROW_ON_ERROR);
 
             if (is_array($json)) {
-                if (!empty($json['metauser'])) {
+                if (!empty($json['metauser']) && is_array($json['metauser'])) {
+                    /**
+                     * @var array{
+                     *     score?: int,
+                     *     verdict?: string,
+                     *     url: string
+                     * } $review
+                     */
                     $review = $json['metauser'];
                     $reviews->metauser = new Review(
                         $review['score'] ?? null,
@@ -35,7 +42,14 @@ class ReviewsProvider implements ReviewsProviderInterface
                     );
                 }
 
-                if (!empty($json['opencritic'])) {
+                if (!empty($json['opencritic']) && is_array($json['opencritic'])) {
+                    /**
+                     * @var array{
+                     *     score?: int,
+                     *     verdict?: string,
+                     *     url: string
+                     * } $review
+                     */
                     $review = $json['opencritic'];
                     $reviews->opencritic = new Review(
                         $review['score'] ?? null,

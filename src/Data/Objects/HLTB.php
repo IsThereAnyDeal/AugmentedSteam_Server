@@ -8,6 +8,9 @@ class HLTB implements \JsonSerializable
     public ?int $complete;
     public string $url;
 
+    /**
+     * @return array<string, mixed>
+     */
     #[\Override]
     public function jsonSerialize(): array {
         return [

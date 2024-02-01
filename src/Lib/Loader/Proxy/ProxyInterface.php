@@ -2,5 +2,9 @@
 namespace AugmentedSteam\Server\Lib\Loader\Proxy;
 
 interface ProxyInterface {
-    public function getCurlOptions();
+
+    /**
+     * @return array<int, mixed>
+     */
+    public function getCurlOptions(): array;
 }

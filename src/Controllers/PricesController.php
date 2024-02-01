@@ -12,14 +12,17 @@ class PricesController extends Controller {
         private readonly PricesProviderInterface $pricesProvider
     ) {}
 
-    public function prices_v2(ServerRequestInterface $request): array|JsonSerializable|null {
+    /**
+     * @return array<mixed>|JsonSerializable
+     */
+    public function prices_v2(ServerRequestInterface $request): array|JsonSerializable {
         $data = $request->getBody()->getContents();
         if (!json_validate($data)) {
             throw new BadRequestException();
         }
 
         $params = json_decode($data, true, flags: JSON_THROW_ON_ERROR);
-        if (!isset($params['country']) || !is_string($params['country'])) {
+        if (!is_array($params) || !isset($params['country']) || !is_string($params['country'])) {
             throw new BadRequestException();
         }
 

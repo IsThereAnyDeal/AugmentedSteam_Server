@@ -33,10 +33,6 @@ class Cache implements CacheInterface
             ]);
         }
 
-    /**
-     * @template T
-     * @return T|null
-     */
     #[\Override]
     public function get(ECacheKey $key, string $field): mixed {
         $c = $this->c;
@@ -55,6 +51,9 @@ class Cache implements CacheInterface
 
         if (!is_null($data)) {
             try {
+                if (!is_string($data)) {
+                    throw new \Exception();
+                }
                 return igbinary_unserialize($data);
             } catch(\Throwable) {
                 $this->db->delete(<<<SQL

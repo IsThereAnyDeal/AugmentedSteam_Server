@@ -22,7 +22,10 @@ class Prices implements JsonSerializable
      */
     public array $bundles;
 
-    public function jsonSerialize() {
+    /**
+     * @return array<string, mixed>
+     */
+    public function jsonSerialize(): array {
         return [
             "prices" => $this->prices,
             "bundles" => $this->bundles

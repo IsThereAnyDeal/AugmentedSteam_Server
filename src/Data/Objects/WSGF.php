@@ -12,6 +12,9 @@ class WSGF implements \JsonSerializable
     public string $grade4k;
     public int $nid;
 
+    /**
+     * @return array<string, int|string>
+     */
     #[\Override]
     public function jsonSerialize(): array {
         return [

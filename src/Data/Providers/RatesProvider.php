@@ -28,7 +28,7 @@ class RatesProvider implements RatesProviderInterface
         if (!is_null($response)) {
             $data = json_decode($response->getBody()->getContents(), true, flags: JSON_THROW_ON_ERROR);
             if (is_array($data)) {
-                return $data;
+                return $data; // @phpstan-ignore-line
             }
         }
         return [];

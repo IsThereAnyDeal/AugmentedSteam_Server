@@ -33,7 +33,13 @@ class PricesProvider implements PricesProviderInterface
             return [];
         }
 
-        return json_decode($response->getBody()->getContents(), true, flags: JSON_THROW_ON_ERROR);
+        $json = json_decode($response->getBody()->getContents(), true, flags: JSON_THROW_ON_ERROR);
+        if (!is_array($json)) {
+            return [];
+        }
+
+        // @phpstan-ignore-next-line
+        return $json;
     }
 
     /**
@@ -56,12 +62,16 @@ class PricesProvider implements PricesProviderInterface
             return [];
         }
 
-        return json_decode($response->getBody()->getContents(), true, flags: JSON_THROW_ON_ERROR);
+        $json = json_decode($response->getBody()->getContents(), true, flags: JSON_THROW_ON_ERROR);
+        if (!is_array($json)) {
+            return [];
+        }
+        return $json;
     }
 
     /**
-     * @var list<string> $steamIds
-     * @var list<int> $shops
+     * @param list<string> $steamIds
+     * @param list<int> $shops
      * @return ?Prices
      */
     public function fetch(
@@ -71,15 +81,22 @@ class PricesProvider implements PricesProviderInterface
     ): ?Prices {
 
         $map = $this->fetchIdMap($steamIds);
-        if (empty($map) || !is_array($map)) {
+        if (empty($map)) {
             return null;
         }
 
         $gids = array_values($map);
         $overview = $this->fetchOverview($country, $shops, $gids);
-        if (empty($overview) || !is_array($overview)) {
+        if (empty($overview)) {
             return null;
         }
+
+        /**
+         * @var array{
+         *     prices: list<array<mixed>>,
+         *     bundles: list<array<mixed>>
+         * } $overview
+         */
 
         $gidMap = array_flip($map);
 
@@ -87,6 +104,13 @@ class PricesProvider implements PricesProviderInterface
         $prices->prices = [];
         $prices->bundles = $overview['bundles'];
 
+        /**
+         * @var array{
+         *     id: string,
+         *     current: array<string, mixed>,
+         *     lowest: array<string, mixed>
+         * } $game
+         */
         foreach($overview['prices'] as $game) {
             $gid = $game['id'];
             $steamId = $gidMap[$gid];

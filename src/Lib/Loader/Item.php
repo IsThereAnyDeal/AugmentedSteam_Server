@@ -6,11 +6,13 @@ final class Item
     private string $id;
     private string $method = "GET";
     private string $url;
+    /** @var array<int, mixed> */
     private array $curlOptions = [];
     private bool $allowRedirect = true;
     private ?string $body = null;
+    /** @var array<string, mixed> */
     private array $headers = [];
-    private array $formData = [];
+    /** @var array<mixed> */
     private array $data = [];
 
     private int $attempt = 1;
@@ -42,10 +44,16 @@ final class Item
         return $this;
     }
 
+    /**
+     * @return array<int, mixed>
+     */
     public function getCurlOptions(): array {
         return $this->curlOptions;
     }
 
+    /**
+     * @param array<int, mixed> $options
+     */
     public function setCurlOptions(array $options): self {
         $this->curlOptions = $options;
         return $this;
@@ -69,28 +77,31 @@ final class Item
         return $this;
     }
 
+    /**
+     * @return array<mixed>
+     */
     public function getHeaders(): array {
         return $this->headers;
     }
 
+    /**
+     * @param array<mixed> $headers
+     */
     public function setHeaders(array $headers): self {
         $this->headers = $headers;
         return $this;
     }
 
-    public function getFormData(): array {
-        return $this->formData;
-    }
-
-    public function setFormData(array $data): self {
-        $this->formData = $data;
-        return $this;
-    }
-
+    /**
+     * @return array<mixed>
+     */
     public function getData(): array {
         return $this->data;
     }
 
+    /**
+     * @param array<mixed> $data
+     */
     public function setData(array $data): self {
         $this->data = $data;
         return $this;

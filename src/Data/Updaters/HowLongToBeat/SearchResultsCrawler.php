@@ -79,7 +79,7 @@ class SearchResultsCrawler extends Crawler
                     "sort" => 0,
                     "randomizer" => 0
                 ]
-            ]))
+            ], flags: JSON_THROW_ON_ERROR))
             ->setHeaders([
                 "Content-Type" => "application/json",
                 "User-Agent" => "AugmentedSteam/1.0 (+bots@isthereanydeal.com)",
@@ -97,8 +97,25 @@ class SearchResultsCrawler extends Crawler
             return;
         }
 
+        /**
+         * @var array{
+         *     pageTotal: int,
+         *     pageSize: int,
+         *     data: list<array{
+         *         game_id: int,
+         *         comp_main: ?float,
+         *         comp_plus: ?float,
+         *         comp_100: ?float
+         *     }>
+         * } $json
+         */
         $json = json_decode($response->getBody()->getContents(), true);
 
+        /**
+         * @var array{
+         *     page: int
+         * } $requestData
+         */
         $requestData = $request->getData();
         $page = $requestData['page'];
         if ($page == 1) {
@@ -128,7 +145,7 @@ class SearchResultsCrawler extends Crawler
         $this->logger->info("Parsed page $page");
     }
 
-    public function update() {
+    public function update(): void {
         $this->logger->info("Update start [$this->queryString]");
 
         $this->makeRequest(1);

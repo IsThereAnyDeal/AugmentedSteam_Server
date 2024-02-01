@@ -8,12 +8,16 @@ use Nette\Schema\Processor;
 
 class LoggingConfig
 {
+    /**
+     * @var object{enabled: boolean}
+     */
     private readonly object $config;
 
     /**
      * @param array<string, mixed> $config
      */
     public function __construct(array $config) {
+        // @phpstan-ignore-next-line
         $this->config = (new Processor())->process(Expect::structure([
             "enabled" => Expect::bool(true)
         ]), $config);

@@ -42,8 +42,12 @@ class AppController extends Controller
         return $data;
     }
 
-    public function appInfo_v2(ServerRequestInterface $request, array $params) {
-        $appid = (int)$params['appid'];
+    /**
+     * @param array{appid: numeric-string} $params
+     * @return array<string, mixed>
+     */
+    public function appInfo_v2(ServerRequestInterface $request, array $params): array {
+        $appid = intval($params['appid']);
 
         $exfgls = $this->exfglsManager->get($appid);
 

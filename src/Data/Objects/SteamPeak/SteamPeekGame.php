@@ -8,6 +8,9 @@ class SteamPeekGame implements \JsonSerializable {
     public float $rating;
     public float $score;
 
+    /**
+     * @return array<string, mixed>
+     */
     #[\Override]
     public function jsonSerialize(): array {
         return [

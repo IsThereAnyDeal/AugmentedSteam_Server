@@ -23,7 +23,7 @@ class SteamPeekProvider implements SteamPeekProviderInterface {
         if (!is_null($response)) {
             $json = json_decode($response->getBody()->getContents(), true, flags: JSON_THROW_ON_ERROR);
 
-            if (!empty($json['response'])) {
+            if (is_array($json) && is_array($json['response'] ?? null)) {
                 $response = $json['response'];
 
                 if (!empty($response['success']) && $response['success'] === 1
@@ -32,14 +32,14 @@ class SteamPeekProvider implements SteamPeekProviderInterface {
                     $this->logger->info((string)$appid);
 
                     $results = new SteamPeekResults();
-                    $results->games = array_map(function(array $a) {
+                    $results->games = array_values(array_map(function(array $a) {
                         $game = new SteamPeekGame();
                         $game->title = $a['title'];
                         $game->appid = intval($a['appid']);
                         $game->rating = floatval($a['sprating']);
                         $game->score = floatval($a['score']);
                         return $game;
-                    }, $response['results']);
+                    }, $response['results']));
                     return $results;
                 }
             }

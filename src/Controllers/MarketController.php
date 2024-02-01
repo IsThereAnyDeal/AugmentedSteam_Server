@@ -18,30 +18,48 @@ class MarketController extends Controller {
         private readonly MarketManager $manager
     ) {}
 
+    /**
+     * @return array<mixed>
+     */
     public function averageCardPrices_v2(ServerRequestInterface $request): array {
+        /** @var string $currency */
         $currency = (new StringParam($request, "currency"))->value();
+
+        /** @var list<string> $appids */
         $appids = (new ListParam($request, "appids"))->value();
 
-        $appids = array_filter(
+        $appids = array_values(array_filter(
             array_map(fn($id) => intval($id), $appids),
             fn($id) => $id > 0
-        );
+        ));
 
         if (count($appids) == 0) {
             throw new InvalidValueException("appids");
         }
 
         $conversion = $this->converter->getConversion("USD", $currency);
+        if (!is_float($conversion)) {
+            throw new \Exception();
+        }
 
         $this->index->recordRequest(...$appids);
         return $this->manager->getAverageCardPrices($appids, $conversion);
     }
 
+    /**
+     * @return array<mixed>
+     */
     public function cards_v2(ServerRequestInterface $request): array {
+        /** @var string $currency */
         $currency = (new StringParam($request, "currency"))->value();
+
+        /** @var int $appid */
         $appid = (new IntParam($request, "appid"))->value();
 
         $conversion = $this->converter->getConversion("USD", $currency);
+        if (!is_float($conversion)) {
+            throw new \Exception();
+        }
 
         $this->index->recordRequest($appid);
         return $this->manager->getCards($appid, $conversion);

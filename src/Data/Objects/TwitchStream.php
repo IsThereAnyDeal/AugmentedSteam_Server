@@ -12,8 +12,11 @@ class TwitchStream implements JsonSerializable
     public int $viewerCount;
     public string $game;
 
+    /**
+     * @return array<string, int|string>
+     */
     #[Override]
-    public function jsonSerialize() {
+    public function jsonSerialize(): array {
         return [
             "user_name" => $this->userName,
             "game" => $this->game,

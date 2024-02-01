@@ -3,7 +3,7 @@ namespace AugmentedSteam\Server\Data\Objects\SteamPeak;
 
 class SteamPeekResults implements \JsonSerializable {
 
-    /** @var SteamPeekGame */
+    /** @var list<SteamPeekGame> */
     public array $games;
 
     public function shuffle(bool $shuffle): self {
@@ -18,6 +18,9 @@ class SteamPeekResults implements \JsonSerializable {
         return $this;
     }
 
+    /**
+     * @return array<mixed>
+     */
     #[\Override]
     public function jsonSerialize(): array {
         return $this->games;

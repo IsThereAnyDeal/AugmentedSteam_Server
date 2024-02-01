@@ -6,11 +6,12 @@ use Psr\Http\Message\ServerRequestInterface;
 
 class ListParam
 {
-    /** @var list<string> */
-    private array $value;
+    /** @var list<string>|null */
+    private ?array $value;
 
     /**
      * @param list<string>|null $default
+     * @param non-empty-string $separator
      */
     public function __construct(
         ServerRequestInterface $request,
@@ -21,7 +22,7 @@ class ListParam
     ) {
         $params = $request->getQueryParams();
 
-        if (array_key_exists($name, $params)) {
+        if (array_key_exists($name, $params) && is_string($params[$name])) {
             $this->value = explode($separator, $params[$name]);
         } else {
             if (is_null($default) && !$nullable) {

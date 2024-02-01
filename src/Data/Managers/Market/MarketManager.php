@@ -20,6 +20,7 @@ class MarketManager
     public function getAverageCardPrices(array $appids, float $conversion): array {
 
         $d = new TMarketData();
+        // @phpstan-ignore-next-line
         $select = $this->db->select(<<<SQL
             SELECT $d->appid, $d->rarity=:foil as foil, AVG($d->sell_price_usd) as `average`, count(*) as `count`
             FROM $d
@@ -34,9 +35,9 @@ class MarketManager
         ])->fetch();
 
         $result = [];
-        /** $var object $o */
+        /** @var \stdClass $o */
         foreach($select as $o) {
-            $appid = $o->appid;
+            $appid = (int)$o->appid;
             $isFoil = $o->foil;
             $avg = ($o->average/100)*$conversion;
 
@@ -102,6 +103,7 @@ class MarketManager
     public function getBackgrounds(int $appid): iterable {
 
         $d = new TMarketData();
+        // @phpstan-ignore-next-line
         return $this->db->select(<<<SQL
             SELECT $d->name, $d->img
             FROM $d

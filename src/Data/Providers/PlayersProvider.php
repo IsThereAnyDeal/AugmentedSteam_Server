@@ -25,9 +25,19 @@ class PlayersProvider implements PlayersProviderInterface
             $body = $response->getBody()->getContents();
             $json = json_decode($body, true, flags: JSON_THROW_ON_ERROR);
 
-            $players->current = $json['current'];
-            $players->peakToday = $json['day'];
-            $players->peakAll = $json['peak'];
+            if (is_array($json)) {
+                /**
+                 * @var array{
+                 *     current: int,
+                 *     day: int,
+                 *     peak: int
+                 * } $json
+                 */
+
+                $players->current = $json['current'];
+                $players->peakToday = $json['day'];
+                $players->peakAll = $json['peak'];
+            }
         }
 
         return $players;

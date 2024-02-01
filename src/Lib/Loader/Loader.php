@@ -7,6 +7,7 @@ use AugmentedSteam\Server\Lib\Loader\Proxy\ProxyInterface;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Pool;
+use Iterator;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
 use Throwable;
@@ -61,10 +62,6 @@ class Loader
                 $settings['headers'][$header] = $value;
             }
 
-            if (!empty($item->getFormData())) {
-                $settings['form_params'] = $item->getFormData();
-            }
-
             if (!empty($item->getBody())) {
                 $settings['body'] = $item->getBody();
             }
@@ -93,7 +90,11 @@ class Loader
         };
     }
 
-    public function run($requests) {
+
+    /**
+     * @param Iterator<callable> $requests
+     */
+    public function run(Iterator $requests): void {
         $pool = new Pool($this->guzzle, $requests, [
             "concurrency" => $this->concurrency,
         ]);

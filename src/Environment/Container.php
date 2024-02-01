@@ -120,7 +120,7 @@ class Container implements ContainerInterface
             ExfglsConfig::class => fn(ContainerInterface $c) => $this->config->getConfig(ExfglsConfig::class),
 
             // db
-            DbDriver::class => fn(ContainerInterface $c) => DbFactory::getDatabase($c->get(DbConfig::class)),
+            DbDriver::class => fn(ContainerInterface $c) => DbFactory::getDatabase($c->get(DbConfig::class)), // @phpstan-ignore-line
             RedisClient::class => create(RedisClient::class)
                 ->constructor(get(RedisConfig::class)),
 
@@ -134,8 +134,8 @@ class Container implements ContainerInterface
                 ->constructor(get(DbDriver::class)),
 
             Session::class => fn(ContainerInterface $c) => new Session(
-                $c->get(DbDriver::class),
-                $c->get(CoreConfig::class)->getHost()
+                $c->get(DbDriver::class), // @phpstan-ignore-line
+                $c->get(CoreConfig::class)->getHost() // @phpstan-ignore-line
             ),
 
             EndpointBuilder::class => create(EndpointBuilder::class)
@@ -180,15 +180,15 @@ class Container implements ContainerInterface
                 ),
 
             WSGFProviderInterface::class => fn(ContainerInterface $c) => new WSGFProvider(
-                    $c->get(SimpleLoader::class),
-                    $c->get(EndpointBuilder::class),
-                    $c->get(LoggerFactoryInterface::class)->logger("wsgf")
+                    $c->get(SimpleLoader::class), // @phpstan-ignore-line
+                    $c->get(EndpointBuilder::class), // @phpstan-ignore-line
+                    $c->get(LoggerFactoryInterface::class)->logger("wsgf") // @phpstan-ignore-line
                 ),
 
             SteampeekProviderInterface::class => fn(ContainerInterface $c) => new SteamPeekProvider(
-                $c->get(SimpleLoader::class),
-                $c->get(EndpointBuilder::class),
-                $c->get(LoggerFactoryInterface::class)->logger("steampeek")
+                $c->get(SimpleLoader::class), // @phpstan-ignore-line
+                $c->get(EndpointBuilder::class), // @phpstan-ignore-line
+                $c->get(LoggerFactoryInterface::class)->logger("steampeek") // @phpstan-ignore-line
             ),
 
             EarlyAccessProviderInterface::class => create(EarlyAccessProvider::class)

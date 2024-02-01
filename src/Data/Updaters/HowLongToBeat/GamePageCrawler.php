@@ -62,6 +62,7 @@ class GamePageCrawler extends Crawler
 
         $data = $this->parser->parse($response->getBody()->getContents());
 
+        /** @var int $id */
         $id = $request->getData()['id'];
         $this->insert->stack(
             (new DHLTB())

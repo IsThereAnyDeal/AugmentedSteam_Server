@@ -9,6 +9,9 @@ class Review implements \JsonSerializable
         public string $url
     ) {}
 
+    /**
+     * @return array<string, mixed>
+     */
     #[\Override]
     public function jsonSerialize(): array {
         return [

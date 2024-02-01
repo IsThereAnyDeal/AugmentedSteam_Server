@@ -66,6 +66,7 @@ class MarketCrawler extends Crawler
     private function getAppidBatch(): array {
         $i = new TMarketIndex();
 
+        // @phpstan-ignore-next-line
         return $this->db->select(<<<SQL
             SELECT $i->appid
             FROM $i
@@ -80,6 +81,9 @@ class MarketCrawler extends Crawler
         ])->fetchValueArray();
     }
 
+    /**
+     * @param list<int> $appids
+     */
     private function makeRequest(array $appids, int $start=0): void {
         $params = [
             "query" => "",
@@ -109,8 +113,31 @@ class MarketCrawler extends Crawler
         }
 
         $data = $response->getBody()->getContents();
+
+        /**
+         * @var array{
+         *     success: bool,
+         *     start: int,
+         *     pagesize: int,
+         *     total_count: int,
+         *     results: list<array{
+         *         name: string,
+         *         hash_name: string,
+         *         sell_listings: int,
+         *         sell_price: int,
+         *         app_name: string,
+         *         asset_description: array{
+         *             appid: int,
+         *             type: string,
+         *             name: string,
+         *             icon_url: string
+         *         }
+         *     }>
+         * } $json
+         */
         $json = json_decode($data, true);
 
+        /** @var list<int> $appids */
         $appids = $request->getData()['appids'];
         if ($json['start'] === 0 && $json['start'] < $json['total_count']) {
             $pageSize = $json['pagesize'];
@@ -124,8 +151,8 @@ class MarketCrawler extends Crawler
         foreach($json['results'] as $item) {
             $asset = $item['asset_description'];
 
-            $rarity = "normal";
-            $type = "unknown";
+            $rarity = ERarity::Normal;
+            $type = EType::Unknown;
 
             if ($item['app_name'] == "Steam") {
                 if (preg_match(
@@ -156,7 +183,14 @@ class MarketCrawler extends Crawler
                 }
             } else {
                 $appName = $item['app_name'];
-                $type = $asset['type'];
+                $type = match($asset['type']) {
+                    "Profile Background" => EType::Background,
+                    "Emoticon" => EType::Emoticon,
+                    "Booster Pack" => EType::Booster,
+                    "Trading Card" => EType::Card,
+                    "Sale Item" => EType::Item,
+                    default => EType::Unknown
+                };
             }
 
             list($appid) = explode("-", $item['hash_name'], 2);
@@ -182,6 +216,9 @@ class MarketCrawler extends Crawler
         $this->logger->info("", ["appids" => $appids, "start" => $json['start']]);
     }
 
+    /**
+     * @param list<int> $appids
+     */
     private function updateIndex(array $appids): void {
         $i = new TMarketIndex();
         $this->db->updateObj($i)

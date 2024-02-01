@@ -6,6 +6,9 @@ class Reviews implements \JsonSerializable
     public ?Review $metauser = null;
     public ?Review $opencritic = null;
 
+    /**
+     * @return array<string, mixed>
+     */
     #[\Override]
     public function jsonSerialize(): array {
         return [

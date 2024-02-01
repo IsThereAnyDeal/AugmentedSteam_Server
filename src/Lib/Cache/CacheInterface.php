@@ -5,10 +5,6 @@ interface CacheInterface
 {
     public function has(ECacheKey $key, string $field): bool;
 
-    /**
-     * @template T
-     * @return T|null
-     */
     public function get(ECacheKey $key, string $field): mixed;
 
     /**

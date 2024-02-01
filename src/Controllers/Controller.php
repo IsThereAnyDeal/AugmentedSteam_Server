@@ -20,6 +20,6 @@ abstract class Controller
                 }
             }
         }
-        return $data[$key] ?? [];
+        return $data[$key] ?? []; // @phpstan-ignore-line
     }
 }

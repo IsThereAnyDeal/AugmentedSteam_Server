@@ -8,10 +8,23 @@ use Nette\Schema\Processor;
 
 class CoreConfig
 {
+
+    /**
+     * @var object{
+     *     host: string,
+     *     dev: bool,
+     *     prettyErrors: bool,
+     *     sentry: object{
+     *         enabled: bool,
+     *         dsn: string,
+     *         environment: string
+     *     }
+     * }
+     */
     private object $config;
 
-    /** @param array<string, mixed> $config */
-    public function __construct(array $config) {
+    public function __construct(mixed $config) {
+        // @phpstan-ignore-next-line
         $this->config = (new Processor())->process(Expect::structure([
             "host" => Expect::string()->required(),
             "dev" => Expect::bool(false),
@@ -26,10 +39,6 @@ class CoreConfig
 
     public function getHost(): string {
         return $this->config->host;
-    }
-
-    public function getEnvironment(): string {
-        return $this->config->env;
     }
 
     public function isDev(): bool {

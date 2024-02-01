@@ -29,7 +29,7 @@ abstract class ApiException extends BadRequestException {
                 "error_description" => $this->errorMessage,
                 "status_code"   => $this->status,
                 "reason_phrase" => $this->message
-            ]));
+            ], flags: JSON_THROW_ON_ERROR));
         }
 
         return $response->withStatus($this->status, $this->message);

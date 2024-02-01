@@ -28,7 +28,11 @@ class SteamRepProvider implements SteamRepProviderInterface {
         $body = $response->getBody()->getContents();
         $json = json_decode($body, true, flags: JSON_THROW_ON_ERROR);
 
-        if (isset($json['steamrep']['reputation']['full'])) {
+        if (is_array($json)
+            && is_array($json['steamrep'] ?? null)
+            && is_array($json['steamrep']['reputation'] ?? null)
+            && is_string($json['steamrep']['reputation']['full'] ?? null)
+        ) {
             $reputation = $json['steamrep']['reputation']['full'];
             if (!empty($reputation)) {
                 return explode(",", $reputation);

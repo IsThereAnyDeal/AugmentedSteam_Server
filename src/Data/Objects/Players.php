@@ -7,6 +7,9 @@ class Players implements \JsonSerializable
     public int $peakToday = 0;
     public int $peakAll = 0;
 
+    /**
+     * @return array<string, int>
+     */
     #[\Override]
     public function jsonSerialize(): array {
         return [

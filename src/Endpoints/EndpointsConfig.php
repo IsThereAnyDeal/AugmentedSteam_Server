@@ -3,20 +3,31 @@ declare(strict_types=1);
 
 namespace AugmentedSteam\Server\Endpoints;
 
-use AugmentedSteam\Server\Config\AConfig;
 use Nette\Schema\Expect;
-use Nette\Schema\Schema;
+use Nette\Schema\Processor;
 
-class EndpointsConfig extends AConfig
+class EndpointsConfig
 {
-    protected function getSchema(): Schema {
-        return Expect::structure([
+    /**
+     * @var object{
+     *     wsgf: string,
+     *     steamspy: string,
+     *     steamrep: string,
+     *     steampeek: string,
+     *     itad: string
+     * }
+     */
+    private readonly object $config;
+
+    public function __construct(mixed $config) {
+        // @phpstan-ignore-next-line
+        $this->config = (new Processor())->process(Expect::structure([
             "wsgf" => Expect::string()->required(),
             "steamspy" => Expect::string()->required(),
             "steamrep" => Expect::string()->required(),
             "steampeek" => Expect::string()->required(),
             "itad" => Expect::string()->required()
-        ]);
+        ]), $config);
     }
 
     public function getWSGFEndpoint(): string {

@@ -13,6 +13,9 @@ readonly class SimpleLoader
         private Client $guzzle
     ) {}
 
+    /**
+     * @param array<string, mixed> $curlOptions
+     */
     public function get(string $url, array $curlOptions = []): ?ResponseInterface {
         try {
             return $this->guzzle->get($url, [

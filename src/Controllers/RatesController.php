@@ -12,7 +12,11 @@ class RatesController extends Controller {
         private readonly CurrencyConverter $converter
     ) {}
 
+    /**
+     * @return array<string, array<string, float>>
+     */
     public function rates_v1(ServerRequestInterface $request): array {
+        /** @var list<string> $currencies */
         $currencies = (new ListParam($request, "to"))->value();
 
         if (count($currencies) == 0 || count($currencies) > 2) {

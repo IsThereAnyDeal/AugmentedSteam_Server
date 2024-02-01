@@ -32,6 +32,7 @@ class ProfileManagementController extends Controller
      * @return list<array{string, string}>
      */
     public function backgrounds_v2(ServerRequestInterface $request): array {
+        /** @var int $appid */
         $appid = (new IntParam($request, "appid"))->value();
 
         return $this->marketManager
@@ -47,6 +48,7 @@ class ProfileManagementController extends Controller
     }
 
     public function deleteBackground_v2(ServerRequestInterface $request): RedirectResponse {
+        /** @var ?int $profile */
         $profile = (new IntParam($request, "profile", default: null, nullable: true))->value();
 
         $authResponse = $this->session->authorize(
@@ -68,8 +70,13 @@ class ProfileManagementController extends Controller
 
     public function saveBackground_v2(ServerRequestInterface $request): RedirectResponse {
         try {
+            /** @var int $appid */
             $appid = (new IntParam($request, "appid"))->value();
+
+            /** @var string $img */
             $img = (new StringParam($request, "img"))->value();
+
+            /** @var ?int $profile */
             $profile = (new IntParam($request, "profile", default: null, nullable: true))->value();
         } catch(Throwable) {
             return new RedirectResponse(self::ReturnUrl.self::Error_BadRequest);
@@ -97,6 +104,7 @@ class ProfileManagementController extends Controller
     }
 
     public function deleteStyle_v2(ServerRequestInterface $request): RedirectResponse {
+        /** @var ?int $profile */
         $profile = (new IntParam($request, "profile", default: null, nullable: true))->value();
 
         $authResponse = $this->session->authorize(
@@ -118,7 +126,10 @@ class ProfileManagementController extends Controller
 
     public function saveStyle_v2(ServerRequestInterface $request): RedirectResponse {
         try {
+            /** @var string $style */
             $style = (new StringParam($request, "style"))->value();
+
+            /** @var ?int $profile */
             $profile = (new IntParam($request, "profile", default: null, nullable: true))->value();
         } catch(Throwable) {
             return new RedirectResponse(self::ReturnUrl.self::Error_BadRequest);
