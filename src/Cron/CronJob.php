@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace AugmentedSteam\Server\Cron;
 
+use AugmentedSteam\Server\Environment\Lock;
+
 class CronJob
 {
     private ?Lock $lock = null;

@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace AugmentedSteam\Server\Model\Market;
+namespace AugmentedSteam\Server\Data\Managers\Market;
 
 use AugmentedSteam\Server\Database\DMarketData;
 use AugmentedSteam\Server\Database\TMarketData;

@@ -1,8 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace AugmentedSteam\Server\Model\Market;
+namespace AugmentedSteam\Server\Data\Updaters\Market;
 
+use AugmentedSteam\Server\Data\Managers\Market\ERarity;
+use AugmentedSteam\Server\Data\Managers\Market\EType;
 use AugmentedSteam\Server\Database\DMarketData;
 use AugmentedSteam\Server\Database\DMarketIndex;
 use AugmentedSteam\Server\Database\TMarketData;
@@ -10,42 +12,41 @@ use AugmentedSteam\Server\Database\TMarketIndex;
 use AugmentedSteam\Server\Lib\Loader\Crawler;
 use AugmentedSteam\Server\Lib\Loader\Item;
 use AugmentedSteam\Server\Lib\Loader\Loader;
-use AugmentedSteam\Server\Lib\Loader\Proxy\ProxyFactoryInterface;
 use AugmentedSteam\Server\Lib\Loader\Proxy\ProxyInterface;
 use IsThereAnyDeal\Database\DbDriver;
-use IsThereAnyDeal\Database\Sql\SqlDeleteQuery;
-use IsThereAnyDeal\Database\Sql\SqlInsertQuery;
-use IsThereAnyDeal\Database\Sql\SqlSelectQuery;
-use IsThereAnyDeal\Database\Sql\SqlUpdateObjectQuery;
-use League\Uri\QueryString;
-use League\Uri\Uri;
+use IsThereAnyDeal\Database\Sql\Create\SqlInsertQuery;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
 
 class MarketCrawler extends Crawler
 {
-    private const BatchCount = 5;
-    private const RequestBatchSize = 50;
-    private const UpdateFrequency = 60*60;
-    private const MaxAttempts = 3;
+    private const int BatchCount = 5;
+    private const int RequestBatchSize = 50;
+    private const int UpdateFrequency = 60*60;
+    private const int MaxAttempts = 3;
 
-    private DbDriver $db;
-    private ProxyInterface $proxy;
+    private readonly DbDriver $db;
+    private readonly ProxyInterface $proxy;
 
-    private SqlInsertQuery $insertQuery;
+    private readonly SqlInsertQuery $insertQuery;
 
     private int $requestCounter = 0;
     private int $timestamp;
 
-    public function __construct(DbDriver $db, Loader $loader, LoggerInterface $logger, ProxyFactoryInterface $proxyFactory) {
+    public function __construct(
+        DbDriver $db,
+        Loader $loader,
+        LoggerInterface $logger,
+        ProxyInterface $proxy
+    ) {
         parent::__construct($loader, $logger);
         $this->db = $db;
-        $this->proxy = $proxyFactory->createProxy();
+        $this->proxy = $proxy;
 
         $this->timestamp = time();
 
         $d = new TMarketData();
-        $this->insertQuery = (new SqlInsertQuery($this->db, $d))
+        $this->insertQuery = $this->db->insert($d)
             ->columns(
                 $d->hash_name, $d->appid,
                 $d->appname,
@@ -56,20 +57,24 @@ class MarketCrawler extends Crawler
                 $d->appname,
                 $d->name, $d->sell_listings, $d->sell_price_usd, $d->img, $d->url,
                 $d->type, $d->rarity, $d->timestamp
-            )
-            ->stackSize(0);
+            );
     }
 
+    /**
+     * @return list<int>
+     */
     private function getAppidBatch(): array {
         $i = new TMarketIndex();
 
-        return (new SqlSelectQuery($this->db,
-            "SELECT $i->appid
+        return $this->db->select(<<<SQL
+            SELECT $i->appid
             FROM $i
             WHERE $i->last_update <= :timestamp
-            ORDER BY $i->last_update ASC, $i->request_counter DESC
-            LIMIT :limit"
-        ))->params([
+            ORDER BY $i->last_update ASC,
+                     $i->request_counter DESC
+            LIMIT :limit
+            SQL
+        )->params([
             ":timestamp" => time() - self::UpdateFrequency,
             ":limit" => self::RequestBatchSize
         ])->fetchValueArray();
@@ -77,22 +82,20 @@ class MarketCrawler extends Crawler
 
     private function makeRequest(array $appids, int $start=0): void {
         $params = [
-            ["query", ""],
-            ["start", $start],
-            ["count", 100],
-            ["search_description", 0],
-            ["sort_column", "popular"],
-            ["sort_dir", "desc"],
-            ["norender", 1],
+            "query" => "",
+            "start" => $start,
+            "count" => 100,
+            "search_description" => 0,
+            "sort_column" => "popular",
+            "sort_dir" => "desc",
+            "norender" => 1,
         ];
         foreach($appids as $appid) {
-            $params[] = ["category_753_Game[]", "tag_app_{$appid}"];
+            $params['category_753_Game'][] = "tag_app_{$appid}";
         }
 
-        $uri = Uri::createFromString("https://steamcommunity.com/market/search/render/")
-            ->withQuery(QueryString::build($params));
-
-        $item = (new Item((string)$uri))
+        $url = "https://steamcommunity.com/market/search/render/?".http_build_query($params);
+        $item = (new Item($url))
             ->setData(["appids" => $appids])
             ->setCurlOptions($this->proxy->getCurlOptions());
 
@@ -132,37 +135,21 @@ class MarketCrawler extends Crawler
                 )) {
                     $appName = $m[1];
 
-                    switch($m[2]) {
-                        case "Uncommon":
-                        case "Foil":
-                        case "Rare":
-                            $rarity = strtolower($m[2]);
-                            break;
-                        default:
-                            $rarity = "normal";
-                            break;
-                    }
+                    $rarity = match($m[2]) {
+                        "Uncommon" => ERarity::Uncommon,
+                        "Foil" => ERarity::Foil,
+                        "Rare" => ERarity::Rare,
+                        default => ERarity::Normal
+                    };
 
-                    switch($m[3]) {
-                        case "Profile Background":
-                            $type = "background";
-                            break;
-                        case "Emoticon":
-                            $type = "emoticon";
-                            break;
-                        case "Booster Pack":
-                            $type = "booster";
-                            break;
-                        case "Trading Card":
-                            $type = "card";
-                            break;
-                        case "Sale Item":
-                            $type = "item";
-                            break;
-                        default:
-                            $type = "unknown";
-                            break;
-                    }
+                    $type = match($m[3]) {
+                        "Profile Background" => EType::Background,
+                        "Emoticon" => EType::Emoticon,
+                        "Booster Pack" => EType::Booster,
+                        "Trading Card" => EType::Card,
+                        "Sale Item" => EType::Item,
+                        default => EType::Unknown
+                    };
                 } else {
                     $appName = $asset['type'];
                     $this->logger->notice($appName);
@@ -197,7 +184,7 @@ class MarketCrawler extends Crawler
 
     private function updateIndex(array $appids): void {
         $i = new TMarketIndex();
-        (new SqlUpdateObjectQuery($this->db, $i))
+        $this->db->updateObj($i)
             ->columns($i->last_update, $i->request_counter)
             ->whereSql("$i->appid IN :appids", [":appids" => $appids])
             ->update(
@@ -207,20 +194,25 @@ class MarketCrawler extends Crawler
             );
     }
 
+    /**
+     * @param list<int> $appids
+     */
     private function cleanup(array $appids): void {
         if (count($appids) == 0) { return; }
 
         $d = new TMarketData();
-        (new SqlDeleteQuery($this->db,
-            "DELETE FROM $d
-            WHERE $d->appid IN :appids AND $d->timestamp < :timestamp"
-        ))->delete([
+        $this->db->delete(<<<SQL
+            DELETE FROM $d
+            WHERE $d->appid IN :appids
+              AND $d->timestamp < :timestamp
+            SQL
+        )->delete([
             ":appids" => $appids,
             ":timestamp" => $this->timestamp
         ]);
     }
 
-    public function update() {
+    public function update(): void {
         $this->logger->info("Update start");
 
         for ($b = 0; $b < self::BatchCount; $b++) {

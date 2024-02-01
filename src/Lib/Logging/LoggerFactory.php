@@ -45,7 +45,7 @@ class LoggerFactory implements LoggerFactoryInterface
         $fileHandler->setFormatter($lineFormatter);
 
         return (new Logger($channel))
-            ->pushHandler($this->getFileHandler($channel))
+            ->pushHandler($fileHandler)
             ->pushProcessor(new UidProcessor());
     }
 
@@ -61,7 +61,7 @@ class LoggerFactory implements LoggerFactoryInterface
         $fileHandler->setFormatter($lineFormatter);
 
         return (new Logger($channel))
-            ->pushHandler($this->getFileHandler($channel))
+            ->pushHandler($fileHandler)
             ->pushProcessor(new UidProcessor())
             ->pushProcessor(new WebProcessor(extraFields: ["ip", "server", "referrer"]));
     }

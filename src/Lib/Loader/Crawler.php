@@ -10,15 +10,12 @@ use Throwable;
 
 abstract class Crawler
 {
-    private readonly Loader $loader;
-    protected readonly LoggerInterface $logger;
-
     private SplQueue $requestQueue;
 
-    public function __construct(Loader $loader, LoggerInterface $logger) {
-        $this->loader = $loader;
-        $this->logger = $logger;
-
+    public function __construct(
+        private readonly Loader $loader,
+        protected readonly LoggerInterface $logger
+    ) {
         $this->requestQueue = new SplQueue();
     }
 

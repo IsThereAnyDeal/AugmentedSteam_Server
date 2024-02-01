@@ -10,7 +10,7 @@ class ExfglsConfig
 {
     private object $config;
 
-    protected function __construct(array $config) {
+    public function __construct(array $config) {
         $this->config = (new Processor())->process(Expect::structure([
             "enabled" => Expect::bool(false),
             "bin" => Expect::string(),

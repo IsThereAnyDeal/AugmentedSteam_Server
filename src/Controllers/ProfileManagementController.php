@@ -3,11 +3,11 @@ declare(strict_types=1);
 
 namespace AugmentedSteam\Server\Controllers;
 
+use AugmentedSteam\Server\Data\Managers\Market\MarketManager;
 use AugmentedSteam\Server\Data\Managers\UserManager;
 use AugmentedSteam\Server\Lib\Http\IntParam;
 use AugmentedSteam\Server\Lib\Http\StringParam;
 use AugmentedSteam\Server\Lib\OpenId\Session;
-use AugmentedSteam\Server\Model\Market\MarketManager;
 use Laminas\Diactoros\Response\RedirectResponse;
 use Psr\Http\Message\ServerRequestInterface;
 use Throwable;

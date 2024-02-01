@@ -1,13 +1,13 @@
 <?php
 namespace AugmentedSteam\Server\Controllers;
 
+use AugmentedSteam\Server\Data\Managers\Market\MarketIndex;
+use AugmentedSteam\Server\Data\Managers\Market\MarketManager;
 use AugmentedSteam\Server\Exceptions\InvalidValueException;
 use AugmentedSteam\Server\Lib\Http\IntParam;
 use AugmentedSteam\Server\Lib\Http\ListParam;
 use AugmentedSteam\Server\Lib\Http\StringParam;
 use AugmentedSteam\Server\Lib\Money\CurrencyConverter;
-use AugmentedSteam\Server\Model\Market\MarketIndex;
-use AugmentedSteam\Server\Model\Market\MarketManager;
 use Psr\Http\Message\ServerRequestInterface;
 
 class MarketController extends Controller {

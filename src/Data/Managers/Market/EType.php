@@ -1,5 +1,5 @@
 <?php
-namespace AugmentedSteam\Server\Model\Market;
+namespace AugmentedSteam\Server\Data\Managers\Market;
 
 enum EType: string
 {

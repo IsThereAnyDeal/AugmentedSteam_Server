@@ -8,7 +8,6 @@ use AugmentedSteam\Server\Database\THLTB;
 use AugmentedSteam\Server\Lib\Loader\Crawler;
 use AugmentedSteam\Server\Lib\Loader\Item;
 use AugmentedSteam\Server\Lib\Loader\Loader;
-use AugmentedSteam\Server\Lib\Loader\Proxy\ProxyFactoryInterface;
 use AugmentedSteam\Server\Lib\Loader\Proxy\ProxyInterface;
 use IsThereAnyDeal\Database\DbDriver;
 use IsThereAnyDeal\Database\Sql\Create\SqlInsertQuery;
@@ -33,11 +32,11 @@ class GamePageCrawler extends Crawler
         DbDriver $db,
         Loader $loader,
         LoggerInterface $logger,
-        ProxyFactoryInterface $proxyFactory
+        ProxyInterface $proxy
     ) {
         parent::__construct($loader, $logger);
         $this->db = $db;
-        $this->proxy = $proxyFactory->createProxy();
+        $this->proxy = $proxy;
         $this->parser = new GamePageParser();
 
         $h = new THLTB();

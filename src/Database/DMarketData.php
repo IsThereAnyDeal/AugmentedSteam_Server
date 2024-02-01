@@ -3,6 +3,9 @@ declare(strict_types=1);
 
 namespace AugmentedSteam\Server\Database;
 
+use AugmentedSteam\Server\Data\Managers\Market\ERarity;
+use AugmentedSteam\Server\Data\Managers\Market\EType;
+
 class DMarketData
 {
     private string $hash_name;
@@ -13,8 +16,8 @@ class DMarketData
     private int $sell_price_usd;
     private string $img;
     private string $url;
-    private string $type;
-    private string $rarity;
+    private EType $type;
+    private ERarity $rarity;
     private int $timestamp;
 
     public function getHashName(): string {
@@ -89,20 +92,20 @@ class DMarketData
         return $this;
     }
 
-    public function getType(): string {
+    public function getType(): EType {
         return $this->type;
     }
 
-    public function setType(string $type): self {
+    public function setType(EType $type): self {
         $this->type = $type;
         return $this;
     }
 
-    public function getRarity(): string {
+    public function getRarity(): ERarity {
         return $this->rarity;
     }
 
-    public function setRarity(string $rarity): self {
+    public function setRarity(ERarity $rarity): self {
         $this->rarity = $rarity;
         return $this;
     }

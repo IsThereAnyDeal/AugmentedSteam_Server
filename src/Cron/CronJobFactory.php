@@ -8,96 +8,29 @@ use AugmentedSteam\Server\Data\Updaters\Exfgls\ExfglsConfig;
 use AugmentedSteam\Server\Data\Updaters\Exfgls\ExfglsUpdater;
 use AugmentedSteam\Server\Data\Updaters\HowLongToBeat\GamePageCrawler;
 use AugmentedSteam\Server\Data\Updaters\HowLongToBeat\SearchResultsCrawler;
+use AugmentedSteam\Server\Data\Updaters\Market\MarketCrawler;
 use AugmentedSteam\Server\Data\Updaters\Rates\RatesUpdater;
-use AugmentedSteam\Server\Endpoints\EndpointsConfig;
-use AugmentedSteam\Server\Endpoints\KeysConfig;
 use AugmentedSteam\Server\Environment\Container;
 use AugmentedSteam\Server\Lib\Loader\Loader;
 use AugmentedSteam\Server\Lib\Loader\Proxy\ProxyFactoryInterface;
 use AugmentedSteam\Server\Lib\Logging\LoggerFactoryInterface;
-use AugmentedSteam\Server\Model\Market\MarketCrawler;
 use GuzzleHttp\Client;
+use InvalidArgumentException;
 use IsThereAnyDeal\Database\DbDriver;
 
 class CronJobFactory
 {
-    private LoggerFactoryInterface $loggerFactory;
-    private ProxyFactoryInterface $proxyFactory;
-    private DbDriver $db;
-    private Client $guzzle;
-    private EndpointsConfig $endpointsConfig;
-    private KeysConfig $keysConfig;
-    private ExfglsConfig $exfglsConfig;
+    private readonly LoggerFactoryInterface $loggerFactory;
+    private readonly DbDriver $db;
 
     public function __construct(
-        LoggerFactoryInterface $loggerFactory,
-        ProxyFactoryInterface $proxyFactory,
-        DbDriver $db,
-        Client $guzzle,
-        // TODO figure out a way how we don't have to have multiple config objects here
-        EndpointsConfig $endpointsConfig,
-        KeysConfig $keysConfig,
-        ExfglsConfig $exfglsConfig
+        private readonly Container $container
     ) {
-        $this->loggerFactory = $loggerFactory;
-        $this->proxyFactory = $proxyFactory;
-        $this->db = $db;
-        $this->guzzle = $guzzle;
-        $this->endpointsConfig = $endpointsConfig;
-        $this->keysConfig = $keysConfig;
-        $this->exfglsConfig = $exfglsConfig;
+        $this->loggerFactory = $this->container->get(LoggerFactoryInterface::class);
+        $this->db = $this->container->get(DbDriver::class);
     }
 
-    public function createMarketJob(): CronJob {
-        return (new CronJob())
-            ->lock("market", 10)
-            ->callable(function(){
-                $logger = $this->loggerFactory->create("market");
-
-                $loader = new Loader($logger, $this->guzzle);
-                $updater = new MarketCrawler($this->db, $loader, $logger, $this->proxyFactory);
-                $updater->update();
-            });
-    }
-
-    public function createHLTBSearchResultsAllJob(): CronJob {
-        return (new CronJob())
-            ->lock("hltb.all", 5)
-            ->callable(function(){
-                $logger = $this->loggerFactory->create("hltb");
-
-                $loader = new Loader($logger, $this->guzzle);
-                $updater = new SearchResultsCrawler($this->db, $loader, $logger, $this->proxyFactory);
-                $updater->update();
-            });
-    }
-
-    public function createHLTBSearchResultsRecentJob(): CronJob {
-        return (new CronJob())
-            ->lock("hltb.recent", 5)
-            ->callable(function(){
-                $logger = $this->loggerFactory->create("hltb");
-
-                $loader = new Loader($logger, $this->guzzle);
-                $updater = new SearchResultsCrawler($this->db, $loader, $logger, $this->proxyFactory);
-                $updater->setQueryString("recently added");
-                $updater->update();
-            });
-    }
-
-    public function createHLTBGamesJob(): CronJob {
-        return (new CronJob())
-            ->lock("hltb.games", 5)
-            ->callable(function(){
-                $logger = $this->loggerFactory->create("hltb");
-
-                $loader = new Loader($logger, $this->guzzle);
-                $updater = new GamePageCrawler($this->db, $loader, $logger, $this->proxyFactory);
-                $updater->update();
-            });
-    }
-
-    public function createRatesJob(): CronJob {
+    private function createRatesJob(): CronJob {
         return (new CronJob())
             ->lock("rates", 5)
             ->callable(function(){
@@ -110,16 +43,89 @@ class CronJobFactory
             });
     }
 
-    public function createExfglsJob(): CronJob {
+    private function createExfglsJob(): CronJob {
         return (new CronJob())
             ->lock("exfgls", 5)
             ->callable(function(){
-                $updater = new ExfglsUpdater(
-                    $this->db,
-                    $this->loggerFactory->logger("exfgls"),
-                    $this->exfglsConfig
-                );
+                $logger = $this->loggerFactory->logger("exfgls");
+                $exfglsConfig = $this->container->get(ExfglsConfig::class);
+
+                $updater = new ExfglsUpdater($this->db, $logger, $exfglsConfig);
                 $updater->update();
             });
+    }
+
+    private function createMarketJob(): CronJob {
+        return (new CronJob())
+            ->lock("market", 10)
+            ->callable(function(){
+                $logger = $this->loggerFactory->logger("market");
+                $guzzle = $this->container->get(Client::class);
+                $proxy = $this->container->get(ProxyFactoryInterface::class)
+                    ->createProxy();
+
+                $loader = new Loader($logger, $guzzle);
+                $updater = new MarketCrawler($this->db, $loader, $logger, $proxy);
+                $updater->update();
+            });
+    }
+
+    private function createHLTBSearchResultsAllJob(): CronJob {
+        return (new CronJob())
+            ->lock("hltb.all", 5)
+            ->callable(function(){
+                $logger = $this->loggerFactory->logger("hltb");
+                $guzzle = $this->container->get(Client::class);
+                $proxy = $this->container->get(ProxyFactoryInterface::class)
+                    ->createProxy();
+
+                $loader = new Loader($logger, $guzzle);
+                $updater = new SearchResultsCrawler($this->db, $loader, $logger, $proxy);
+                $updater->update();
+            });
+    }
+
+    private function createHLTBSearchResultsRecentJob(): CronJob {
+        return (new CronJob())
+            ->lock("hltb.recent", 5)
+            ->callable(function(){
+                $logger = $this->loggerFactory->logger("hltb");
+                $guzzle = $this->container->get(Client::class);
+                $proxy = $this->container->get(ProxyFactoryInterface::class)
+                    ->createProxy();
+
+                $loader = new Loader($logger, $guzzle);
+                $updater = new SearchResultsCrawler($this->db, $loader, $logger, $proxy);
+                $updater->setQueryString("recently added");
+                $updater->update();
+            });
+    }
+
+    private function createHLTBGamesJob(): CronJob {
+        return (new CronJob())
+            ->lock("hltb.games", 5)
+            ->callable(function(){
+                $logger = $this->loggerFactory->logger("hltb");
+                $guzzle = $this->container->get(Client::class);
+                $proxy = $this->container->get(ProxyFactoryInterface::class)
+                    ->createProxy();
+
+                $loader = new Loader($logger, $guzzle);
+                $updater = new GamePageCrawler($this->db, $loader, $logger, $proxy);
+                $updater->update();
+            });
+    }
+
+    public function getJob(string $job): CronJob {
+
+        return match($job) {
+            "rates" => $this->createRatesJob(),
+            "exfgls" => $this->createExfglsJob(),
+            "market" => $this->createMarketJob(),
+            "hltb-all" => $this->createHLTBSearchResultsAllJob(),
+            "hltb-recent" => $this->createHLTBSearchResultsRecentJob(),
+            "hltb-games" => $this->createHLTBGamesJob(),
+            default => throw new InvalidArgumentException()
+        };
     }
 }
