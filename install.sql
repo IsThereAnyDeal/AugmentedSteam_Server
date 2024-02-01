@@ -1,10 +1,11 @@
 
 CREATE TABLE `currency` (
-  `from` char(3) NOT NULL,
-  `to`   char(3) NOT NULL,
-  `rate` float NOT NULL,
+  `from`      char(3) NOT NULL,
+  `to`        char(3) NOT NULL,
+  `rate`      float NOT NULL,
   `timestamp` int unsigned NOT NULL,
-  UNIQUE(`to`, `from`)
+  UNIQUE(`to`, `from`),
+  INDEX(`timestamp`)
 ) ENGINE=InnoDB;
 
 CREATE TABLE `dlc_categories` (
@@ -80,31 +81,13 @@ CREATE TABLE `steamrep` (
   INDEX (`checked`, `timestamp`)
 ) ENGINE=InnoDB;
 
-CREATE TABLE `steamcharts` (
-  `appid` int NOT NULL,
-  `recent` int,
-  `peak_day` int,
-  `peak_all` int,
-  `timestamp` int unsigned NOT NULL,
-  PRIMARY KEY (`appid`),
-  INDEX (`timestamp`)
-) ENGINE=InnoDB;
-
-CREATE TABLE `steamspy` (
-  `appid` int NOT NULL,
-  `owners` varchar(30) NOT NULL,
-  `average_forever` int NOT NULL,
-  `average_2weeks` int NOT NULL,
-  `timestamp` int unsigned NOT NULL,
-  PRIMARY KEY (`appid`)
-) ENGINE=InnoDB;
-
 CREATE TABLE `cache` (
-  `appid` int NOT NULL,
-  `key` tinyint unsigned NOT NULL,
-  `json` json NOT NULL,
-  `timestamp` int unsigned NOT NULL,
-  PRIMARY KEY (`appid`, `key`)
+  `key` int NOT NULL,
+  `field` varchar(50) NOT NULL,
+  `data` longblob,
+  `expiry` int unsigned NOT NULL,
+  PRIMARY KEY (`key`, `field`),
+  INDEX (`expiry`)
 );
 
 CREATE TABLE `exfgls` (
@@ -126,40 +109,6 @@ CREATE TABLE `hltb` (
   PRIMARY KEY (`id`),
   INDEX (`appid`)
 ) ENGINE=InnoDb;
-
-CREATE TABLE `similar` (
-  `appid` int NOT NULL,
-  `data` text,
-  `timestamp` int unsigned NOT NULL,
-  PRIMARY KEY (`appid`)
-) ENGINE=InnoDB;
-
-CREATE TABLE `earlyaccess` (
-  `appid` int NOT NULL,
-  `timestamp` int unsigned NOT NULL,
-  PRIMARY KEY (`appid`),
-  INDEX (`timestamp`)
-) ENGINE=InnoDB;
-
-CREATE TABLE `surveys` (
-  `appid` int NOT NULL,
-  `steamid` bigint NOT NULL,
-  `framerate` tinyint unsigned,
-  `optimized` tinyint,
-  `lag` tinyint,
-  `graphics_settings` enum('none', 'basic', 'granular'),
-  `bg_sound_mute` tinyint,
-  `good_controls` tinyint,
-  `timestamp` int unsigned NOT NULL,
-  PRIMARY KEY (`appid`, `steamid`)
-);
-
-CREATE TABLE `twitch_token` (
-  `token` char(30) NOT NULL,
-  `expiry` int NOT NULL,
-  INDEX(`expiry`),
-  PRIMARY KEY(`token`)
-) ENGINE=InnoDB;
 
 CREATE TABLE `sessions` (
   `token` char(10) NOT NULL,
