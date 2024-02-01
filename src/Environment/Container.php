@@ -26,9 +26,7 @@ use AugmentedSteam\Server\Data\Interfaces\TwitchProviderInterface;
 use AugmentedSteam\Server\Data\Managers\ExfglsManager;
 use AugmentedSteam\Server\Data\Managers\HLTBManager;
 use AugmentedSteam\Server\Data\Managers\SteamRepManager;
-use AugmentedSteam\Server\Data\Managers\TwitchManager;
 use AugmentedSteam\Server\Data\Providers\EarlyAccessProvider;
-use AugmentedSteam\Server\Data\Providers\GameIdsProvider;
 use AugmentedSteam\Server\Data\Providers\PlayersProvider;
 use AugmentedSteam\Server\Data\Providers\PricesProvider;
 use AugmentedSteam\Server\Data\Providers\RatesProvider;
@@ -43,7 +41,6 @@ use AugmentedSteam\Server\Endpoints\EndpointsConfig;
 use AugmentedSteam\Server\Endpoints\KeysConfig;
 use AugmentedSteam\Server\Lib\Cache\Cache;
 use AugmentedSteam\Server\Lib\Cache\CacheInterface;
-use AugmentedSteam\Server\Lib\Redis\RedisCache;
 use AugmentedSteam\Server\Lib\Redis\RedisClient;
 use AugmentedSteam\Server\Lib\Redis\RedisConfig;
 use AugmentedSteam\Server\Loader\Proxy\ProxyFactory;
@@ -200,12 +197,6 @@ class Container implements ContainerInterface
                     get(EndpointBuilder::class)
                 ),
 
-            GameIdsProviderInterface::class => create(GameIdsProvider::class)
-                ->constructor(
-                    get(GuzzleClient::class),
-                    get(EndpointBuilder::class)
-                ),
-
             PricesProviderInterface::class => create(PricesProvider::class)
                 ->constructor(
                     get(GuzzleClient::class),
@@ -256,11 +247,6 @@ class Container implements ContainerInterface
             HLTBManager::class => create()
                 ->constructor(
                     get(DbDriver::class)
-                ),
-            TwitchManager::class => create()
-                ->constructor(
-                    get(RedisCache::class),
-                    get(TwitchProviderInterface::class)
                 ),
 
             // controllers
@@ -323,7 +309,8 @@ class Container implements ContainerInterface
 
             TwitchController::class => create()
                 ->constructor(
-                    get(TwitchManager::class),
+                    get(CacheInterface::class),
+                    get(TwitchProviderInterface::class),
                 )
         ];
     }

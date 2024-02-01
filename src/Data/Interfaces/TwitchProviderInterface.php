@@ -6,5 +6,5 @@ namespace AugmentedSteam\Server\Data\Interfaces;
 use AugmentedSteam\Server\Data\Objects\TwitchStream;
 
 interface TwitchProviderInterface {
-    public function getStream(string $channel): ?TwitchStream;
+    public function fetch(string $channel): ?TwitchStream;
 }

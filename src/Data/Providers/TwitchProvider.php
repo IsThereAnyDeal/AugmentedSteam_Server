@@ -15,7 +15,7 @@ class TwitchProvider implements TwitchProviderInterface {
         private readonly EndpointBuilder $endpoints
     ) {}
 
-    public function getStream(string $channel): ?TwitchStream {
+    public function fetch(string $channel): ?TwitchStream {
         $url = $this->endpoints->getTwitchStream($channel);
 
         $response = $this->loader->get($url);
