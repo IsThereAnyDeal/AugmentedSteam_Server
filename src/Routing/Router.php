@@ -27,13 +27,15 @@ class Router
 {
     private function defineRoutes(\League\Route\Router $router): void {
 
-        $router->get("/rates/v1", [RatesController::class, "getRates_v1"]);
-        $router->get("/early-access/v1", [EarlyAccessController::class, "getAppids_v1"]);
+        $router->get("/rates/v1", [RatesController::class, "rates_v1"]);
+        $router->get("/early-access/v1", [EarlyAccessController::class, "appids_v1"]);
 
         $router->post("/prices/v2", [PricesController::class, "prices_v2"]);
         $router->get("/app/{appid:\d+}/v2", [AppController::class, "appInfo_v2"]);
         $router->get("/dlc/{appid:\d+}/v2", [DLCController::class, "dlcInfo_v2"]);
         $router->get("/similar/{appid:\d+}/v2", [SimilarController::class, "similar_v2"]);
+
+        $router->get("/twitch/{channel}/stream/v2", [TwitchController::class, "getStream_v2"]);
 
         $router->group("/market", function(RouteGroup $g) {
             $g->get("/cards/v2", [MarketController::class, "cards_v2"]);
@@ -49,8 +51,6 @@ class Router
             $g->get("/style/delete/v2", [ProfileManagementController::class, "deleteStyle_v2"]);
             $g->get("/style/save/v2", [ProfileManagementController::class, "saveStyle_v2"]);
         });
-
-        $router->get("/twitch/{channel}/stream/v2", [TwitchController::class, "getStream_v2"]);
     }
 
     public function route(Container $container): void {

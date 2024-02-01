@@ -258,7 +258,7 @@ class Container implements ContainerInterface
 
             EarlyAccessController::class => create()
                 ->constructor(
-                    get(RedisClient::class),
+                    get(CacheInterface::class),
                     get(EarlyAccessProviderInterface::class)
                 ),
 

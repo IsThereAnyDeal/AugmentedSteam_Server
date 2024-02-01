@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace AugmentedSteam\Server\Controllers;
 
 use AugmentedSteam\Server\Data\Interfaces\EarlyAccessProviderInterface;
-use AugmentedSteam\Server\Lib\Redis\ERedisKey;
-use AugmentedSteam\Server\Lib\Redis\RedisClient;
+use AugmentedSteam\Server\Lib\Cache\CacheInterface;
+use AugmentedSteam\Server\Lib\Cache\ECacheKey;
 use Psr\Http\Message\ServerRequestInterface;
 
 class EarlyAccessController extends Controller {
@@ -13,27 +13,20 @@ class EarlyAccessController extends Controller {
     private const int TTL = 3600;
 
     public function __construct(
-        private readonly RedisClient $redis,
+        private readonly CacheInterface $cache,
         private readonly EarlyAccessProviderInterface $provider
     ) {}
 
-    public function getAppids_v1(ServerRequestInterface $request): array {
+    public function appids_v1(ServerRequestInterface $request): array {
+        $key = ECacheKey::EarlyAccess;
+        $field = "ea";
 
-        $cached = $this->redis->get(ERedisKey::EarlyAccess->value);
-
-        $appids = null;
-        if (!is_null($cached)) {
-            $appids = json_decode($cached, true);
-            if (!is_array($appids) || !array_is_list($appids)) {
-                $appids = null;
-            }
+        if ($this->cache->has($key, $field)) {
+            return $this->cache->get($key, $field) ?? [];
         }
 
-        if (is_null($appids)) {
-            $appids = $this->provider->fetch();
-            $this->redis->set(ERedisKey::EarlyAccess->value, json_encode($appids), "EX", self::TTL);
-        }
-
+        $appids = $this->provider->fetch();
+        $this->cache->set($key, $field, $appids, self::TTL);
         return $appids;
     }
 }
