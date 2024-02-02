@@ -10,6 +10,7 @@ use AugmentedSteam\Server\Data\Updaters\HowLongToBeat\GamePageCrawler;
 use AugmentedSteam\Server\Data\Updaters\HowLongToBeat\SearchResultsCrawler;
 use AugmentedSteam\Server\Data\Updaters\Market\MarketCrawler;
 use AugmentedSteam\Server\Data\Updaters\Rates\RatesUpdater;
+use AugmentedSteam\Server\Database\TCache;
 use AugmentedSteam\Server\Environment\Container;
 use AugmentedSteam\Server\Lib\Loader\Loader;
 use AugmentedSteam\Server\Lib\Loader\Proxy\ProxyFactoryInterface;
@@ -116,6 +117,20 @@ class CronJobFactory
             });
     }
 
+    private function createCacheMaintenanceJob(): CronJob {
+        return (new CronJob())
+            ->callable(function(){
+                $db = $this->container->get(DbDriver::class);
+
+                $c = new TCache();
+                $db->delete(<<<SQL
+                    DELETE FROM $c
+                    WHERE $c->expiry < UNIX_TIMESTAMP()
+                    SQL
+                )->delete();
+            });
+    }
+
     public function getJob(string $job): CronJob {
 
         return match($job) {
@@ -125,6 +140,7 @@ class CronJobFactory
             "hltb-all" => $this->createHLTBSearchResultsAllJob(),
             "hltb-recent" => $this->createHLTBSearchResultsRecentJob(),
             "hltb-games" => $this->createHLTBGamesJob(),
+            "cache-maintenance" => $this->createCacheMaintenanceJob(),
             default => throw new InvalidArgumentException()
         };
     }
