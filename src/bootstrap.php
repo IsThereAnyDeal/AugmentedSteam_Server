@@ -31,7 +31,7 @@ $config->map([
     BrightDataConfig::class => "brightdata",
     ExfglsConfig::class => "exfgls"
 ]);
-$config->loadJsonFile(RELEASE_ROOT."/.config.json");
+$config->loadJsonFile(PROJECT_ROOT."/".getenv("AS_SERVER_CONFIG"));
 
 Container::init($config);
 

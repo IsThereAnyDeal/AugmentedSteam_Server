@@ -120,7 +120,9 @@ class Container implements ContainerInterface
             ExfglsConfig::class => fn(ContainerInterface $c) => $this->config->getConfig(ExfglsConfig::class),
 
             // db
-            DbDriver::class => fn(ContainerInterface $c) => DbFactory::getDatabase($c->get(DbConfig::class)), // @phpstan-ignore-line
+            DbDriver::class => fn(ContainerInterface $c) => (new DbFactory())
+                ->getDatabase($c->get(DbConfig::class), "main"), // @phpstan-ignore-line
+
             RedisClient::class => create(RedisClient::class)
                 ->constructor(get(RedisConfig::class)),
 
