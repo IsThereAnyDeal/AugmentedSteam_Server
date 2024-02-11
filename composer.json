@@ -2,7 +2,7 @@
   "scripts": {
     "docs": "redocly preview-docs docs/openapi.yaml",
     "build": "vendor/bin/deby --config build/build.php build",
-    "deploy": "vendor/bin/deby --config build/build.php deploy@next",
+    "deploy": "vendor/bin/deby --config build/build.php deploy@server",
     "phpstan": "vendor/bin/phpstan analyse -c phpstan.neon"
   },
   "autoload": {

@@ -8,8 +8,9 @@ class RedisClient extends \Predis\Client{
             "scheme" => $config->getScheme(),
             "host" => $config->getHost(),
             "port" => $config->getPort(),
+            "database" => $config->getDatabase()
         ], [
-            "prefix" => $config->getPrefix()
+            "prefix" => $config->getPrefix(),
         ]);
     }
 }

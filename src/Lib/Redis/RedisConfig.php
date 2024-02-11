@@ -3,11 +3,19 @@ namespace AugmentedSteam\Server\Lib\Redis;
 
 use Nette\Schema\Expect;
 use Nette\Schema\Processor;
-use stdClass;
 
 class RedisConfig
 {
-    private stdClass $data;
+    /**
+     * @var object{
+     *     scheme: string,
+     *     host: string,
+     *     port: int,
+     *     prefix: string,
+     *     database: int
+     * }
+     */
+    private object $data;
 
     /** @param array<mixed> $config */
     public function __construct(array $config) {
@@ -16,7 +24,8 @@ class RedisConfig
                 "scheme" => Expect::anyOf("tcp")->required(),
                 "host" => Expect::string()->required(),
                 "port" => Expect::int(6379),
-                "prefix" => Expect::string()->required()
+                "prefix" => Expect::string()->required(),
+                "database" => Expect::int()->required()
             ]),
             $config
         );
@@ -36,5 +45,9 @@ class RedisConfig
 
     public function getPrefix(): string {
         return $this->data->prefix;
+    }
+
+    public function getDatabase(): int {
+        return $this->data->database;
     }
 }
