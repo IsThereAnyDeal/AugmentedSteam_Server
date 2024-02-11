@@ -2527,12 +2527,12 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:IsThereAnyDeal/Deby.git",
-                "reference": "be70bcb80a192908af430800b6947300ede8c234"
+                "reference": "6154e97e34d7b70861a7212ca024f7575682c847"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/IsThereAnyDeal/Deby/zipball/be70bcb80a192908af430800b6947300ede8c234",
-                "reference": "be70bcb80a192908af430800b6947300ede8c234",
+                "url": "https://api.github.com/repos/IsThereAnyDeal/Deby/zipball/6154e97e34d7b70861a7212ca024f7575682c847",
+                "reference": "6154e97e34d7b70861a7212ca024f7575682c847",
                 "shasum": ""
             },
             "require": {
@@ -2556,7 +2556,7 @@
                 "source": "https://github.com/IsThereAnyDeal/Deby/tree/master",
                 "issues": "https://github.com/IsThereAnyDeal/Deby/issues"
             },
-            "time": "2024-02-07T21:33:37+00:00"
+            "time": "2024-02-11T13:40:48+00:00"
         },
         {
             "name": "phpstan/phpstan",
