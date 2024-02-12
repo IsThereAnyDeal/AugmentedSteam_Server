@@ -58,7 +58,7 @@ class CronJobFactory
 
     private function createMarketJob(): CronJob {
         return (new CronJob())
-            ->lock("market", 10)
+            ->lock("market", 60)
             ->callable(function(){
                 $logger = $this->loggerFactory->logger("market");
                 $guzzle = $this->container->get(Client::class);
