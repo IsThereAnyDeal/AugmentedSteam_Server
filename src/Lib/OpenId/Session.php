@@ -80,7 +80,7 @@ class Session {
             $openId = new OpenId($this->host, $selfPath);
 
             if (!$openId->isAuthenticationStarted()) {
-                return new RedirectResponse($openId->getAuthUrl());
+                return new RedirectResponse($openId->getAuthUrl()->toString());
             }
 
             if (!$openId->authenticate()) {
