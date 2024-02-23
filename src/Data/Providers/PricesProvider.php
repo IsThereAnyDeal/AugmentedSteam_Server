@@ -80,7 +80,7 @@ class PricesProvider implements PricesProviderInterface
         string $country
     ): ?Prices {
 
-        $map = $this->fetchIdMap($steamIds);
+        $map = array_filter($this->fetchIdMap($steamIds));
         if (empty($map)) {
             return null;
         }
