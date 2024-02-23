@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace AugmentedSteam\Server\Routing\Strategy;
 
 use AugmentedSteam\Server\Config\CoreConfig;
+use GuzzleHttp\Exception\ClientException;
 use League\Route\ContainerAwareInterface;
 use League\Route\Http;
 use League\Route\Route;
@@ -58,6 +59,11 @@ class ApiStrategy extends JsonStrategy implements ContainerAwareInterface
 
                     if ($e instanceof Http\Exception) {
                         return $e->buildJsonResponse($response);
+                    }
+
+                    if ($e instanceof ClientException && $e->getCode() === 429) {
+                        return (new Http\Exception\TooManyRequestsException())
+                            ->buildJsonResponse($response);
                     }
 
                     \Sentry\captureException($e);
