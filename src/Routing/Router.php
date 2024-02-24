@@ -16,7 +16,9 @@ use AugmentedSteam\Server\Controllers\SimilarController;
 use AugmentedSteam\Server\Controllers\TwitchController;
 use AugmentedSteam\Server\Environment\Container;
 use AugmentedSteam\Server\Lib\Logging\LoggerFactoryInterface;
+use AugmentedSteam\Server\Lib\Redis\RedisClient;
 use AugmentedSteam\Server\Routing\Middleware\AccessLogMiddleware;
+use AugmentedSteam\Server\Routing\Middleware\IpThrottleMiddleware;
 use AugmentedSteam\Server\Routing\Strategy\ApiStrategy;
 use Laminas\Diactoros\ServerRequestFactory;
 use Laminas\HttpHandlerRunner\Emitter\SapiEmitter;
@@ -54,6 +56,7 @@ class Router
     }
 
     public function route(Container $container): void {
+        $redis = $container->get(RedisClient::class);
 
         $strategy = new ApiStrategy(
             $container->get(CoreConfig::class),
@@ -65,6 +68,7 @@ class Router
 
         $logger = $container->get(LoggerFactoryInterface::class)->access();
         $router->middleware(new AccessLogMiddleware($logger));
+        $router->middleware(new IpThrottleMiddleware($redis));
         $router->setStrategy($strategy);
 
         $this->defineRoutes($router);

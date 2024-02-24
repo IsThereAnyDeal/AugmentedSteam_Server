@@ -2,7 +2,11 @@
 namespace AugmentedSteam\Server\Lib\Redis;
 
 enum ERedisKey: string {
-    case EarlyAccess = "ea";
-    case SteamIdGameMap = "sigm";
-    case Twitch = "tws";
+    case ApiThrottleIp = "throttle";
+
+    public function getKey(string $suffix=""): string {
+        return empty($suffix)
+            ? $this->value
+            : "{$this->value}:{$suffix}";
+    }
 }
