@@ -68,7 +68,7 @@ class Router
 
         $logger = $container->get(LoggerFactoryInterface::class)->access();
         $router->middleware(new AccessLogMiddleware($logger));
-        $router->middleware(new IpThrottleMiddleware($redis));
+        $router->middleware(new IpThrottleMiddleware($redis, $logger));
         $router->setStrategy($strategy);
 
         $this->defineRoutes($router);

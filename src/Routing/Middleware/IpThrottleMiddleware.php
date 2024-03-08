@@ -8,17 +8,19 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * IP-based throttling instead of App-based throttling
  */
 class IpThrottleMiddleware implements MiddlewareInterface
 {
-    private const int WindowLength = 5*60;
-    private const int Requests = 1000;
+    private const int WindowLength = 8*60*60;
+    private const int Requests = 200;
 
     public function __construct(
-        private readonly RedisClient $redis
+        private readonly RedisClient $redis,
+        private readonly LoggerInterface $logger
     ) {}
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
@@ -31,6 +33,7 @@ class IpThrottleMiddleware implements MiddlewareInterface
         if (!is_null($count) && $count >= self::Requests) {
             $expireTime = $this->redis->expiretime($key);
             if ($expireTime > 0) {
+                $this->logger->info("{$ip} throttled", $request->getQueryParams());
                 return new EmptyResponse(429, [
                     "Retry-After" => $expireTime - time()
                 ]);
