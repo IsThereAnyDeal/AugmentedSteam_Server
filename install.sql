@@ -98,18 +98,6 @@ CREATE TABLE `exfgls` (
   PRIMARY KEY(`appid`)
 ) ENGINE=InnoDB;
 
-CREATE TABLE `hltb` (
-  `id` int NOT NULL,
-  `appid` int,
-  `main` int,
-  `extra` int,
-  `complete` int,
-  `found_timestamp` int unsigned NOT NULL DEFAULT 0,
-  `checked_timestamp` int unsigned,
-  PRIMARY KEY (`id`),
-  INDEX (`appid`)
-) ENGINE=InnoDb;
-
 CREATE TABLE `sessions` (
   `token` char(10) NOT NULL,
   `hash` char(64) NOT NULL,

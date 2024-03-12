@@ -63,6 +63,12 @@ class EndpointBuilder
         return $host."/internal/reviews/v1?key={$key}&appid={$appid}";
     }
 
+    public function getHLTB(int $appid): string {
+        $host = $this->endpoints->getIsThereAnyDealApiHost();
+        $key = $this->keys->getIsThereAnyDealApiKey();
+        return $host."/internal/hltb/v1?key={$key}&appid={$appid}";
+    }
+
     public function getRates(): string {
         $host = $this->endpoints->getIsThereAnyDealApiHost();
         $key = $this->keys->getIsThereAnyDealApiKey();

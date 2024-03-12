@@ -4,11 +4,11 @@ declare(strict_types=1);
 namespace AugmentedSteam\Server\Controllers;
 
 use AugmentedSteam\Server\Data\Interfaces\AppData\AppDataProviderInterface;
+use AugmentedSteam\Server\Data\Interfaces\AppData\HLTBProviderInterface;
 use AugmentedSteam\Server\Data\Interfaces\AppData\PlayersProviderInterface;
 use AugmentedSteam\Server\Data\Interfaces\AppData\ReviewsProviderInterface;
 use AugmentedSteam\Server\Data\Interfaces\AppData\WSGFProviderInterface;
 use AugmentedSteam\Server\Data\Managers\ExfglsManager;
-use AugmentedSteam\Server\Data\Managers\HLTBManager;
 use AugmentedSteam\Server\Lib\Cache\CacheInterface;
 use AugmentedSteam\Server\Lib\Cache\ECacheKey;
 use Psr\Http\Message\ServerRequestInterface;
@@ -19,7 +19,7 @@ class AppController extends Controller
         private readonly CacheInterface $cache,
         private readonly WSGFProviderInterface $wsgf,
         private readonly ExfglsManager $exfglsManager,
-        private readonly HLTBManager $hltbManager,
+        private readonly HLTBProviderInterface $hltb,
         private readonly ReviewsProviderInterface $reviews,
         private readonly PlayersProviderInterface $players,
     ) {}
@@ -55,7 +55,7 @@ class AppController extends Controller
             "family_sharing" => !$exfgls->isExcluded(),
             "players" => $this->getData($this->players, ECacheKey::Players, $appid, 30*60),
             "wsgf" => $this->getData($this->wsgf, ECacheKey::WSGF, $appid, 3*86400),
-            "hltb" => $this->hltbManager->get($appid),
+            "hltb" => $this->getData($this->hltb, ECacheKey::HLTB, $appid, 86400),
             "reviews" => $this->getData($this->reviews, ECacheKey::Reviews, $appid, 86400)
         ];
     }

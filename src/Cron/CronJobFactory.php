@@ -6,8 +6,6 @@ namespace AugmentedSteam\Server\Cron;
 use AugmentedSteam\Server\Data\Interfaces\RatesProviderInterface;
 use AugmentedSteam\Server\Data\Updaters\Exfgls\ExfglsConfig;
 use AugmentedSteam\Server\Data\Updaters\Exfgls\ExfglsUpdater;
-use AugmentedSteam\Server\Data\Updaters\HowLongToBeat\GamePageCrawler;
-use AugmentedSteam\Server\Data\Updaters\HowLongToBeat\SearchResultsCrawler;
 use AugmentedSteam\Server\Data\Updaters\Market\MarketCrawler;
 use AugmentedSteam\Server\Data\Updaters\Rates\RatesUpdater;
 use AugmentedSteam\Server\Database\TCache;
@@ -71,52 +69,6 @@ class CronJobFactory
             });
     }
 
-    private function createHLTBSearchResultsAllJob(): CronJob {
-        return (new CronJob())
-            ->lock("hltb.all", 5)
-            ->callable(function(){
-                $logger = $this->loggerFactory->logger("hltb");
-                $guzzle = $this->container->get(Client::class);
-                $proxy = $this->container->get(ProxyFactoryInterface::class)
-                    ->createProxy();
-
-                $loader = new Loader($logger, $guzzle);
-                $updater = new SearchResultsCrawler($this->db, $loader, $logger, $proxy);
-                $updater->update();
-            });
-    }
-
-    private function createHLTBSearchResultsRecentJob(): CronJob {
-        return (new CronJob())
-            ->lock("hltb.recent", 5)
-            ->callable(function(){
-                $logger = $this->loggerFactory->logger("hltb");
-                $guzzle = $this->container->get(Client::class);
-                $proxy = $this->container->get(ProxyFactoryInterface::class)
-                    ->createProxy();
-
-                $loader = new Loader($logger, $guzzle);
-                $updater = new SearchResultsCrawler($this->db, $loader, $logger, $proxy);
-                $updater->setQueryString("recently added");
-                $updater->update();
-            });
-    }
-
-    private function createHLTBGamesJob(): CronJob {
-        return (new CronJob())
-            ->lock("hltb.games", 5)
-            ->callable(function(){
-                $logger = $this->loggerFactory->logger("hltb");
-                $guzzle = $this->container->get(Client::class);
-                $proxy = $this->container->get(ProxyFactoryInterface::class)
-                    ->createProxy();
-
-                $loader = new Loader($logger, $guzzle);
-                $updater = new GamePageCrawler($this->db, $loader, $logger, $proxy);
-                $updater->update();
-            });
-    }
-
     private function createCacheMaintenanceJob(): CronJob {
         return (new CronJob())
             ->callable(function(){
@@ -137,9 +89,6 @@ class CronJobFactory
             "rates" => $this->createRatesJob(),
             "exfgls" => $this->createExfglsJob(),
             "market" => $this->createMarketJob(),
-            "hltb-all" => $this->createHLTBSearchResultsAllJob(),
-            "hltb-recent" => $this->createHLTBSearchResultsRecentJob(),
-            "hltb-games" => $this->createHLTBGamesJob(),
             "cache-maintenance" => $this->createCacheMaintenanceJob(),
             default => throw new InvalidArgumentException()
         };
