@@ -19,26 +19,28 @@ class HLTBProvider implements HLTBProviderInterface
         $endpoint = $this->endpoints->getHLTB($appid);
         $response = $this->loader->get($endpoint);
 
-        if (!is_null($response)) {
+        if (!empty($response)) {
             $body = $response->getBody()->getContents();
-            $json = json_decode($body, true, flags: JSON_THROW_ON_ERROR);
+            if (!empty($body)) {
+                $json = json_decode($body, true, flags: JSON_THROW_ON_ERROR);
 
-            if (is_array($json)) {
-                /**
-                 * @var array{
-                 *     id: int,
-                 *     main: ?int,
-                 *     extra: ?int,
-                 *     complete: ?int
-                 * } $json
-                 */
+                if (is_array($json)) {
+                    /**
+                     * @var array{
+                     *     id: int,
+                     *     main: ?int,
+                     *     extra: ?int,
+                     *     complete: ?int
+                     * } $json
+                     */
 
-                $hltb = new HLTB();
-                $hltb->story = $json['main'] === 0 ? null : (int)floor($json['main'] / 60);
-                $hltb->extras = $json['extra'] === 0 ? null : (int)floor($json['extra'] / 60);
-                $hltb->complete = $json['complete'] === 0 ? null : (int)floor($json['complete'] / 60);
-                $hltb->url = "https://howlongtobeat.com/game/{$json['id']}";
-                return $hltb;
+                    $hltb = new HLTB();
+                    $hltb->story = $json['main'] === 0 ? null : (int)floor($json['main'] / 60);
+                    $hltb->extras = $json['extra'] === 0 ? null : (int)floor($json['extra'] / 60);
+                    $hltb->complete = $json['complete'] === 0 ? null : (int)floor($json['complete'] / 60);
+                    $hltb->url = "https://howlongtobeat.com/game/{$json['id']}";
+                    return $hltb;
+                }
             }
         }
 
