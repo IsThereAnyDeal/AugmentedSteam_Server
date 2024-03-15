@@ -35,13 +35,14 @@ class EndpointBuilder
     /**
      * @param list<int> $shops
      */
-    public function getPrices(string $country, array $shops): string {
+    public function getPrices(string $country, array $shops, bool $withVouchers): string {
         $host = $this->endpoints->getIsThereAnyDealApiHost();
         $key = $this->keys->getIsThereAnyDealApiKey();
         return $host."/games/overview/v2?".http_build_query([
             "key" => $key,
             "country" => $country,
-            "shops" => implode(",", $shops)
+            "shops" => implode(",", $shops),
+            "vouchers" => $withVouchers
         ]);
     }
 

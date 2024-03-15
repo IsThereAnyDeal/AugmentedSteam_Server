@@ -11,5 +11,5 @@ interface PricesProviderInterface {
      * @param list<string> $steamIds
      * @param list<int> $shops
      */
-    public function fetch(array $steamIds, array $shops, string $country): ?Prices;
+    public function fetch(array $steamIds, array $shops, string $country, bool $withVouchers): ?Prices;
 }

@@ -47,8 +47,8 @@ class PricesProvider implements PricesProviderInterface
      * @param list<string> $gids
      * @return array<mixed>
      */
-    private function fetchOverview(string $country, array $shops, array $gids): array {
-        $endpoint = $this->endpoints->getPrices($country, $shops);
+    private function fetchOverview(string $country, array $shops, array $gids, bool $withVouchers): array {
+        $endpoint = $this->endpoints->getPrices($country, $shops, $withVouchers);
 
         $response = $this->guzzle->post($endpoint, [
             "body" => json_encode($gids),
@@ -77,7 +77,8 @@ class PricesProvider implements PricesProviderInterface
     public function fetch(
         array $steamIds,
         array $shops,
-        string $country
+        string $country,
+        bool $withVouchers
     ): ?Prices {
 
         $map = array_filter($this->fetchIdMap($steamIds));
@@ -86,7 +87,7 @@ class PricesProvider implements PricesProviderInterface
         }
 
         $gids = array_values($map);
-        $overview = $this->fetchOverview($country, $shops, $gids);
+        $overview = $this->fetchOverview($country, $shops, $gids, $withVouchers);
         if (empty($overview)) {
             return null;
         }

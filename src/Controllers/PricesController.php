@@ -31,7 +31,7 @@ class PricesController extends Controller {
         $apps = $this->validateIntList($params, "apps");
         $subs = $this->validateIntList($params, "subs");
         $bundles = $this->validateIntList($params, "bundles");
-        $voucher = filter_var($params['voucher'] ?? true, FILTER_VALIDATE_BOOLEAN); // TODO unused right now
+        $voucher = filter_var($params['voucher'] ?? true, FILTER_VALIDATE_BOOLEAN);
 
         $ids = array_merge(
             array_map(fn($id) => "app/$id", array_filter($apps)),
@@ -43,7 +43,7 @@ class PricesController extends Controller {
             throw new BadRequestException();
         }
 
-        $overview = $this->pricesProvider->fetch($ids, $shops, $country);
+        $overview = $this->pricesProvider->fetch($ids, $shops, $country, $voucher);
         return $overview ?? [];
     }
 }
