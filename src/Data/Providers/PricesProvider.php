@@ -108,7 +108,9 @@ class PricesProvider implements PricesProviderInterface
          * @var array{
          *     id: string,
          *     current: array<string, mixed>,
-         *     lowest: array<string, mixed>
+         *     lowest: array<string, mixed>,
+         *     bundled: number,
+         *     urls: array{game: string}
          * } $game
          */
         foreach($overview['prices'] as $game) {
@@ -117,9 +119,10 @@ class PricesProvider implements PricesProviderInterface
             $prices->prices[$steamId] = [
                 "current" => $game['current'],
                 "lowest" => $game['lowest'],
+                "bundled" => $game['bundled'],
                 "urls" => [
-                    "info" => "https://isthereanydeal.com/game/id:{$game['id']}/info/",
-                    "history" => "https://isthereanydeal.com/game/id:{$game['id']}/history/",
+                    "info" => $game['urls']['game']."info/",
+                    "history" => $game['urls']['game']."history/",
                 ]
             ];
         }
