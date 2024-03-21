@@ -15,7 +15,7 @@ use Psr\Log\LoggerInterface;
  */
 class IpThrottleMiddleware implements MiddlewareInterface
 {
-    private const int WindowLength = 8*60*60;
+    private const int WindowLength = 60*60;
     private const int Requests = 200;
 
     public function __construct(
