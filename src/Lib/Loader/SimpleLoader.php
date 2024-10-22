@@ -29,4 +29,22 @@ readonly class SimpleLoader
         }
         return null;
     }
+
+    /**
+     * @param array<string, mixed> $curlOptions
+     */
+    public function post(string $url, mixed $body, array $curlOptions = []): ?ResponseInterface {
+        try {
+            return $this->guzzle->post($url, [
+                "headers" => [
+                    "User-Agent" => "AugmentedSteam/1.0 (+bots@isthereanydeal.com)",
+                ],
+                "body" => $body,
+                "curl" => $curlOptions
+            ]);
+        } catch (GuzzleException $e) {
+            \Sentry\captureException($e);
+        }
+        return null;
+    }
 }

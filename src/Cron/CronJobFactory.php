@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace AugmentedSteam\Server\Cron;
 
+use AugmentedSteam\Server\Data\Interfaces\ExfglsProviderInterface;
 use AugmentedSteam\Server\Data\Interfaces\RatesProviderInterface;
-use AugmentedSteam\Server\Data\Updaters\Exfgls\ExfglsConfig;
 use AugmentedSteam\Server\Data\Updaters\Exfgls\ExfglsUpdater;
 use AugmentedSteam\Server\Data\Updaters\Market\MarketCrawler;
 use AugmentedSteam\Server\Data\Updaters\Rates\RatesUpdater;
@@ -47,9 +47,9 @@ class CronJobFactory
             ->lock("exfgls", 5)
             ->callable(function(){
                 $logger = $this->loggerFactory->logger("exfgls");
-                $exfglsConfig = $this->container->get(ExfglsConfig::class);
+                $provider = $this->container->get(ExfglsProviderInterface::class);
 
-                $updater = new ExfglsUpdater($this->db, $logger, $exfglsConfig);
+                $updater = new ExfglsUpdater($this->db, $provider, $logger);
                 $updater->update();
             });
     }

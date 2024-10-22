@@ -11,7 +11,6 @@ require_once RELEASE_ROOT."/vendor/autoload.php";
 
 use AugmentedSteam\Server\Config\BrightDataConfig;
 use AugmentedSteam\Server\Config\CoreConfig;
-use AugmentedSteam\Server\Data\Updaters\Exfgls\ExfglsConfig;
 use AugmentedSteam\Server\Endpoints\EndpointsConfig;
 use AugmentedSteam\Server\Endpoints\KeysConfig;
 use AugmentedSteam\Server\Environment\Container;
@@ -28,8 +27,7 @@ $config->map([
     LoggingConfig::class => "logging",
     KeysConfig::class => "keys",
     EndpointsConfig::class => "endpoints",
-    BrightDataConfig::class => "brightdata",
-    ExfglsConfig::class => "exfgls"
+    BrightDataConfig::class => "brightdata"
 ]);
 $config->loadJsonFile(PROJECT_ROOT."/".getenv("AS_SERVER_CONFIG"));
 

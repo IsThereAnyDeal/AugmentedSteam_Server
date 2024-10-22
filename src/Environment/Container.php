@@ -20,6 +20,7 @@ use AugmentedSteam\Server\Data\Interfaces\AppData\ReviewsProviderInterface;
 use AugmentedSteam\Server\Data\Interfaces\AppData\SteamPeekProviderInterface;
 use AugmentedSteam\Server\Data\Interfaces\AppData\WSGFProviderInterface;
 use AugmentedSteam\Server\Data\Interfaces\EarlyAccessProviderInterface;
+use AugmentedSteam\Server\Data\Interfaces\ExfglsProviderInterface;
 use AugmentedSteam\Server\Data\Interfaces\PricesProviderInterface;
 use AugmentedSteam\Server\Data\Interfaces\RatesProviderInterface;
 use AugmentedSteam\Server\Data\Interfaces\SteamRepProviderInterface;
@@ -30,6 +31,7 @@ use AugmentedSteam\Server\Data\Managers\Market\MarketManager;
 use AugmentedSteam\Server\Data\Managers\SteamRepManager;
 use AugmentedSteam\Server\Data\Managers\UserManager;
 use AugmentedSteam\Server\Data\Providers\EarlyAccessProvider;
+use AugmentedSteam\Server\Data\Providers\ExfglsProvider;
 use AugmentedSteam\Server\Data\Providers\HLTBProvider;
 use AugmentedSteam\Server\Data\Providers\PlayersProvider;
 use AugmentedSteam\Server\Data\Providers\PricesProvider;
@@ -39,7 +41,6 @@ use AugmentedSteam\Server\Data\Providers\SteamPeekProvider;
 use AugmentedSteam\Server\Data\Providers\SteamRepProvider;
 use AugmentedSteam\Server\Data\Providers\TwitchProvider;
 use AugmentedSteam\Server\Data\Providers\WSGFProvider;
-use AugmentedSteam\Server\Data\Updaters\Exfgls\ExfglsConfig;
 use AugmentedSteam\Server\Endpoints\EndpointBuilder;
 use AugmentedSteam\Server\Endpoints\EndpointsConfig;
 use AugmentedSteam\Server\Endpoints\KeysConfig;
@@ -118,7 +119,6 @@ class Container implements ContainerInterface
             KeysConfig::class => fn(ContainerInterface $c) => $this->config->getConfig(KeysConfig::class),
             EndpointsConfig::class => fn(ContainerInterface $c) => $this->config->getConfig(EndpointsConfig::class),
             BrightDataConfig::class => fn(ContainerInterface $c) => $this->config->getConfig(BrightDataConfig::class),
-            ExfglsConfig::class => fn(ContainerInterface $c) => $this->config->getConfig(ExfglsConfig::class),
 
             // db
             DbDriver::class => fn(ContainerInterface $c) => (new DbFactory())
@@ -162,17 +162,6 @@ class Container implements ContainerInterface
 
             ProxyFactoryInterface::class => create(ProxyFactory::class)
                 ->constructor(get(BrightDataConfig::class)),
-
-            CronJobFactory::class => create()
-                ->constructor(
-                    get(LoggerFactoryInterface::class),
-                    get(ProxyFactoryInterface::class),
-                    get(DbDriver::class),
-                    get(GuzzleClient::class),
-                    get(EndpointsConfig::class),
-                    get(KeysConfig::class),
-                    get(ExfglsConfig::class)
-                ),
 
             // providers
 
@@ -231,6 +220,12 @@ class Container implements ContainerInterface
                 ),
 
             HLTBProviderInterface::class => create(HLTBProvider::class)
+                ->constructor(
+                    get(SimpleLoader::class),
+                    get(EndpointBuilder::class)
+                ),
+
+            ExfglsProviderInterface::class => create(ExfglsProvider::class)
                 ->constructor(
                     get(SimpleLoader::class),
                     get(EndpointBuilder::class)

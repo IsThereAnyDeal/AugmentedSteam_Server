@@ -75,4 +75,10 @@ class EndpointBuilder
         $key = $this->keys->getIsThereAnyDealApiKey();
         return $host."/internal/rates/v1?key={$key}";
     }
+
+    public function getExfgls(): string {
+        $host = $this->endpoints->getIsThereAnyDealApiHost();
+        $key = $this->keys->getIsThereAnyDealApiKey();
+        return $host."/internal/exfgls/v1?key={$key}";
+    }
 }
