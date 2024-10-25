@@ -13,7 +13,6 @@ use AugmentedSteam\Server\Controllers\ProfileManagementController;
 use AugmentedSteam\Server\Controllers\RatesController;
 use AugmentedSteam\Server\Controllers\SimilarController;
 use AugmentedSteam\Server\Controllers\TwitchController;
-use AugmentedSteam\Server\Cron\CronJobFactory;
 use AugmentedSteam\Server\Data\Interfaces\AppData\HLTBProviderInterface;
 use AugmentedSteam\Server\Data\Interfaces\AppData\PlayersProviderInterface;
 use AugmentedSteam\Server\Data\Interfaces\AppData\ReviewsProviderInterface;
@@ -25,7 +24,6 @@ use AugmentedSteam\Server\Data\Interfaces\PricesProviderInterface;
 use AugmentedSteam\Server\Data\Interfaces\RatesProviderInterface;
 use AugmentedSteam\Server\Data\Interfaces\SteamRepProviderInterface;
 use AugmentedSteam\Server\Data\Interfaces\TwitchProviderInterface;
-use AugmentedSteam\Server\Data\Managers\ExfglsManager;
 use AugmentedSteam\Server\Data\Managers\Market\MarketIndex;
 use AugmentedSteam\Server\Data\Managers\Market\MarketManager;
 use AugmentedSteam\Server\Data\Managers\SteamRepManager;
@@ -244,10 +242,6 @@ class Container implements ContainerInterface
                     get(DbDriver::class),
                     get(SteamRepProviderInterface::class)
                 ),
-            ExfglsManager::class => create()
-                ->constructor(
-                    get(DbDriver::class)
-                ),
 
             // controllers
 
@@ -290,7 +284,7 @@ class Container implements ContainerInterface
                 ->constructor(
                     get(CacheInterface::class),
                     get(WSGFProviderInterface::class),
-                    get(ExfglsManager::class),
+                    get(ExfglsProviderInterface::class),
                     get(HLTBProviderInterface::class),
                     get(ReviewsProviderInterface::class),
                     get(PlayersProviderInterface::class)

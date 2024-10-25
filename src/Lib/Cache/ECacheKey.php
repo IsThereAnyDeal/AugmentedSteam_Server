@@ -12,4 +12,5 @@ enum ECacheKey: int
     case Twitch = 5;
     case EarlyAccess = 6;
     case HLTB = 7;
+    case Exfgls = 8;
 }

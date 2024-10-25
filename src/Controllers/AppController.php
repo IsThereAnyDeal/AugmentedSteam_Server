@@ -8,7 +8,7 @@ use AugmentedSteam\Server\Data\Interfaces\AppData\HLTBProviderInterface;
 use AugmentedSteam\Server\Data\Interfaces\AppData\PlayersProviderInterface;
 use AugmentedSteam\Server\Data\Interfaces\AppData\ReviewsProviderInterface;
 use AugmentedSteam\Server\Data\Interfaces\AppData\WSGFProviderInterface;
-use AugmentedSteam\Server\Data\Managers\ExfglsManager;
+use AugmentedSteam\Server\Data\Interfaces\ExfglsProviderInterface;
 use AugmentedSteam\Server\Lib\Cache\CacheInterface;
 use AugmentedSteam\Server\Lib\Cache\ECacheKey;
 use Psr\Http\Message\ServerRequestInterface;
@@ -18,7 +18,7 @@ class AppController extends Controller
     public function __construct(
         private readonly CacheInterface $cache,
         private readonly WSGFProviderInterface $wsgf,
-        private readonly ExfglsManager $exfglsManager,
+        private readonly ExfglsProviderInterface $exfgls,
         private readonly HLTBProviderInterface $hltb,
         private readonly ReviewsProviderInterface $reviews,
         private readonly PlayersProviderInterface $players,
@@ -49,10 +49,8 @@ class AppController extends Controller
     public function appInfo_v2(ServerRequestInterface $request, array $params): array {
         $appid = intval($params['appid']);
 
-        $exfgls = $this->exfglsManager->get($appid);
-
         return [
-            "family_sharing" => !$exfgls->isExcluded(),
+            "family_sharing" => !$this->getData($this->exfgls, ECacheKey::Exfgls, $appid, 6*3600),
             "players" => $this->getData($this->players, ECacheKey::Players, $appid, 30*60),
             "wsgf" => $this->getData($this->wsgf, ECacheKey::WSGF, $appid, 3*86400),
             "hltb" => $this->getData($this->hltb, ECacheKey::HLTB, $appid, 86400),

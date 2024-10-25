@@ -3,9 +3,7 @@ declare(strict_types=1);
 
 namespace AugmentedSteam\Server\Cron;
 
-use AugmentedSteam\Server\Data\Interfaces\ExfglsProviderInterface;
 use AugmentedSteam\Server\Data\Interfaces\RatesProviderInterface;
-use AugmentedSteam\Server\Data\Updaters\Exfgls\ExfglsUpdater;
 use AugmentedSteam\Server\Data\Updaters\Market\MarketCrawler;
 use AugmentedSteam\Server\Data\Updaters\Rates\RatesUpdater;
 use AugmentedSteam\Server\Database\TCache;
@@ -38,18 +36,6 @@ class CronJobFactory
 
                 $provider = $container->get(RatesProviderInterface::class);
                 $updater = new RatesUpdater($this->db, $provider, $logger);
-                $updater->update();
-            });
-    }
-
-    private function createExfglsJob(): CronJob {
-        return (new CronJob())
-            ->lock("exfgls", 5)
-            ->callable(function(){
-                $logger = $this->loggerFactory->logger("exfgls");
-                $provider = $this->container->get(ExfglsProviderInterface::class);
-
-                $updater = new ExfglsUpdater($this->db, $provider, $logger);
                 $updater->update();
             });
     }
@@ -87,7 +73,6 @@ class CronJobFactory
 
         return match($job) {
             "rates" => $this->createRatesJob(),
-            "exfgls" => $this->createExfglsJob(),
             "market" => $this->createMarketJob(),
             "cache-maintenance" => $this->createCacheMaintenanceJob(),
             default => throw new InvalidArgumentException()

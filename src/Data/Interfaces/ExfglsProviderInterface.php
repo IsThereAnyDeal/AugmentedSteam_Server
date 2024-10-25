@@ -3,10 +3,9 @@ declare(strict_types=1);
 
 namespace AugmentedSteam\Server\Data\Interfaces;
 
-interface ExfglsProviderInterface {
-    /**
-     * @param list<int> $appids
-     * @return array<int, bool>
-     */
-    public function fetch(array $appids): array;
+use AugmentedSteam\Server\Data\Interfaces\AppData\AppDataProviderInterface;
+
+interface ExfglsProviderInterface extends AppDataProviderInterface {
+
+    public function fetch(int $appid): bool;
 }

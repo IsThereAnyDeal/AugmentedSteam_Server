@@ -14,13 +14,9 @@ class ExfglsProvider implements ExfglsProviderInterface
         private readonly EndpointBuilder $endpoints
     ) {}
 
-    /**
-     * @param list<int> $appids
-     * @return array<int, bool>
-     */
-    public function fetch(array $appids): array {
+    public function fetch(int $appid): bool {
         $endpoint = $this->endpoints->getExfgls();
-        $response = $this->loader->post($endpoint, json_encode($appids));
+        $response = $this->loader->post($endpoint, json_encode([$appid]));
 
         if (is_null($response)) {
             throw new \Exception();
@@ -34,12 +30,6 @@ class ExfglsProvider implements ExfglsProviderInterface
             throw new \Exception();
         }
 
-        $result = [];
-        foreach($appids as $appid) {
-            if (array_key_exists((string)$appid, $data)) {
-                $result[$appid] = $data[(string)$appid];
-            }
-        }
-        return $result;
+        return array_key_exists((string)$appid, $data) && $data[(string)$appid];
     }
 }

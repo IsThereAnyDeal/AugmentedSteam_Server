@@ -90,14 +90,6 @@ CREATE TABLE `cache` (
   INDEX (`expiry`)
 );
 
-CREATE TABLE `exfgls` (
-  `appid` int NOT NULL,
-  `excluded` tinyint NOT NULL,
-  `checked` tinyint NOT NULL,
-  `timestamp` int unsigned NOT NULL,
-  PRIMARY KEY(`appid`)
-) ENGINE=InnoDB;
-
 CREATE TABLE `sessions` (
   `token` char(10) NOT NULL,
   `hash` char(64) NOT NULL,
