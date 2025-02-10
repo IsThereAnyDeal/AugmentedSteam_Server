@@ -18,6 +18,8 @@ class WSGFProvider implements WSGFProviderInterface
     ) {}
 
     public function fetch(int $appid): ?WSGF {
+        return null; // FIXME the endpoint stopped working?
+
         $url = $this->endpoints->getWSGF($appid);
         $response = $this->loader->get($url);
         if (is_null($response)) {
