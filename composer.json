@@ -3,7 +3,7 @@
     "docs": "redocly preview-docs docs/openapi.yaml",
     "build": "vendor/bin/deby --config build/build.php build",
     "deploy": "vendor/bin/deby --config build/build.php deploy@server",
-    "phpstan": "vendor/bin/phpstan analyse -c phpstan.neon"
+    "phpstan": "vendor/bin/phpstan analyse -c phpstan.neon --memory-limit 1G"
   },
   "autoload": {
     "psr-4": {

@@ -3,8 +3,9 @@ includes:
   - vendor/phpstan/phpstan-deprecation-rules/rules.neon
 
 parameters:
-    checkGenericClassInNonGenericObjectType: false
     treatPhpDocTypesAsCertain: false
     level: max
     paths:
         - src
+    ignoreErrors:
+      - identifier: missingType.generics

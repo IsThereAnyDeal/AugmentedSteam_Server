@@ -174,8 +174,7 @@ class MarketCrawler extends Crawler
                         "Emoticon" => EType::Emoticon,
                         "Booster Pack" => EType::Booster,
                         "Trading Card" => EType::Card,
-                        "Sale Item" => EType::Item,
-                        default => EType::Unknown
+                        "Sale Item" => EType::Item
                     };
                 } else {
                     $appName = $asset['type'];
