@@ -19,7 +19,7 @@
     "ext-openssl": "*",
     "itad/config": "*@dev",
     "itad/db": "*@dev",
-    "league/route": "^5.1",
+    "league/route": "^6.2",
     "guzzlehttp/guzzle": "^7.8",
     "monolog/monolog": "^3.5",
     "laminas/laminas-diactoros": "^3.3",
