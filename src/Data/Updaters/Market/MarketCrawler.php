@@ -20,7 +20,7 @@ use Psr\Log\LoggerInterface;
 
 class MarketCrawler extends Crawler
 {
-    private const int BatchCount = 5;
+    private const int BatchCount = 3;
     private const int RequestBatchSize = 50;
     private const int UpdateFrequency = 60*60;
     private const int MaxAttempts = 3;
@@ -88,7 +88,7 @@ class MarketCrawler extends Crawler
         $params = [
             "query" => "",
             "start" => $start,
-            "count" => 20,
+            "count" => 100,
             "search_description" => 0,
             "sort_column" => "popular",
             "sort_dir" => "desc",
