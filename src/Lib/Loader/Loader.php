@@ -55,6 +55,9 @@ class Loader
                 "allow_redirects" => [
                     "track_redirects" => true
                 ],
+                "headers" => [
+                    "Accept-Encoding" => "gzip,deflate"
+                ],
                 "curl" => $curlOptions
             ];
 
