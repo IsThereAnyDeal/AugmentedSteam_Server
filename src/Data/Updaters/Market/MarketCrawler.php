@@ -88,7 +88,7 @@ class MarketCrawler extends Crawler
         $params = [
             "query" => "",
             "start" => $start,
-            "count" => 100,
+            "count" => 20,
             "search_description" => 0,
             "sort_column" => "popular",
             "sort_dir" => "desc",
