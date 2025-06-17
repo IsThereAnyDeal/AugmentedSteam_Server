@@ -20,8 +20,7 @@ use Psr\Log\LoggerInterface;
 
 class MarketCrawler extends Crawler
 {
-    private const int BatchCount = 3;
-    private const int RequestBatchSize = 50;
+    private const int BatchCount = 150;
     private const int UpdateFrequency = 60*60;
     private const int MaxAttempts = 3;
 
@@ -60,10 +59,7 @@ class MarketCrawler extends Crawler
             );
     }
 
-    /**
-     * @return list<int>
-     */
-    private function getAppidBatch(): array {
+    private function getAppid(): int {
         $i = new TMarketIndex();
 
         // @phpstan-ignore-next-line
@@ -73,18 +69,14 @@ class MarketCrawler extends Crawler
             WHERE $i->last_update <= :timestamp
             ORDER BY $i->last_update ASC,
                      $i->request_counter DESC
-            LIMIT :limit
+            LIMIT 1
             SQL
         )->params([
-            ":timestamp" => time() - self::UpdateFrequency,
-            ":limit" => self::RequestBatchSize
-        ])->fetchValueArray();
+            ":timestamp" => time() - self::UpdateFrequency
+        ])->fetchInt();
     }
 
-    /**
-     * @param list<int> $appids
-     */
-    private function makeRequest(array $appids, int $start=0): void {
+    private function makeRequest(int $appid, int $start=0): void {
         $params = [
             "query" => "",
             "start" => $start,
@@ -92,15 +84,16 @@ class MarketCrawler extends Crawler
             "search_description" => 0,
             "sort_column" => "popular",
             "sort_dir" => "desc",
+            "appid" => $appid,
             "norender" => 1,
         ];
-        foreach($appids as $appid) {
-            $params['category_753_Game'][] = "tag_app_{$appid}";
-        }
 
         $url = "https://steamcommunity.com/market/search/render/?".http_build_query($params);
         $item = (new Item($url))
-            ->setData(["appids" => $appids])
+            ->setData(["appid" => $appid])
+            ->setHeaders([
+                "User-Agent" => "Mozilla/5.0 (Windows NT 10.4; WOW64) AppleWebKit/536.14 (KHTML, like Gecko) Chrome/52.0.2935.205 Safari/601.3 Edge/13.46571",
+            ])
             ->setCurlOptions($this->proxy->getCurlOptions());
 
         $this->enqueueRequest($item);
@@ -137,14 +130,13 @@ class MarketCrawler extends Crawler
          */
         $json = json_decode($data, true);
 
-        /** @var list<int> $appids */
-        $appids = $request->getData()['appids'];
+        $appid = intval($request->getData()['appid']); // @phpstan-ignore-line
         if ($json['start'] === 0 && $json['start'] < $json['total_count']) {
             $pageSize = $json['pagesize'];
 
             if ($pageSize > 0) {
                 for ($start = $pageSize; $start <= $json['total_count']; $start += $pageSize) {
-                    $this->makeRequest($appids, $start);
+                    $this->makeRequest($appid, $start);
                 }
             }
         }
@@ -212,38 +204,33 @@ class MarketCrawler extends Crawler
         $this->insertQuery->persist();
         --$this->requestCounter;
 
-        $this->logger->info("", ["appids" => $appids, "start" => $json['start']]);
+        $this->logger->info("", ["appid" => $appid, "start" => $json['start']]);
     }
 
-    /**
-     * @param list<int> $appids
-     */
-    private function updateIndex(array $appids): void {
+    private function updateIndex(int $appid): void {
         $i = new TMarketIndex();
         $this->db->updateObj($i)
             ->columns($i->last_update, $i->request_counter)
-            ->whereSql("$i->appid IN :appids", [":appids" => $appids])
+            ->where($i->appid)
             ->update(
                 (new DMarketIndex())
                     ->setLastUpdate($this->timestamp)
                     ->setRequestCounter(0)
+                    ->setAppid($appid)
             );
     }
 
-    /**
-     * @param list<int> $appids
-     */
-    private function cleanup(array $appids): void {
-        if (count($appids) == 0) { return; }
+    private function cleanup(int $appid): void {
+        if (empty($appid)) { return; }
 
         $d = new TMarketData();
         $this->db->delete(<<<SQL
             DELETE FROM $d
-            WHERE $d->appid IN :appids
+            WHERE $d->appid=:appid
               AND $d->timestamp < :timestamp
             SQL
         )->delete([
-            ":appids" => $appids,
+            ":appid" => $appid,
             ":timestamp" => $this->timestamp
         ]);
     }
@@ -252,16 +239,16 @@ class MarketCrawler extends Crawler
         $this->logger->info("Update start");
 
         for ($b = 0; $b < self::BatchCount; $b++) {
-            $appids = $this->getAppidBatch();
-            if (count($appids) == 0) { break; }
+            $appid = $this->getAppid();
+            if (empty($appid)) { break; }
 
-            $this->makeRequest($appids, 0);
+            $this->makeRequest($appid, 0);
 
             $this->runLoader();
-            $this->updateIndex($appids);
+            $this->updateIndex($appid);
 
             if ($this->requestCounter === 0) {
-                $this->cleanup($appids);
+                $this->cleanup($appid);
                 $this->logger->info("Batch done");
             } else {
                 $this->logger->notice("Batch failed to finish ({$this->requestCounter} requests left)");
