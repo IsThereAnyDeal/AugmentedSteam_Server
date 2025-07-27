@@ -11,6 +11,7 @@ use AugmentedSteam\Server\Data\Interfaces\AppData\WSGFProviderInterface;
 use AugmentedSteam\Server\Data\Interfaces\ExfglsProviderInterface;
 use AugmentedSteam\Server\Lib\Cache\CacheInterface;
 use AugmentedSteam\Server\Lib\Cache\ECacheKey;
+use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ServerRequestInterface;
 
 class AppController extends Controller
@@ -44,17 +45,16 @@ class AppController extends Controller
 
     /**
      * @param array{appid: numeric-string} $params
-     * @return array<string, mixed>
      */
-    public function appInfo_v2(ServerRequestInterface $request, array $params): array {
+    public function appInfo_v2(ServerRequestInterface $request, array $params): JsonResponse {
         $appid = intval($params['appid']);
 
-        return [
+        return (new JsonResponse([
             "family_sharing" => !$this->getData($this->exfgls, ECacheKey::Exfgls, $appid, 6*3600),
             "players" => $this->getData($this->players, ECacheKey::Players, $appid, 30*60),
             "wsgf" => $this->getData($this->wsgf, ECacheKey::WSGF, $appid, 3*86400),
             "hltb" => $this->getData($this->hltb, ECacheKey::HLTB, $appid, 86400),
             "reviews" => $this->getData($this->reviews, ECacheKey::Reviews, $appid, 86400)
-        ];
+        ]))->withHeader("Cache-Control", "max-age=1800, public");
     }
 }

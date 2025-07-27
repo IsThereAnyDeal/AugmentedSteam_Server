@@ -6,6 +6,7 @@ namespace AugmentedSteam\Server\Controllers;
 use AugmentedSteam\Server\Data\Interfaces\EarlyAccessProviderInterface;
 use AugmentedSteam\Server\Lib\Cache\CacheInterface;
 use AugmentedSteam\Server\Lib\Cache\ECacheKey;
+use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ServerRequestInterface;
 
 class EarlyAccessController extends Controller {
@@ -17,23 +18,24 @@ class EarlyAccessController extends Controller {
         private readonly EarlyAccessProviderInterface $provider
     ) {}
 
-    /**
-     * @return list<int>
-     */
-    public function appids_v1(ServerRequestInterface $request): array {
+    public function appids_v1(ServerRequestInterface $request): JsonResponse {
         $key = ECacheKey::EarlyAccess;
         $field = "ea";
 
+        $appids = null;
         if ($this->cache->has($key, $field)) {
-            $cached = $this->cache->get($key, $field) ?? [];
-            if (!is_array($cached) || !array_is_list($cached)) {
+            $appids = $this->cache->get($key, $field) ?? [];
+            if (!is_array($appids) || !array_is_list($appids)) {
                 throw new \Exception();
             }
-            return $cached;
         }
 
-        $appids = $this->provider->fetch();
-        $this->cache->set($key, $field, $appids, self::TTL);
-        return $appids;
+        if (empty($appids)) {
+            $appids = $this->provider->fetch();
+            $this->cache->set($key, $field, $appids, self::TTL);
+        }
+
+        return (new JsonResponse($appids))
+            ->withHeader("Cache-Control", "max-age=3600, public");;
     }
 }

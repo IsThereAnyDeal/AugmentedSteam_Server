@@ -4,6 +4,7 @@ namespace AugmentedSteam\Server\Controllers;
 use AugmentedSteam\Server\Exceptions\InvalidValueException;
 use AugmentedSteam\Server\Lib\Http\ListParam;
 use AugmentedSteam\Server\Lib\Money\CurrencyConverter;
+use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ServerRequestInterface;
 
 class RatesController extends Controller {
@@ -12,10 +13,7 @@ class RatesController extends Controller {
         private readonly CurrencyConverter $converter
     ) {}
 
-    /**
-     * @return array<string, array<string, float>>
-     */
-    public function rates_v1(ServerRequestInterface $request): array {
+    public function rates_v1(ServerRequestInterface $request): JsonResponse {
         /** @var list<string> $currencies */
         $currencies = (new ListParam($request, "to"))->value();
 
@@ -23,6 +21,8 @@ class RatesController extends Controller {
             throw new InvalidValueException("to");
         }
 
-        return $this->converter->getAllConversionsTo($currencies);
+        return (new JsonResponse(
+            $this->converter->getAllConversionsTo($currencies)
+        ))->withHeader("Cache-Control", "max-age=43200, public");
     }
 }
