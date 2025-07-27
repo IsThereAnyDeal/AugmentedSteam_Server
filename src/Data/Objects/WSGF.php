@@ -3,14 +3,11 @@ namespace AugmentedSteam\Server\Data\Objects;
 
 class WSGF implements \JsonSerializable
 {
-    public string $title;
-    public int $steamId;
     public string $path;
     public string $wideScreenGrade;
     public string $multiMonitorGrade;
     public string $ultraWideScreenGrade;
     public string $grade4k;
-    public int $nid;
 
     /**
      * @return array<string, int|string>

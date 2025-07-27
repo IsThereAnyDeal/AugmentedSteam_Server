@@ -172,7 +172,6 @@ class Container implements ContainerInterface
             WSGFProviderInterface::class => fn(ContainerInterface $c) => new WSGFProvider(
                     $c->get(SimpleLoader::class), // @phpstan-ignore-line
                     $c->get(EndpointBuilder::class), // @phpstan-ignore-line
-                    $c->get(LoggerFactoryInterface::class)->logger("wsgf") // @phpstan-ignore-line
                 ),
 
             SteampeekProviderInterface::class => fn(ContainerInterface $c) => new SteamPeekProvider(

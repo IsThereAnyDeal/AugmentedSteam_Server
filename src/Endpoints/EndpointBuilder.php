@@ -8,10 +8,6 @@ class EndpointBuilder
         private readonly KeysConfig $keys
     ) {}
 
-    public function getWSGF(int $appid): string {
-        return sprintf($this->endpoints->getWSGFEndpoint(), $appid);
-    }
-
     public function getSteamRep(int $steamId): string {
         return sprintf($this->endpoints->getSteamRepEndpoint(), $steamId);
     }
@@ -68,6 +64,12 @@ class EndpointBuilder
         $host = $this->endpoints->getIsThereAnyDealApiHost();
         $key = $this->keys->getIsThereAnyDealApiKey();
         return $host."/internal/hltb/v1?key={$key}&appid={$appid}";
+    }
+
+    public function getWSGF(int $appid): string {
+        $host = $this->endpoints->getIsThereAnyDealApiHost();
+        $key = $this->keys->getIsThereAnyDealApiKey();
+        return $host."/internal/wsgf/v1?key={$key}&appid={$appid}";
     }
 
     public function getRates(): string {
