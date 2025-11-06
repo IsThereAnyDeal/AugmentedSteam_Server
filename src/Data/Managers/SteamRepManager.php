@@ -14,7 +14,7 @@ class SteamRepManager {
 
     public function __construct(
         private readonly DbDriver $db,
-        private readonly SteamRepProviderInterface $provider
+        private readonly SteamRepProviderInterface $provider // @phpstan-ignore-line
     ) {}
 
     /**
@@ -38,21 +38,6 @@ class SteamRepManager {
         ])->fetch(DSteamRep::class)
           ->getOne();
 
-        $reputation = $obj?->getReputation();
-
-        if (is_null($reputation)) {
-            $reputation = $this->provider->getReputation($steamId);
-
-            $this->db->insert($r)
-                ->columns($r->steam64, $r->rep, $r->timestamp, $r->checked)
-                ->onDuplicateKeyUpdate($r->rep, $r->timestamp, $r->checked)
-                ->persist((new DSteamRep())
-                    ->setSteam64($steamId)
-                    ->setReputation($reputation)
-                    ->setTimestamp(time())
-                );
-        }
-
-        return $reputation ?? [];
+        return $obj?->getReputation() ?? [];
     }
 }

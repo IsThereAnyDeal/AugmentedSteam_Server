@@ -39,6 +39,7 @@ class Router
 
         $router->get("/twitch/{channel}/stream/v2", [TwitchController::class, "stream_v2"]);
 
+        // TODO obsolete, remove
         $router->group("/market", function(RouteGroup $g) {
             $g->get("/cards/v2", [MarketController::class, "cards_v2"]);
             $g->get("/cards/average-prices/v2", [MarketController::class, "averageCardPrices_v2"]);
