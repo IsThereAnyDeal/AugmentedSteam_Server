@@ -30,7 +30,7 @@
     "league/uri-components": "^7.4",
     "filp/whoops": "^2.15",
     "sentry/sdk": "^4.0",
-    "predis/predis": "^2.2",
+    "predis/predis": "^3.3",
     "php-sage/sage": "^1.5"
   },
   "require-dev": {

@@ -6,12 +6,20 @@ namespace AugmentedSteam\Server\Data\Providers;
 use AugmentedSteam\Server\Data\Interfaces\PricesProviderInterface;
 use AugmentedSteam\Server\Data\Objects\Prices;
 use AugmentedSteam\Server\Endpoints\EndpointBuilder;
+use AugmentedSteam\Server\Lib\Redis\ERedisKey;
+use AugmentedSteam\Server\Lib\Redis\RedisClient;
+use Ds\Set;
 use GuzzleHttp\Client;
 
 class PricesProvider implements PricesProviderInterface
 {
+    const int CachableIdsLimit = 10;
+    const int OverviewTTL = 5*60;
+    const int GidsTTL = 6*60*60;
+
     public function __construct(
         private readonly Client $guzzle,
+        private readonly RedisClient $redis,
         private readonly EndpointBuilder $endpoints
     ) {}
 
@@ -20,26 +28,51 @@ class PricesProvider implements PricesProviderInterface
      * @return array<string, string>  SteamId:GID
      */
     private function fetchIdMap(array $steamIds): array {
-        $endpoint = $this->endpoints->getSteamIdLookup();
+        $key = ERedisKey::Gids->value;
 
-        $response = $this->guzzle->post($endpoint, [
-            "body" => json_encode($steamIds),
-            "headers" => [
-                "content-type" => "application/json",
-                "accept" => "application/json"
-            ]
-        ]);
-        if ($response->getStatusCode() != 200) {
-            return [];
+        /** @var array<string, string> $result */
+        $result = [];
+
+        $toFetch = new Set($steamIds);
+
+        $cached = $this->redis->hmget($key, $steamIds);
+        foreach($cached as $i => $gid) {
+            $id = $steamIds[$i];
+            if (!empty($gid)) {
+                $result[$id] = $gid;
+                $toFetch->remove($id);
+            }
         }
 
-        $json = json_decode($response->getBody()->getContents(), true, flags: JSON_THROW_ON_ERROR);
-        if (!is_array($json)) {
-            return [];
+        if (count($toFetch) > 0) {
+            $endpoint = $this->endpoints->getSteamIdLookup();
+            $response = $this->guzzle->post($endpoint, [
+                "body" => json_encode($toFetch->toArray()),
+                "headers" => [
+                    "content-type" => "application/json",
+                    "accept" => "application/json"
+                ]
+            ]);
+            if ($response->getStatusCode() != 200) {
+                return [];
+            }
+
+            $json = json_decode($response->getBody()->getContents(), true, flags: JSON_THROW_ON_ERROR);
+            if (!is_array($json)) {
+                return [];
+            }
+
+            if (!empty($json)) {
+                $this->redis->hmset($key, $json);
+                $this->redis->hexpire($key, self::GidsTTL, array_keys($json), "NX");
+            }
+
+            foreach($json as $id => $gid) {
+                $result[$id] = $gid;
+            }
         }
 
-        // @phpstan-ignore-next-line
-        return $json;
+        return $result;
     }
 
     /**
@@ -80,6 +113,29 @@ class PricesProvider implements PricesProviderInterface
         string $country,
         bool $withVouchers
     ): ?Prices {
+        $region = match($country) {
+            // covered
+            "FR", "US", "GB", "CA", "BR", "AU", "TR", "CN", "IN", "KR", "JP", "ID", "TW" => $country,
+            // eu
+            "AL", "AD", "AT", "BE", "DK", "FI", "IE", "LI", "LU", "MK", "NL", "SE", "CH", "DE",
+            "BA", "BG", "HR", "CY", "CZ", "GR", "HU", "IT", "MT", "MC", "ME", "NO", "PL", "PT", "RO", "SM", "RS", "SK",
+            "SI", "ES", "VA", "EE", "LV", "LT" => "FR",
+            // fallback
+            default => "US"
+        };
+
+        $key = ERedisKey::PriceOverview->value;
+        $field = md5(json_encode([$steamIds, $shops, $region, $withVouchers], flags: JSON_THROW_ON_ERROR));
+
+        if (count($steamIds) <= self::CachableIdsLimit) {
+            $gzcached = $this->redis->hget($key, $field);
+            if (!empty($gzcached)) {
+                $cached = gzuncompress($gzcached);
+                if ($cached) {
+                    return Prices::fromJson($cached);
+                }
+            }
+        }
 
         $map = array_filter($this->fetchIdMap($steamIds));
         if (empty($map)) {
@@ -126,6 +182,12 @@ class PricesProvider implements PricesProviderInterface
                     "history" => $game['urls']['game']."history/",
                 ]
             ];
+        }
+
+        $gz = gzcompress(json_encode($prices, flags: JSON_THROW_ON_ERROR));
+        if ($gz) {
+            $this->redis->hset($key, $field, $gz);
+            $this->redis->hexpire($key, self::OverviewTTL, [$field], "NX");
         }
         return $prices;
     }

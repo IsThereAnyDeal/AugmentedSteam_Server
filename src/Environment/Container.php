@@ -189,6 +189,7 @@ class Container implements ContainerInterface
             PricesProviderInterface::class => create(PricesProvider::class)
                 ->constructor(
                     get(GuzzleClient::class),
+                    get(RedisClient::class),
                     get(EndpointBuilder::class)
                 ),
 
