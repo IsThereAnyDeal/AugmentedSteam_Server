@@ -35,7 +35,7 @@ class IpThrottleMiddleware implements MiddlewareInterface
             if ($expireTime > 0) {
                 $this->logger->info("{$ip} throttled", $request->getQueryParams());
                 return new EmptyResponse(429, [
-                    "Retry-After" => $expireTime - time()
+                    "Retry-After" => (string)($expireTime - time())
                 ]);
             }
         }

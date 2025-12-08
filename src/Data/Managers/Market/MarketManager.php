@@ -20,7 +20,6 @@ class MarketManager
     public function getAverageCardPrices(array $appids, float $conversion): array {
 
         $d = new TMarketData();
-        // @phpstan-ignore-next-line
         $select = $this->db->select(<<<SQL
             SELECT $d->appid, $d->rarity=:foil as foil, AVG($d->sell_price_usd) as `average`, count(*) as `count`
             FROM $d
