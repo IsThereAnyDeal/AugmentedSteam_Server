@@ -29,9 +29,9 @@
     "league/uri": "^7.3",
     "league/uri-components": "^7.4",
     "filp/whoops": "^2.15",
-    "sentry/sdk": "^4.0",
     "predis/predis": "^3.3",
-    "php-sage/sage": "^1.5"
+    "php-sage/sage": "^1.5",
+    "sentry/sentry": "^4.19"
   },
   "require-dev": {
     "phpstan/phpstan": "^1.7",
