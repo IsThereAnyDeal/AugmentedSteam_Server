@@ -96,8 +96,6 @@ class OpenIdProvider
         $response = curl_exec($c);
         $code = curl_getinfo($c, CURLINFO_RESPONSE_CODE);
 
-        curl_close($c);
-
         if ($code !== 200 || !is_string($response)) {
             return null;
         }
