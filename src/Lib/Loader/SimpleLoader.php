@@ -16,7 +16,7 @@ readonly class SimpleLoader
     /**
      * @param array<string, mixed> $curlOptions
      */
-    public function get(string $url, array $curlOptions = []): ?ResponseInterface {
+    public function get(string $url, array $curlOptions = [], bool $throw=false): ?ResponseInterface {
         try {
             return $this->guzzle->get($url, [
                 "headers" => [
@@ -25,7 +25,11 @@ readonly class SimpleLoader
                 "curl" => $curlOptions
             ]);
         } catch (GuzzleException $e) {
-            \Sentry\captureException($e);
+            if ($throw) {
+                throw $e;
+            } else {
+                \Sentry\captureException($e);
+            }
         }
         return null;
     }

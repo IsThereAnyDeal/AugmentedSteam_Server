@@ -20,13 +20,12 @@ class SteamPeekProvider implements SteamPeekProviderInterface {
     public function fetch(int $appid): ?SteamPeekResults {
         $endpoint = $this->endpoints->getSteamPeek($appid);
         try {
-            $response = $this->loader->get($endpoint);
+            $response = $this->loader->get($endpoint, throw: true);
         } catch (ClientException $e) {
-            if ($e->getResponse()->getStatusCode() === 404) {
-                // no handling
-                return null;
+            if ($e->getResponse()->getStatusCode() !== 404) {
+                \Sentry\captureException($e);
             }
-            throw $e;
+            return null;
         }
 
         if (!is_null($response)) {
