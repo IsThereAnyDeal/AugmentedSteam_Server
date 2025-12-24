@@ -6,6 +6,7 @@ use AugmentedSteam\Server\Data\Objects\SteamPeak\SteamPeekGame;
 use AugmentedSteam\Server\Data\Objects\SteamPeak\SteamPeekResults;
 use AugmentedSteam\Server\Endpoints\EndpointBuilder;
 use AugmentedSteam\Server\Lib\Loader\SimpleLoader;
+use GuzzleHttp\Exception\ClientException;
 use Psr\Log\LoggerInterface;
 
 class SteamPeekProvider implements SteamPeekProviderInterface {
@@ -18,7 +19,15 @@ class SteamPeekProvider implements SteamPeekProviderInterface {
 
     public function fetch(int $appid): ?SteamPeekResults {
         $endpoint = $this->endpoints->getSteamPeek($appid);
-        $response = $this->loader->get($endpoint);
+        try {
+            $response = $this->loader->get($endpoint);
+        } catch (ClientException $e) {
+            if ($e->getResponse()->getStatusCode() === 404) {
+                // no handling
+                return null;
+            }
+            throw $e;
+        }
 
         if (!is_null($response)) {
             $json = json_decode($response->getBody()->getContents(), true, flags: JSON_THROW_ON_ERROR);
