@@ -22,6 +22,8 @@ readonly class MarketIndex
             ->onDuplicateKeyUpdate($i->last_request)
             ->onDuplicateKeyExpression($i->request_counter, "{$i->request_counter->name}+1");
 
+        sort($appids);
+
         foreach($appids as $appid) {
             $insert->stack(
                 (new DMarketIndex())
